@@ -11,11 +11,11 @@ export default function Progress() {
   const series = useMemo(() => progressSeries(state.workouts), [state.workouts]);
   return (
     <Screen>
-      <Stack.Screen options={{ title: 'Framsteg' }} />
+      <Stack.Screen options={{ title: 'Progress' }} />
       <P muted>
-        Bästa set per pass. En lodrät linje markerar nivåbyte — en svårare nivå ger lägre siffror, så jämför inom samma nivå. Tryck på en punkt för detaljer.
+        Best set per workout. A vertical line marks a level change — a harder level gives lower numbers, so compare within the same level. Tap a point for details.
       </P>
-      {series.length === 0 && <P>Inga loggade set ännu. Kör ett pass så dyker kurvorna upp här.</P>}
+      {series.length === 0 && <P>No sets logged yet. Do a workout and your charts will show up here.</P>}
       {series.map((s) => (
         <ProgressCard key={s.key} series={s} />
       ))}

@@ -6,7 +6,7 @@ import { LADDERS, LadderGroup } from '@/data/ladders';
 import { LADDER_SV, LEVEL_SV, TEST_SV } from '@/data/sv';
 import { useStore } from '@/lib/store';
 
-const GROUPS: LadderGroup[] = ['Tryck', 'Drag', 'Färdigheter', 'Bål', 'Ben'];
+const GROUPS: LadderGroup[] = ['Push', 'Pull', 'Skills', 'Core', 'Legs'];
 
 export default function Levels() {
   const { state } = useStore();
@@ -16,10 +16,10 @@ export default function Levels() {
   return (
     <Screen>
       <Card>
-        <H2>Testa dig</H2>
+        <H2>Test yourself</H2>
         <P muted>
-          Ca 20 min per test. Appen guidar dig och sätter dina nivåer automatiskt.
-          {lastTest ? ` Senaste test: ${lastTest.date.slice(0, 10)} (${lastTest.battery === 'mini' ? 'minitest' : lastTest.battery}).` : ''}
+          About 20 min per test. The app guides you and sets your levels automatically.
+          {lastTest ? ` Last test: ${lastTest.date.slice(0, 10)} (${lastTest.battery === 'mini' ? 'mini test' : lastTest.battery}).` : ''}
         </P>
         <Row>
           {(['A', 'B', 'C'] as const).map((b) => (

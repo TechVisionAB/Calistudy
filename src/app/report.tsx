@@ -18,7 +18,7 @@ export default function ReportScreen() {
   const share = async () => {
     const message = buildReport(state, { rating, best, worst });
     try {
-      const res = await Share.share({ message, title: 'Calistudy testrapport' });
+      const res = await Share.share({ message, title: 'Calistudy test report' });
       if (res.action === Share.sharedAction) setShared(true);
     } catch {
       // The share sheet can be unavailable (e.g. some browsers); nothing to recover.
@@ -38,40 +38,40 @@ export default function ReportScreen() {
 
   return (
     <Screen>
-      <Stack.Screen options={{ title: 'Testrapport' }} />
-      <P>Tack för att du testar! Skicka rapporten till den som bjöd in dig, gärna varje vecka. Den innehåller bara siffror om din träning och dina svar här — inget namn.</P>
+      <Stack.Screen options={{ title: 'Test report' }} />
+      <P>Thanks for testing! Send the report to whoever invited you, ideally every week. It only contains numbers about your training and your answers here — no name.</P>
 
       <Card>
-        <H2>Din träning hittills</H2>
-        {stats.length === 0 && <P muted>Inget program startat ännu.</P>}
+        <H2>Your training so far</H2>
+        {stats.length === 0 && <P muted>No program started yet.</P>}
         {stats.map((s, i) => (
           <Row key={s.week} style={{ justifyContent: 'space-between' }}>
             <Text style={{ color: t.muted, fontSize: 14 }}>
-              Vecka {i} ({s.week})
+              Week {i} ({s.week})
             </Text>
             <Text style={{ color: t.text, fontSize: 14, fontWeight: '700' }}>
-              {s.workouts} pass · {s.microDays} mikro
+              {s.workouts} workouts · {s.microDays} micro
             </Text>
           </Row>
         ))}
       </Card>
 
       <Card>
-        <Label>Hur gillar du appen? (1–5)</Label>
+        <Label>How do you like the app? (1–5)</Label>
         <Row>
           {[1, 2, 3, 4, 5].map((n) => (
             <Chip key={n} text={` ${n} `} tone={rating === n ? 'accent' : 'neutral'} onPress={() => setRating(n)} />
           ))}
         </Row>
         <View style={{ gap: 6 }}>
-          <Label>Det bästa</Label>
-          {input(best, setBest, 'Vad fick dig att öppna appen igen?')}
-          <Label>Det sämsta / det som saknas</Label>
-          {input(worst, setWorst, 'Vad var krångligt, tråkigt eller för mycket text?')}
+          <Label>The best part</Label>
+          {input(best, setBest, 'What made you open the app again?')}
+          <Label>The worst part / what’s missing</Label>
+          {input(worst, setWorst, 'What was confusing, boring or too much text?')}
         </View>
       </Card>
 
-      <Button title={shared ? 'Skickad ✓ – skicka igen' : 'Skicka testrapport'} onPress={share} />
+      <Button title={shared ? 'Sent ✓ – send again' : 'Send test report'} onPress={share} />
     </Screen>
   );
 }

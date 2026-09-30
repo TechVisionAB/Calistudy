@@ -21,7 +21,7 @@ export default function Today() {
   const [showReadiness, setShowReadiness] = useState(false);
   const [pickOther, setPickOther] = useState(false);
 
-  if (!ready) return <Screen><P muted>Laddar…</P></Screen>;
+  if (!ready) return <Screen><P muted>Loading…</P></Screen>;
   if (!state.profile) return <Redirect href="/welcome" />;
 
   const next = nextUp(state);
@@ -53,21 +53,21 @@ export default function Today() {
         const sv = SESSION_SV[next.session];
         return (
           <Card style={{ borderColor: t.accent, borderWidth: 2 }}>
-            <Label>Dagens pass</Label>
+            <Label>Today’s workout</Label>
             <Text style={{ color: t.text, fontSize: 30, fontWeight: '800', letterSpacing: -0.5 }}>{sv.title}</Text>
             <P muted>
               {sv.short} · {SESSIONS[next.session].duration}
             </P>
-            {next.deload && <Chip text="Lätt vecka: halva mängden" tone="accent" />}
+            {next.deload && <Chip text="Easy week: half the volume" tone="accent" />}
             {next.note && <P>{next.note}</P>}
             {flagCount >= 3 && <P style={{ color: t.warn }}>{READINESS.actions[3]}</P>}
-            <Button title="Starta passet" onPress={() => start(next.session)} />
+            <Button title="Start workout" onPress={() => start(next.session)} />
             <Row style={{ justifyContent: 'space-between' }}>
               <Pressable onPress={() => preview(next.session)} hitSlop={8}>
-                <Text style={{ color: t.accent, fontWeight: '700' }}>Visa övningarna</Text>
+                <Text style={{ color: t.accent, fontWeight: '700' }}>Show exercises</Text>
               </Pressable>
               <Pressable onPress={() => setShowReadiness((x) => !x)} hitSlop={8}>
-                <Text style={{ color: t.muted, fontWeight: '600' }}>{flagCount > 0 ? `Dagsform: ${flagCount} ⚠︎` : 'Känns kroppen sliten?'}</Text>
+                <Text style={{ color: t.muted, fontWeight: '600' }}>{flagCount > 0 ? `Readiness: ${flagCount} ⚠︎` : 'Feeling worn out?'}</Text>
               </Pressable>
             </Row>
             {showReadiness && (
@@ -78,7 +78,7 @@ export default function Today() {
                     <Text style={{ color: t.text, flex: 1, fontSize: 15 }}>{q.text}</Text>
                   </Pressable>
                 ))}
-                <P muted>{['Kör som vanligt.', 'Kör som vanligt, men inga maxset.', 'Passet blir lite kortare och lättare idag.', 'Vila idag: mikroträning + promenad.'][Math.min(flagCount, 3)]}</P>
+                <P muted>{['Train as usual.', 'Train as usual, but no max sets.', "Today's workout will be a bit shorter and easier.", 'Rest today: micro-practice + a walk.'][Math.min(flagCount, 3)]}</P>
               </View>
             )}
           </Card>
@@ -87,13 +87,13 @@ export default function Today() {
       case 'test':
         return (
           <Card style={{ borderColor: t.accent, borderWidth: 2 }}>
-            <Label>{week === 0 ? 'Startvecka' : 'Dags att testa'}</Label>
+            <Label>{week === 0 ? 'Starting week' : 'Time to test'}</Label>
             <Text style={{ color: t.text, fontSize: 28, fontWeight: '800' }}>{TEST_SV[next.battery]}</Text>
-            <P muted>Ca 20 min. Appen guidar dig genom en övning i taget – du trycker bara på hur många du klarade.</P>
-            <Button title="Starta testet" onPress={() => router.push({ pathname: '/test/[battery]', params: { battery: next.battery } })} />
+            <P muted>About 20 min. The app guides you through one exercise at a time – just tap how many you managed.</P>
+            <Button title="Start test" onPress={() => router.push({ pathname: '/test/[battery]', params: { battery: next.battery } })} />
             {week === 0 && (
               <Pressable onPress={startWeek1} hitSlop={8}>
-                <Text style={{ color: t.muted, fontWeight: '600', textAlign: 'center' }}>Hoppa över testerna och börja träna</Text>
+                <Text style={{ color: t.muted, fontWeight: '600', textAlign: 'center' }}>Skip the tests and start training</Text>
               </Pressable>
             )}
           </Card>
@@ -101,20 +101,20 @@ export default function Today() {
       case 'startWeek1':
         return (
           <Card style={{ borderColor: t.good, borderWidth: 2 }}>
-            <Text style={{ color: t.text, fontSize: 26, fontWeight: '800' }}>Testerna klara! 🎉</Text>
-            <P muted>Dina nivåer är satta. Nu börjar programmet på riktigt.</P>
-            <Button title="Börja vecka 1" onPress={startWeek1} />
+            <Text style={{ color: t.text, fontSize: 26, fontWeight: '800' }}>Tests done! 🎉</Text>
+            <P muted>Your levels are set. Now the program starts for real.</P>
+            <Button title="Start week 1" onPress={startWeek1} />
           </Card>
         );
       case 'rest':
         return (
           <Card>
-            <Label>Idag</Label>
-            <Text style={{ color: t.text, fontSize: 26, fontWeight: '800' }}>Vila & mikroträning</Text>
+            <Label>Today</Label>
+            <Text style={{ color: t.text, fontSize: 26, fontWeight: '800' }}>Rest & micro-practice</Text>
             <P>{next.note}</P>
             {next.then && (
               <P muted>
-                Nästa: {SESSION_SV[next.then]?.title ?? TEST_SV[next.then]}
+                Next: {SESSION_SV[next.then]?.title ?? TEST_SV[next.then]}
               </P>
             )}
           </Card>
@@ -127,14 +127,14 @@ export default function Today() {
   return (
     <Screen>
       <Label>
-        Vecka {week} · {blockOf(week)}
+        Week {week} · {blockOf(week)}
       </Label>
 
       {hero()}
 
       {week > 0 && (
         <Pressable onPress={() => setPickOther((x) => !x)} hitSlop={6}>
-          <Text style={{ color: t.muted, fontWeight: '600', textAlign: 'center' }}>{pickOther ? 'Stäng' : 'Vill du köra ett annat pass?'}</Text>
+          <Text style={{ color: t.muted, fontWeight: '600', textAlign: 'center' }}>{pickOther ? 'Close' : 'Choose another workout'}</Text>
         </Pressable>
       )}
       {pickOther && (
@@ -152,18 +152,18 @@ export default function Today() {
 
       {week > 0 && (
         <Card>
-          <H2>Den här veckan</H2>
+          <H2>This week</H2>
           <WeekRing order={week === 12 ? ['upperA', 'lowerA'] : HARD} done={progress.done} streak={streak} />
         </Card>
       )}
 
       <Card>
         <Row style={{ justifyContent: 'space-between' }}>
-          <H2>Mikroträning</H2>
+          <H2>Micro-practice</H2>
           <Chip text={`${microDone.length}/${microBlocks.length}`} tone={microDone.length >= microBlocks.length ? 'good' : 'neutral'} />
         </Row>
         <P muted style={{ fontSize: 14 }}>
-          {wd === 6 ? 'Söndag: valfritt, 5 min räcker.' : '10 min, ska kännas lätt. Bocka av det du gjort.'}
+          {wd === 6 ? 'Sunday: optional, 5 min is enough.' : '10 min, should feel easy. Tick off what you did.'}
         </P>
         {microBlocks.map((b) => {
           const on = microDone.includes(b.id);
@@ -176,7 +176,7 @@ export default function Today() {
                 <Text style={{ color: t.text, fontWeight: '700', fontSize: 15 }}>
                   {b.title} <Text style={{ color: t.muted, fontWeight: '400' }}>· {b.duration}</Text>
                 </Text>
-                <HowToToggle mediaKey={b.id === 'hs' ? state.levels.HS : b.demo} label="Visa hur" />
+                <HowToToggle mediaKey={b.id === 'hs' ? state.levels.HS : b.demo} label="How to do it" />
               </View>
             </Pressable>
           );
@@ -186,18 +186,18 @@ export default function Today() {
       {!state.reminders.morning.enabled && !state.reminders.evening.enabled && (
         <Card onPress={() => router.push('/reminders')}>
           <Row style={{ justifyContent: 'space-between' }}>
-            <Text style={{ color: t.text, fontWeight: '700', fontSize: 15 }}>⏰ Vill du få påminnelser?</Text>
-            <Text style={{ color: t.accent, fontWeight: '700' }}>Slå på ›</Text>
+            <Text style={{ color: t.text, fontWeight: '700', fontSize: 15 }}>⏰ Want reminders?</Text>
+            <Text style={{ color: t.accent, fontWeight: '700' }}>Turn on ›</Text>
           </Row>
         </Card>
       )}
 
       {stuck.length > 0 && (
         <Card onPress={() => router.push({ pathname: '/guide/[id]', params: { id: 'plateau' } })}>
-          <H2>Står du still?</H2>
-          <P muted>Ingen ökning på 3 pass i rad:</P>
+          <H2>Stuck?</H2>
+          <P muted>No progress in 3 workouts in a row:</P>
           <Bullets items={stuck.map((s) => `${s.name}${s.level ? ` (${s.level})` : ''}`)} />
-          <P style={{ color: t.accent, fontWeight: '700' }}>Så bryter du platån →</P>
+          <P style={{ color: t.accent, fontWeight: '700' }}>How to break the plateau →</P>
         </Card>
       )}
     </Screen>

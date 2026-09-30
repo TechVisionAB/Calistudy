@@ -19,7 +19,7 @@ function niceMax(v: number): number {
   return 10 * step;
 }
 
-const shortDate = (iso: string) => new Date(iso).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' });
+const shortDate = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 
 /**
  * Single-series line of best set per workout. Level changes are marked with a
@@ -118,7 +118,7 @@ export function ProgressChart({ points, unit }: { points: Point[]; unit: Unit })
             {selP.value} {unitLabel(unit)}
             {selP.level ? ` · ${selP.level}` : ''}
           </Text>
-          <Text style={{ color: t.bg, fontSize: 11 }}>{new Date(selP.date).toLocaleDateString('sv-SE')}</Text>
+          <Text style={{ color: t.bg, fontSize: 11 }}>{new Date(selP.date).toLocaleDateString('en-GB')}</Text>
         </Pressable>
       )}
     </View>

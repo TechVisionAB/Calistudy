@@ -49,7 +49,7 @@ export type WarmupId = 'push' | 'pull' | 'legs' | 'handstand';
 export const WARMUPS: Record<WarmupId, { title: string; steps: string[]; demos: { key: string; label: string }[] }> = {
   push: {
     title: 'Push + planche (≈8 min)',
-    demos: [{ key: 'wrist', label: 'Handledsuppvärmning' }, { key: 'dislocates', label: 'Band dislocates' }, { key: 'scap', label: 'Scap push-ups' }, { key: 'DP1', label: 'Support hold' }],
+    demos: [{ key: 'wrist', label: 'Wrist warm-up' }, { key: 'dislocates', label: 'Band dislocates' }, { key: 'scap', label: 'Scap push-ups' }, { key: 'DP1', label: 'Support hold' }],
     steps: [
       '2 min easy jumping jacks or skipping',
       'Wrist protocol (palm pulses, back-of-hand push-ups, finger rocks)',
@@ -62,7 +62,7 @@ export const WARMUPS: Record<WarmupId, { title: string; steps: string[]; demos: 
   },
   pull: {
     title: 'Pull + front lever (≈8 min)',
-    demos: [{ key: 'wrist', label: 'Handledsuppvärmning' }, { key: 'dislocates', label: 'Band dislocates' }, { key: 'VPu1', label: 'Scap pull-ups' }, { key: 'BL0', label: 'German hang' }],
+    demos: [{ key: 'wrist', label: 'Wrist warm-up' }, { key: 'dislocates', label: 'Band dislocates' }, { key: 'VPu1', label: 'Scap pull-ups' }, { key: 'BL0', label: 'German hang' }],
     steps: [
       '2 min easy jumping jacks or skipping',
       'Wrist protocol',
@@ -75,7 +75,7 @@ export const WARMUPS: Record<WarmupId, { title: string; steps: string[]; demos: 
   },
   legs: {
     title: 'Legs (≈8 min)',
-    demos: [{ key: 'SL1', label: 'Djup knäböj' }, { key: 'SL2', label: 'Split squat' }, { key: 'pogo', label: 'Pogo hops' }],
+    demos: [{ key: 'SL1', label: 'Deep squat' }, { key: 'SL2', label: 'Split squat' }, { key: 'pogo', label: 'Pogo hops' }],
     steps: [
       '2–3 min easy cardio (skipping, bike, brisk walk)',
       'Knee-to-wall ankle rocks ×10/side',
@@ -87,7 +87,7 @@ export const WARMUPS: Record<WarmupId, { title: string; steps: string[]; demos: 
   },
   handstand: {
     title: 'Handstand (≈8 min)',
-    demos: [{ key: 'wrist', label: 'Handledsuppvärmning' }, { key: 'scap', label: 'Scap push-ups' }, { key: 'dislocates', label: 'Band dislocates' }, { key: 'HS1', label: 'Pike hold' }],
+    demos: [{ key: 'wrist', label: 'Wrist warm-up' }, { key: 'scap', label: 'Scap push-ups' }, { key: 'dislocates', label: 'Band dislocates' }, { key: 'HS1', label: 'Pike hold' }],
     steps: [
       'Wrist protocol (2–3 min)',
       'Scap push-ups ×10',
@@ -105,7 +105,7 @@ export const SESSIONS: Record<SessionId, Session> = {
   upperA: {
     id: 'upperA',
     title: 'Upper A',
-    short: 'Planche-fokus + vertikalt tryck/drag',
+    short: 'Planche focus + vertical push/pull',
     duration: '≈75–85 min',
     warmup: 'push',
     exercises: [
@@ -131,7 +131,7 @@ export const SESSIONS: Record<SessionId, Session> = {
   lowerA: {
     id: 'lowerA',
     title: 'Lower A',
-    short: 'Plyo + enbensknäböj + SL-RDL + Nordic',
+    short: 'Plyo + single-leg squat + SL-RDL + Nordic',
     duration: '≈60–70 min',
     warmup: 'legs',
     intro: 'Micro-practice in the morning or before the session.',
@@ -152,11 +152,11 @@ export const SESSIONS: Record<SessionId, Session> = {
   recovery: {
     id: 'recovery',
     title: 'Recovery + aerobic',
-    short: 'Mikroträning + Zon 2 + rörlighet',
+    short: 'Micro-practice + Zone 2 + mobility',
     duration: '≈55–70 min',
     exercises: [],
     steps: [
-      'Micro-practice 10–15 min (se Idag-fliken).',
+      'Micro-practice 10–15 min (see the Today tab).',
       'Zone 2 aerobic 30–40 min: brisk incline walk, bike, easy run or rower. You should be able to speak in full sentences.',
       'Targeted mobility 10 min, only for the tests you failed in Week 0. If you passed everything, do 5 min of pike and pancake compression only.',
     ],
@@ -164,7 +164,7 @@ export const SESSIONS: Record<SessionId, Session> = {
   upperB: {
     id: 'upperB',
     title: 'Upper B',
-    short: 'Front lever-fokus + explosivt drag + horisontellt',
+    short: 'Front lever focus + explosive pull + horizontal',
     duration: '≈75–85 min',
     warmup: 'pull',
     exercises: [
@@ -190,7 +190,7 @@ export const SESSIONS: Record<SessionId, Session> = {
   lowerB: {
     id: 'lowerB',
     title: 'Lower B',
-    short: 'Plyo + belastad BSS + höftlyft + bensträck',
+    short: 'Plyo + loaded BSS + hip thrust + leg curl',
     duration: '≈60–70 min',
     warmup: 'legs',
     intro: 'Micro-practice beforehand or separately.',
@@ -213,7 +213,7 @@ export const SESSIONS: Record<SessionId, Session> = {
   skill: {
     id: 'skill',
     title: 'Skill + conditioning',
-    short: 'Handstand, kompression, kondition',
+    short: 'Handstand, compression, conditioning',
     duration: '≈60–75 min',
     warmup: 'handstand',
     exercises: [],
@@ -228,8 +228,8 @@ export const SESSIONS: Record<SessionId, Session> = {
   },
   rest: {
     id: 'rest',
-    title: 'Vila',
-    short: 'Vilodag',
+    title: 'Rest',
+    short: 'Rest day',
     duration: '—',
     exercises: [],
     steps: ['Rest. Optional 5 min: wrist prep + 2 × 10 scapular push-ups. Nothing to fatigue.'],

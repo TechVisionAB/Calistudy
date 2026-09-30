@@ -30,18 +30,18 @@ export function buildReport(state: State, answers: { rating: number | null; best
   const week = state.startMonday ? programWeek(state.startMonday) : 0;
   const sets = state.workouts.reduce((n, w) => n + w.entries.reduce((m, e) => m + e.sets.filter((s) => s.value !== null).length, 0), 0);
   const lines = [
-    'CALISTUDY TESTRAPPORT',
-    `App-version: ${Constants.expoConfig?.version ?? '?'}`,
-    `Startade: ${state.startMonday ?? 'ej startat'} · nu programvecka ${week}`,
-    `Pass totalt: ${state.workouts.length} · loggade set: ${sets} · tester: ${state.tests.length}`,
-    `Påminnelser: morgon ${state.reminders.morning.enabled ? 'på' : 'av'}, kväll ${state.reminders.evening.enabled ? 'på' : 'av'}`,
+    'CALISTUDY TEST REPORT',
+    `App version: ${Constants.expoConfig?.version ?? '?'}`,
+    `Started: ${state.startMonday ?? 'not started'} · now program week ${week}`,
+    `Total workouts: ${state.workouts.length} · logged sets: ${sets} · tests: ${state.tests.length}`,
+    `Reminders: morning ${state.reminders.morning.enabled ? 'on' : 'off'}, evening ${state.reminders.evening.enabled ? 'on' : 'off'}`,
     '',
-    'Per vecka (pass / mikrodagar):',
-    ...stats.map((s, i) => `  v${i} (${s.week}): ${s.workouts} / ${s.microDays}`),
+    'Per week (workouts / micro days):',
+    ...stats.map((s, i) => `  w${i} (${s.week}): ${s.workouts} / ${s.microDays}`),
     '',
-    `Betyg 1–5: ${answers.rating ?? '–'}`,
-    `Bäst: ${answers.best.trim() || '–'}`,
-    `Sämst / saknas: ${answers.worst.trim() || '–'}`,
+    `Rating 1–5: ${answers.rating ?? '–'}`,
+    `Best: ${answers.best.trim() || '–'}`,
+    `Worst / missing: ${answers.worst.trim() || '–'}`,
   ];
   return lines.join('\n');
 }

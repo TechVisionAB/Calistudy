@@ -8,7 +8,7 @@ export type PlannedExercise = Exercise & {
   plannedRir: string;
   level?: string;
   levelName?: string;
-  /** Swedish display name (level name for ladder exercises) and cue. */
+  /** Display name (level name for ladder exercises) and cue. */
   title: string;
   cueSv: string;
   /** True when the exercise was replaced because equipment is missing. */
@@ -75,15 +75,15 @@ export function unitLabel(u: Unit): string {
     case 'reps':
       return 'reps';
     case 'reps/side':
-      return 'reps/sida';
+      return 'reps/side';
     case 'reps/leg':
-      return 'reps/ben';
+      return 'reps/leg';
     case 's':
       return 's';
     case 's/side':
-      return 's/sida';
+      return 's/side';
     case 'attempts':
-      return 'försök';
+      return 'attempts';
   }
 }
 

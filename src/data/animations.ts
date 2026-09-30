@@ -73,8 +73,8 @@ function pushupAnim(id: string, title: string, handX: number, caption: string): 
   return { id, title, duration: 2800, props: [{ type: 'floor', y: FLOOR }], keys: loop([[0, topP], [0.45, botP], [0.55, botP], [1, topP]]), caption };
 }
 
-const pushup = pushupAnim('pushup', 'Push-up', 78, 'Rak kropp från häl till huvud, armbågar ~45° bakåt, bröstet ner till knytnävshöjd och full utsträckning uppe.');
-const pseudo = pushupAnim('pseudo', 'Pseudo-planche push-up', 70, 'Händerna vid nedre revbenen, axlarna framför händerna hela repet. Behåll lutningen.');
+const pushup = pushupAnim('pushup', 'Push-up', 78, 'Straight body from heels to head, elbows ~45° back, chest down to fist height and full lockout at the top.');
+const pseudo = pushupAnim('pseudo', 'Pseudo-planche push-up', 70, 'Hands by the lower ribs, shoulders ahead of the hands for the whole rep. Keep the lean.');
 
 const incline: Anim = (() => {
   const foot: Vec = [12, FLOOR];
@@ -89,7 +89,7 @@ const incline: Anim = (() => {
     duration: 2600,
     props: [{ type: 'floor', y: FLOOR }, { type: 'box', x: 52, y: 52, w: 26, h: 20 }],
     keys: loop([[0, p], [0.45, b], [0.55, b], [1, p]]),
-    caption: 'Händerna på bänk/låda. Samma raka kropp som en vanlig armhävning — sänk höjden efter hand.',
+    caption: 'Hands on a bench/box. Same straight body as a regular push-up — lower the height over time.',
   };
 })();
 
@@ -104,7 +104,7 @@ const pike: Anim = (() => {
     duration: 2800,
     props: [{ type: 'floor', y: FLOOR }],
     keys: loop([[0, top], [0.45, bot], [0.55, bot], [1, top]]),
-    caption: 'Höften högt. Huvudet går fram framför händerna så att huvud och händer bildar en triangel (tripod).',
+    caption: 'Hips high. The head travels forward past the hands so head and hands form a triangle (tripod).',
   };
 })();
 
@@ -120,7 +120,7 @@ const handstand: Anim = (() => {
     viewBox: [20, -34, 110, 110],
     props: [{ type: 'floor', y: FLOOR }, { type: 'wall', x: 80, y: FLOOR }],
     keys: loop([[0, base], [0.35, base], [0.5, tap], [0.65, base], [1, base]]),
-    caption: 'Bröstet mot väggen, händerna 10–20 cm från den. Tryck bort golvet, revbenen in, raka armar. Skuldertapp när du är stabil.',
+    caption: 'Chest to the wall, hands 10–20 cm from it. Push the floor away, ribs in, straight arms. Shoulder taps once you are stable.',
   };
 })();
 
@@ -135,7 +135,7 @@ const hspu: Anim = (() => {
     viewBox: [20, -34, 110, 110],
     props: [{ type: 'floor', y: FLOOR }, { type: 'wall', x: 80, y: FLOOR }],
     keys: loop([[0, top], [0.45, bot], [0.55, bot], [1, top]]),
-    caption: 'Sänk kontrollerat tills huvudet når underlaget framför händerna. Armbågar ~45°, aldrig krascha på huvudet.',
+    caption: 'Lower with control until your head touches the surface in front of your hands. Elbows ~45°, never crash onto your head.',
   };
 })();
 
@@ -150,7 +150,7 @@ const dip: Anim = (() => {
     viewBox: [10, -2, 110, 100],
     props: [{ type: 'pbars', x: 66, y: 50 }],
     keys: loop([[0, top], [0.45, bot], [0.55, bot], [1, top]]),
-    caption: 'Starta utsträckt med nedtryckta axlar. Luta bröstet framåt och gå ner tills axeln är strax under armbågen.',
+    caption: 'Start locked out with shoulders pushed down. Lean the chest forward and lower until the shoulder is just below the elbow.',
   };
 })();
 
@@ -165,7 +165,7 @@ const pullup: Anim = (() => {
     viewBox: [5, -6, 110, 116],
     props: [{ type: 'bar', x: 60, y: 10 }],
     keys: loop([[0, hang], [0.4, top], [0.55, top], [1, hang]]),
-    caption: 'Från död häng: dra ner axlarna först, sedan armbågarna mot revbenen tills hakan är över stången.',
+    caption: 'From a dead hang: pull the shoulders down first, then the elbows toward the ribs until your chin is over the bar.',
   };
 })();
 
@@ -182,7 +182,7 @@ const row: Anim = (() => {
     duration: 2800,
     props: [{ type: 'floor', y: FLOOR }, { type: 'rings', x: 84, y: 28 }],
     keys: loop([[0, b], [0.4, t], [0.55, t], [1, b]]),
-    caption: 'Rak kropp, dra ringarna till nedre revbenen och kläm skulderbladen 1 s i toppen.',
+    caption: 'Straight body, pull the rings to your lower ribs and squeeze the shoulder blades for 1 s at the top.',
   };
 })();
 
@@ -198,7 +198,7 @@ const lean: Anim = (() => {
     duration: 3600,
     props: [{ type: 'floor', y: FLOOR }],
     keys: loop([[0, p], [0.35, q], [0.75, q], [1, p]]),
-    caption: 'Armhävningsläge, protrahera (runda övre ryggen) och luta axlarna 5–15 cm förbi händerna med raka armbågar.',
+    caption: 'Push-up position, protract (round the upper back) and lean the shoulders 5–15 cm past the hands with straight elbows.',
   };
 })();
 
@@ -212,7 +212,7 @@ const tuckPlanche: Anim = (() => {
     duration: 4200,
     props: [{ type: 'floor', y: FLOOR }],
     keys: loop([[0, down], [0.3, up], [0.75, up], [1, down]]),
-    caption: 'Raka armar, axlarna framför händerna, höften i axelhöjd och knäna mot bröstet. Protrahera och lås armbågarna.',
+    caption: 'Straight arms, shoulders ahead of the hands, hips at shoulder height and knees to chest. Protract and lock the elbows.',
   };
 })();
 
@@ -227,7 +227,7 @@ const frontLever: Anim = (() => {
     viewBox: [0, -4, 120, 96],
     props: [{ type: 'bar', x: 70, y: 12 }],
     keys: loop([[0, hang], [0.3, lever], [0.75, lever], [1, hang]]),
-    caption: 'Tryck ner stången mot höfterna med raka armar tills ryggen är vågrät. Kläm sätet, skulderbladen nedtryckta.',
+    caption: 'Press the bar down toward your hips with straight arms until your back is horizontal. Squeeze the glutes, shoulder blades down.',
   };
 })();
 
@@ -240,7 +240,7 @@ const hollow: Anim = (() => {
     duration: 4000,
     props: [{ type: 'floor', y: FLOOR }],
     keys: loop([[0, flat], [0.3, hold], [0.8, hold], [1, flat]]),
-    caption: 'Ländryggen pressad mot golvet, revbenen in. Lyft axlar och raka ben — lägre ben = svårare.',
+    caption: 'Lower back pressed into the floor, ribs in. Lift shoulders and straight legs — lower legs = harder.',
   };
 })();
 
@@ -255,7 +255,7 @@ const legRaise: Anim = (() => {
     viewBox: [5, -6, 110, 116],
     props: [{ type: 'bar', x: 60, y: 10 }],
     keys: loop([[0, down], [0.4, up], [0.55, up], [1, down]]),
-    caption: 'Tippa bäckenet bakåt först, lyft sedan raka ben till 90° utan sving.',
+    caption: 'Tilt the pelvis back first, then raise straight legs to 90° without swinging.',
   };
 })();
 
@@ -269,7 +269,7 @@ const lsit: Anim = (() => {
     duration: 4000,
     props: [{ type: 'floor', y: FLOOR }, { type: 'box', x: 46, y: 62, w: 12, h: 10 }],
     keys: loop([[0, tuck], [0.3, l], [0.75, l], [1, tuck]]),
-    caption: 'Tryck ner axlarna och bort från underlaget, låsta knän, benen minst vågräta.',
+    caption: 'Push the shoulders down and away from the support, locked knees, legs at least horizontal.',
   };
 })();
 
@@ -279,12 +279,12 @@ const squat: Anim = (() => {
   const down: Pose = { at: [46, 59], trunk: -62, hand: [84, 42], foot, elbow: 1, knee: -1 };
   return {
     id: 'squat',
-    title: 'Squat (assisterad)',
+    title: 'Squat (assisted)',
     duration: 3000,
     viewBox: [0, -14, 120, 94],
     props: [{ type: 'floor', y: FLOOR }],
     keys: loop([[0, up], [0.45, down], [0.55, down], [1, up]]),
-    caption: 'Full djup med hälarna i golvet. Håll i dörrkarm/ringar vid behov.',
+    caption: 'Full depth with heels on the floor. Hold a door frame/rings if needed.',
   };
 })();
 
@@ -300,7 +300,7 @@ const splitSquat = (bss: boolean): Anim => {
     viewBox: [0, -14, 120, 94],
     props: bss ? [{ type: 'floor', y: FLOOR }, { type: 'box', x: 12, y: 54, w: 20, h: 18 }] : [{ type: 'floor', y: FLOOR }],
     keys: loop([[0, up], [0.45, down], [0.55, down], [1, up]]),
-    caption: bss ? 'Bakre foten på knähög bänk. Främre smalbenet lätt framåt, driv genom hela foten.' : 'Bakre knät lätt ner mot en dyna, kontrollerat 2 s ner.',
+    caption: bss ? 'Back foot on a knee-high bench. Front shin slightly forward, drive through the whole foot.' : 'Back knee lightly down to a pad, controlled 2 s down.',
   };
 };
 
@@ -315,7 +315,7 @@ const pistol = (box: boolean): Anim => {
     viewBox: [0, -14, 120, 94],
     props: box ? [{ type: 'floor', y: FLOOR }, { type: 'box', x: 34, y: 55, w: 18, h: 17 }] : [{ type: 'floor', y: FLOOR }],
     keys: loop([[0, up], [0.45, down], [0.55, down], [1, up]]),
-    caption: box ? 'Sätt dig ner på ett ben mot lådan och res dig utan att gunga. Sänk lådan 10–15 cm åt gången.' : 'Hälen kvar i golvet, sitt bakåt och ner, andra benet rakt fram.',
+    caption: box ? 'Sit down on one leg to the box and stand up without rocking. Lower the box 10–15 cm at a time.' : 'Heel stays on the floor, sit back and down, other leg straight out in front.',
   };
 };
 
@@ -329,7 +329,7 @@ const bridge: Anim = (() => {
     duration: 2800,
     props: [{ type: 'floor', y: FLOOR }],
     keys: loop([[0, down], [0.4, up], [0.6, up], [1, down]]),
-    caption: 'Hakan in, revbenen ner. Lås höften med sätet och kläm 1 s i toppen.',
+    caption: 'Chin tucked, ribs down. Lock the hips with the glutes and squeeze 1 s at the top.',
   };
 })();
 
@@ -344,7 +344,7 @@ const slRdl: Anim = (() => {
     viewBox: [0, -14, 120, 94],
     props: [{ type: 'floor', y: FLOOR }],
     keys: loop([[0, up], [0.45, down], [0.55, down], [1, up]]),
-    caption: 'Höften bakåt, rak rygg, höften i våg. Bakre benet och överkroppen rör sig som en enhet.',
+    caption: 'Hips back, flat back, hips level. The back leg and torso move as one unit.',
   };
 })();
 
@@ -362,7 +362,7 @@ const nordic: Anim = (() => {
     duration: 5200,
     props: [{ type: 'floor', y: FLOOR }, { type: 'box', x: 22, y: 66, w: 10, h: 6 }],
     keys: loop([[0, up], [0.6, low], [0.68, caught], [0.85, up], [1, up]]),
-    caption: 'Fixera fotlederna, rak höft. Fall så långsamt som möjligt (≥3–5 s), ta emot med händerna.',
+    caption: 'Anchor the ankles, straight hips. Fall as slowly as possible (≥3–5 s), catch yourself with your hands.',
   };
 })();
 
@@ -379,7 +379,7 @@ const muscleUp: Anim = (() => {
     viewBox: [0, -8, 120, 150],
     props: [{ type: 'bar', x: 60, y: 40 }],
     keys: loop([[0, hang], [0.3, pull], [0.45, trans], [0.6, support], [0.75, support], [1, hang]]),
-    caption: 'Explosivt drag till nedre bröstbenet, dra runt stången (inte rakt upp) och pressa till stöd. Båda armarna samtidigt.',
+    caption: 'Explosive pull to the lower sternum, pull around the bar (not straight up) and press to support. Both arms at the same time.',
   };
 })();
 

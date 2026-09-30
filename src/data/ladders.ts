@@ -3,7 +3,7 @@
 
 export type Level = { code: string; name: string; advance: string };
 
-export type LadderGroup = 'Tryck' | 'Drag' | 'Färdigheter' | 'Bål' | 'Ben';
+export type LadderGroup = 'Push' | 'Pull' | 'Skills' | 'Core' | 'Legs';
 
 export type Ladder = {
   id: string;
@@ -19,7 +19,7 @@ export const LADDERS: Ladder[] = [
   {
     id: 'HP',
     name: 'Horizontal push',
-    group: 'Tryck',
+    group: 'Push',
     kind: 'dynamic',
     levels: [
       { code: 'HP1', name: 'Incline push-up (hands on bench/box)', advance: '3×12 @ RIR 2' },
@@ -33,18 +33,18 @@ export const LADDERS: Ladder[] = [
       { code: 'HP9', name: 'One-arm push-up (feet ≤ shoulder width)', advance: 'Mastery: 3×5/side' },
     ],
     notes: [
-      { label: 'Förkunskaper', text: 'A 60 s plank without sag.' },
-      { label: 'Muskler', text: 'Pecs, anterior delts, triceps, serratus.' },
-      { label: 'Vanliga fel', text: 'Elbows flared >60°, sagging hips, a half-ROM bottom, no protraction at the top.' },
-      { label: 'Skador', text: 'Wrist extension pain (use parallettes or fists); anterior shoulder pain in deep deficits (reduce depth).' },
-      { label: 'Assistans', text: 'Dips, weighted push-ups, overhead triceps extension.' },
-      { label: 'Träna inte hårt', text: 'Within 48 h of a hard planche session if you have distal-biceps or wrist symptoms.' },
+      { label: 'Prerequisites', text: 'A 60 s plank without sag.' },
+      { label: 'Muscles', text: 'Pecs, anterior delts, triceps, serratus.' },
+      { label: 'Common mistakes', text: 'Elbows flared >60°, sagging hips, a half-ROM bottom, no protraction at the top.' },
+      { label: 'Injury risk', text: 'Wrist extension pain (use parallettes or fists); anterior shoulder pain in deep deficits (reduce depth).' },
+      { label: 'Assistance', text: 'Dips, weighted push-ups, overhead triceps extension.' },
+      { label: "Don't train hard", text: 'Within 48 h of a hard planche session if you have distal-biceps or wrist symptoms.' },
     ],
   },
   {
     id: 'VP',
     name: 'Vertical push',
-    group: 'Tryck',
+    group: 'Push',
     kind: 'dynamic',
     levels: [
       { code: 'VP1', name: 'Pike push-up, feet on floor, head travels ahead of the hands (tripod)', advance: '3×10' },
@@ -57,16 +57,16 @@ export const LADDERS: Ladder[] = [
       { code: 'VP8', name: '90° push-up (planche-to-HS transition; elite)', advance: 'Long-term' },
     ],
     notes: [
-      { label: 'Rörlighet', text: '~180° shoulder flexion with ribs down (wall test, Test C).' },
-      { label: 'Vanliga fel', text: 'Elbows flaring wide, head landing between the hands instead of forming a tripod ahead of them, banana back.' },
-      { label: 'Skador', text: 'Neck (never crash-load the head); rotator cuff irritation from excessive volume.' },
-      { label: 'Assistans', text: 'DB overhead press, lateral raises, triceps extensions.' },
+      { label: 'Mobility', text: '~180° shoulder flexion with ribs down (wall test, Test C).' },
+      { label: 'Common mistakes', text: 'Elbows flaring wide, head landing between the hands instead of forming a tripod ahead of them, banana back.' },
+      { label: 'Injury risk', text: 'Neck (never crash-load the head); rotator cuff irritation from excessive volume.' },
+      { label: 'Assistance', text: 'DB overhead press, lateral raises, triceps extensions.' },
     ],
   },
   {
     id: 'DP',
     name: 'Dips',
-    group: 'Tryck',
+    group: 'Push',
     kind: 'dynamic',
     levels: [
       { code: 'DP1', name: 'Parallel-bar support hold, depressed shoulders', advance: '60 s' },
@@ -78,16 +78,16 @@ export const LADDERS: Ladder[] = [
       { code: 'DP7', name: 'RTO ring dips / weighted ring dips / Korean dips', advance: 'Long-term' },
     ],
     notes: [
-      { label: 'Rörlighet', text: 'Shoulder extension ~45–60° pain-free (German-hang tolerance helps).' },
-      { label: 'Vanliga fel', text: 'Shoulder rolling forward, shrugging, excessive depth before you are ready.' },
-      { label: 'Skador', text: 'Anterior shoulder and sternoclavicular pain. Reduce depth before reducing volume.' },
-      { label: 'Träna inte', text: 'When anterior shoulder pain is ≥3/10.' },
+      { label: 'Mobility', text: 'Shoulder extension ~45–60° pain-free (German-hang tolerance helps).' },
+      { label: 'Common mistakes', text: 'Shoulder rolling forward, shrugging, excessive depth before you are ready.' },
+      { label: 'Injury risk', text: 'Anterior shoulder and sternoclavicular pain. Reduce depth before reducing volume.' },
+      { label: "Don't train", text: 'When anterior shoulder pain is ≥3/10.' },
     ],
   },
   {
     id: 'HS',
     name: 'Handstand',
-    group: 'Färdigheter',
+    group: 'Skills',
     kind: 'static',
     levels: [
       { code: 'HS1', name: 'Wall plank / pike hold on box, shoulders open', advance: '3×30 s' },
@@ -101,16 +101,16 @@ export const LADDERS: Ladder[] = [
       { code: 'HS9', name: 'One-arm handstand pathway', advance: 'Multi-year' },
     ],
     notes: [
-      { label: 'Rörlighet', text: 'Full shoulder flexion; wrist extension ~90°+.' },
-      { label: 'Vanliga fel', text: 'Banana back, bent elbows, looking far forward, kicking too hard.' },
-      { label: 'Träna', text: 'Daily micro-practice (distributed practice).' },
-      { label: 'Inte när', text: 'Wrist pain ≥3/10 or neck symptoms.' },
+      { label: 'Mobility', text: 'Full shoulder flexion; wrist extension ~90°+.' },
+      { label: 'Common mistakes', text: 'Banana back, bent elbows, looking far forward, kicking too hard.' },
+      { label: 'Train', text: 'Daily micro-practice (distributed practice).' },
+      { label: 'Not when', text: 'Wrist pain ≥3/10 or neck symptoms.' },
     ],
   },
   {
     id: 'PL',
     name: 'Planche',
-    group: 'Färdigheter',
+    group: 'Skills',
     kind: 'static',
     levels: [
       { code: 'PL0a', name: 'Planche lean: shoulders 5–15 cm ahead of hands, protracted, straight elbows', advance: '3×20 s at 15 cm' },
@@ -122,18 +122,18 @@ export const LADDERS: Ladder[] = [
       { code: 'PL5', name: 'Planche push-ups, maltese pathway', advance: 'Elite' },
     ],
     notes: [
-      { label: 'Förkunskaper', text: 'DP3 (10 dips), 60 s support hold, pain-free 90° loaded wrist extension, HP4 or better.' },
-      { label: 'Muskler', text: 'Anterior deltoid, serratus anterior, pecs, biceps (elbow stabiliser), wrist flexors, core, glutes and lower traps. Not "just shoulders".' },
-      { label: 'Vanliga fel', text: 'Bent elbows, retracted scapulae, piked hips, insufficient lean.' },
-      { label: 'Skador', text: 'Distal biceps, medial elbow, wrist extension; lumbar strain if you arch.' },
-      { label: 'Assistans', text: 'Pseudo-planche push-ups, planche leans, band-assisted holds, weighted dips.' },
-      { label: 'Inte när', text: 'Elbow-crease pain, or within 48 h of the last hard planche session.' },
+      { label: 'Prerequisites', text: 'DP3 (10 dips), 60 s support hold, pain-free 90° loaded wrist extension, HP4 or better.' },
+      { label: 'Muscles', text: 'Anterior deltoid, serratus anterior, pecs, biceps (elbow stabiliser), wrist flexors, core, glutes and lower traps. Not "just shoulders".' },
+      { label: 'Common mistakes', text: 'Bent elbows, retracted scapulae, piked hips, insufficient lean.' },
+      { label: 'Injury risk', text: 'Distal biceps, medial elbow, wrist extension; lumbar strain if you arch.' },
+      { label: 'Assistance', text: 'Pseudo-planche push-ups, planche leans, band-assisted holds, weighted dips.' },
+      { label: 'Not when', text: 'Elbow-crease pain, or within 48 h of the last hard planche session.' },
     ],
   },
   {
     id: 'VPu',
     name: 'Vertical pull',
-    group: 'Drag',
+    group: 'Pull',
     kind: 'dynamic',
     levels: [
       { code: 'VPu1', name: 'Active hang + scapular pull-ups', advance: '3×10 scap pulls, 30 s active hang' },
@@ -147,15 +147,15 @@ export const LADDERS: Ladder[] = [
       { code: 'VPu9', name: 'One-arm chin / one-arm pull-up', advance: 'Elite' },
     ],
     notes: [
-      { label: 'Explosiv gren', text: 'High pull-ups to lower-sternum → chest-to-bar with hands release → muscle-up.' },
-      { label: 'Vanliga fel', text: 'Kipping, partial ROM, elbows leading before the scapulae move, craned neck.' },
-      { label: 'Skador', text: "Medial elbow (golfer's elbow) with high volume in a pronated grip; lateral elbow from gripping. Rotate grips." },
+      { label: 'Explosive branch', text: 'High pull-ups to lower-sternum → chest-to-bar with hands release → muscle-up.' },
+      { label: 'Common mistakes', text: 'Kipping, partial ROM, elbows leading before the scapulae move, craned neck.' },
+      { label: 'Injury risk', text: "Medial elbow (golfer's elbow) with high volume in a pronated grip; lateral elbow from gripping. Rotate grips." },
     ],
   },
   {
     id: 'HPu',
     name: 'Horizontal pull',
-    group: 'Drag',
+    group: 'Pull',
     kind: 'dynamic',
     levels: [
       { code: 'HPu1', name: 'Incline ring row (body ~45°)', advance: '3×12' },
@@ -169,7 +169,7 @@ export const LADDERS: Ladder[] = [
   {
     id: 'MU',
     name: 'Muscle-up',
-    group: 'Färdigheter',
+    group: 'Skills',
     kind: 'dynamic',
     levels: [
       { code: 'MU0', name: 'Prerequisites', advance: '10 strict pull-ups, 5 chest-to-bar, 10 straight-bar dips, false-grip hang 30 s (ring MU only)' },
@@ -181,14 +181,14 @@ export const LADDERS: Ladder[] = [
       { code: 'MU6', name: 'Weighted / slow MU, then advanced variants', advance: 'Long-term' },
     ],
     notes: [
-      { label: 'Vanliga fel', text: 'Chicken-winging (one arm over first), insufficient pull height, pulling vertically instead of around the bar.' },
-      { label: 'Skador', text: 'Elbow and wrist during the transition. Limit to 2×/wk and ≤20 total reps per session.' },
+      { label: 'Common mistakes', text: 'Chicken-winging (one arm over first), insufficient pull height, pulling vertically instead of around the bar.' },
+      { label: 'Injury risk', text: 'Elbow and wrist during the transition. Limit to 2×/wk and ≤20 total reps per session.' },
     ],
   },
   {
     id: 'FL',
     name: 'Front lever',
-    group: 'Färdigheter',
+    group: 'Skills',
     kind: 'static',
     levels: [
       { code: 'FL0', name: 'Prerequisites (3×8 scap pulls + 3×20 s hollow)', advance: 'VPu4 3×8, hollow body 45 s, scap pulls with depression' },
@@ -200,15 +200,15 @@ export const LADDERS: Ladder[] = [
       { code: 'FL6', name: 'FL pulls/rows/raises, then one-arm pathway', advance: 'Elite' },
     ],
     notes: [
-      { label: 'Muskler', text: 'Lats, teres major, posterior delts, lower traps, rectus abdominis, glutes. Not "just lats".' },
-      { label: 'Vanliga fel', text: 'Bent arms, hips sagging, scapulae elevated.' },
-      { label: 'Assistans', text: 'FL raises, tuck FL rows, straight-arm band pulldowns, weighted pull-ups.' },
+      { label: 'Muscles', text: 'Lats, teres major, posterior delts, lower traps, rectus abdominis, glutes. Not "just lats".' },
+      { label: 'Common mistakes', text: 'Bent arms, hips sagging, scapulae elevated.' },
+      { label: 'Assistance', text: 'FL raises, tuck FL rows, straight-arm band pulldowns, weighted pull-ups.' },
     ],
   },
   {
     id: 'BL',
     name: 'Back lever',
-    group: 'Färdigheter',
+    group: 'Skills',
     kind: 'static',
     levels: [
       { code: 'BL0', name: 'German hang (feet on floor → free), pain-free', advance: '30 s relaxed' },
@@ -217,13 +217,13 @@ export const LADDERS: Ladder[] = [
       { code: 'BL2', name: 'Adv tuck → straddle → full BL', advance: '5×8 s per level' },
     ],
     notes: [
-      { label: 'Skador', text: 'Distal biceps and anterior shoulder. Start only when German hang is pain-free. Progress one level per ≥4 weeks minimum, even if the hold criteria are met sooner.' },
+      { label: 'Injury risk', text: 'Distal biceps and anterior shoulder. Start only when German hang is pain-free. Progress one level per ≥4 weeks minimum, even if the hold criteria are met sooner.' },
     ],
   },
   {
     id: 'HF',
     name: 'Human flag',
-    group: 'Färdigheter',
+    group: 'Skills',
     kind: 'static',
     levels: [
       { code: 'HF1', name: 'Vertical flag (support flag)', advance: '5×8 s' },
@@ -232,15 +232,15 @@ export const LADDERS: Ladder[] = [
       { code: 'HF4', name: 'Full flag', advance: '5×8 s' },
     ],
     notes: [
-      { label: 'Förkunskaper', text: 'Side plank 60 s, VPu4 3×8, DP3, HS2.' },
-      { label: 'Utrustning', text: "Stall bars or a vertical pole; you can't do it on a doorway pull-up bar." },
-      { label: 'När', text: 'Delay to Phase 3.' },
+      { label: 'Prerequisites', text: 'Side plank 60 s, VPu4 3×8, DP3, HS2.' },
+      { label: 'Equipment', text: "Stall bars or a vertical pole; you can't do it on a doorway pull-up bar." },
+      { label: 'When', text: 'Delay to Phase 3.' },
     ],
   },
   {
     id: 'CC',
     name: 'Core & compression',
-    group: 'Bål',
+    group: 'Core',
     kind: 'dynamic',
     levels: [
       { code: 'CC1', name: 'Hollow body (tuck → full)', advance: '3×45 s full' },
@@ -260,7 +260,7 @@ export const LADDERS: Ladder[] = [
   {
     id: 'SL',
     name: 'Single-leg squat',
-    group: 'Ben',
+    group: 'Legs',
     kind: 'dynamic',
     levels: [
       { code: 'SL1', name: 'Assisted squat (hold door frame/rings), full depth', advance: '3×15' },
@@ -272,13 +272,13 @@ export const LADDERS: Ladder[] = [
       { code: 'SL7', name: 'Weighted pistol (+10% → +25% BW) / dragon pistol', advance: 'Long-term' },
     ],
     notes: [
-      { label: 'Räkgren (shrimp)', text: 'Beginner shrimp (hands forward, knee to pad) → intermediate (knee touches floor) → advanced (hold rear foot) → weighted. 3 sets of 4–8; progress at 3×8.' },
+      { label: 'Shrimp branch', text: 'Beginner shrimp (hands forward, knee to pad) → intermediate (knee touches floor) → advanced (hold rear foot) → weighted. 3 sets of 4–8; progress at 3×8.' },
     ],
   },
   {
     id: 'H',
     name: 'Hinge',
-    group: 'Ben',
+    group: 'Legs',
     kind: 'dynamic',
     levels: [
       { code: 'H1', name: 'Glute bridge', advance: '3×12 at RIR 2' },
@@ -292,7 +292,7 @@ export const LADDERS: Ladder[] = [
   {
     id: 'KF',
     name: 'Knee flexion',
-    group: 'Ben',
+    group: 'Legs',
     kind: 'dynamic',
     levels: [
       { code: 'KF1', name: 'Bridge walkouts', advance: '3×10' },
@@ -303,7 +303,7 @@ export const LADDERS: Ladder[] = [
       { code: 'KF6', name: 'Full Nordic with concentric', advance: '3×5' },
     ],
     notes: [
-      { label: 'Evidens', text: 'Programmes that include the Nordic hamstring exercise reduce hamstring injuries by up to 51% (van Dyk et al. 2019, team-sport populations).' },
+      { label: 'Evidence', text: 'Programmes that include the Nordic hamstring exercise reduce hamstring injuries by up to 51% (van Dyk et al. 2019, team-sport populations).' },
     ],
   },
 ];

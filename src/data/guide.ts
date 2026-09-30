@@ -17,21 +17,21 @@ export const MICRO_PRACTICE = {
     'On Upper A/B days the handstand block inside the session replaces micro-practice.',
   ],
   blocks: [
-    { id: 'wrist', demo: 'wrist' as string | undefined, title: 'Handleder', duration: '2–3 min', content: 'Palm pulses ×10, back-of-hand wrist push-ups ×10 (from knees), finger-forward/sideways/backward rocks ×10 each, fist push-up hold 15 s', progression: 'Move from knees → plank position as tolerance improves' },
-    { id: 'scap', demo: 'scap' as string | undefined, title: 'Skulderbladskontroll', duration: '2 min', content: 'Scap push-ups ×10, scap pull-ups or band scap depressions ×8, wall slides ×8', progression: 'Add pauses (2 s)' },
-    { id: 'hs', demo: undefined as string | undefined, title: 'Handstående', duration: '5–8 min', content: 'At your HS level: 3–5 × 20–45 s CTW, or 5–8 freestanding attempts', progression: 'Challenge point: 60–80% success rate' },
-    { id: 'compression', demo: 'CC6' as string | undefined, title: 'Kompression', duration: '2 min', content: 'Seated pike leg lifts 2 × 8 (2 s holds), tuck L-sit on floor 2 × 10 s', progression: 'Add pancake lifts; increase hold to 3 s' },
-    { id: 'mobility', demo: 'BL0' as string | undefined, title: 'Riktad rörlighet (bara underkända tester)', duration: '3–5 min', content: 'Overhead: thoracic extension + shoulder flexion stretch 2 × 30 s. Ankle: knee-to-wall rocks 2 × 10. Pike: pike folds with active compression 2 × 30 s. Shoulder extension: assisted German hang 2 × 15 s (only if pain-free in Week 0)', progression: 'Stop dedicated work once the test standard is met; then maintain 1×/week' },
+    { id: 'wrist', demo: 'wrist' as string | undefined, title: 'Wrists', duration: '2–3 min', content: 'Palm pulses ×10, back-of-hand wrist push-ups ×10 (from knees), finger-forward/sideways/backward rocks ×10 each, fist push-up hold 15 s', progression: 'Move from knees → plank position as tolerance improves' },
+    { id: 'scap', demo: 'scap' as string | undefined, title: 'Scapular control', duration: '2 min', content: 'Scap push-ups ×10, scap pull-ups or band scap depressions ×8, wall slides ×8', progression: 'Add pauses (2 s)' },
+    { id: 'hs', demo: undefined as string | undefined, title: 'Handstand', duration: '5–8 min', content: 'At your HS level: 3–5 × 20–45 s CTW, or 5–8 freestanding attempts', progression: 'Challenge point: 60–80% success rate' },
+    { id: 'compression', demo: 'CC6' as string | undefined, title: 'Compression', duration: '2 min', content: 'Seated pike leg lifts 2 × 8 (2 s holds), tuck L-sit on floor 2 × 10 s', progression: 'Add pancake lifts; increase hold to 3 s' },
+    { id: 'mobility', demo: 'BL0' as string | undefined, title: 'Targeted mobility (failed tests only)', duration: '3–5 min', content: 'Overhead: thoracic extension + shoulder flexion stretch 2 × 30 s. Ankle: knee-to-wall rocks 2 × 10. Pike: pike folds with active compression 2 × 30 s. Shoulder extension: assisted German hang 2 × 15 s (only if pain-free in Week 0)', progression: 'Stop dedicated work once the test standard is met; then maintain 1×/week' },
   ],
-  layout: 'Tis, ons, fre, lör: fulla 10–15 min. Sön: valfritt 5 min (handled + skulderblad). Mån/tor: ingår i passet.',
+  layout: 'Tue, Wed, Fri, Sat: full 10–15 min. Sun: optional 5 min (wrist + scap). Mon/Thu: included in the workout.',
 };
 
 export const READINESS = {
   questions: [
-    { id: 'sleep', text: 'Sömn under 6 h i natt' },
-    { id: 'soreness', text: 'Träningsvärk ≥5/10 i musklerna som ska tränas' },
-    { id: 'pain', text: 'Led-/senesmärta ≥3/10 i vila eller uppvärmning' },
-    { id: 'drop', text: 'Första arbetsset ≥10 % sämre än förra passet, eller RPE ≥2 högre för samma arbete' },
+    { id: 'sleep', text: 'Slept under 6 h last night' },
+    { id: 'soreness', text: 'Soreness ≥5/10 in the muscles to be trained' },
+    { id: 'pain', text: 'Joint/tendon pain ≥3/10 at rest or during warm-up' },
+    { id: 'drop', text: 'First working set ≥10% worse than last workout, or RPE ≥2 higher for the same work' },
   ],
   actions: [
     'Train as written.',
@@ -44,8 +44,8 @@ export const READINESS = {
 export const GUIDE: GuideSection[] = [
   {
     id: 'overview',
-    title: 'Översikt',
-    summary: 'Systemet i korthet',
+    title: 'Overview',
+    summary: 'The system in brief',
     blocks: [
       { type: 'p', text: 'A hybrid system: 4 hard sessions per week (2 upper, 2 lower), spaced about 72–96 h apart for the same tissues; a daily 10–15 min low-fatigue micro-practice block for handstand, compression, scapular control and wrists; objective level placement from a baseline test; and double-progression and hold-based progression rules. External load (vest, dip belt, dumbbells) is used wherever bodyweight leverage stops being the efficient overload tool.' },
       { type: 'list', items: [
@@ -53,7 +53,7 @@ export const GUIDE: GuideSection[] = [
         'Start with Week 0 testing, then run the 12-week plan: two 5-week build blocks, deloads in Weeks 6 and 12, and automatic IF/THEN progressions.',
         'The single most important rule: progress when the criteria say so, regress when the pain rules say so, and never invent an extra hard day. The micro-practice is where the "every day" happens.',
       ] },
-      { type: 'h', text: 'Passordning' },
+      { type: 'h', text: 'Session order' },
       { type: 'p', text: 'Warm-up → balance skill (handstand) → high-intensity straight-arm statics → explosive work → max-strength bent-arm → hypertrophy accessories → core/compression → targeted mobility.' },
       { type: 'h', text: 'Notation' },
       { type: 'list', items: [
@@ -66,17 +66,17 @@ export const GUIDE: GuideSection[] = [
   },
   {
     id: 'week',
-    title: 'Veckoupplägg',
-    summary: 'Varför Upper/Lower 4× + daglig mikroträning',
+    title: 'Weekly structure',
+    summary: 'Why Upper/Lower 4× + daily micro-practice',
     blocks: [
-      { type: 'table', head: ['Dag', 'Pass', 'Syfte'], rows: [
-        ['Mån', 'Upper A', 'Planche emphasis (high) + FL (moderate) + vertical push/pull + dips/rows + delts/biceps + L-sit'],
-        ['Tis', 'Lower A', 'Plyo + single-leg squat ladder + SL-RDL + Nordic + calves + Copenhagen + hollow'],
-        ['Ons', 'Recovery + aerobic', 'Micro-practice + Zone 2 30–40 min + targeted mobility'],
-        ['Tor', 'Upper B', 'FL emphasis (high) + planche (moderate/lean) + explosive pull/MU + horizontal push/pull + chins + triceps/rear delts + HLR'],
-        ['Fre', 'Lower B', 'Plyo + loaded BSS + hip thrust + sliding curl + shrimp/Cossack + soleus/tibialis + abductors + Pallof'],
-        ['Lör', 'Skill + conditioning', 'Handstand 15–20 min, compression, optional MU technique; then Zone 2 or intervals; mobility'],
-        ['Sön', 'Rest', 'Optional 5 min wrist + scap micro only'],
+      { type: 'table', head: ['Day', 'Workout', 'Purpose'], rows: [
+        ['Mon', 'Upper A', 'Planche emphasis (high) + FL (moderate) + vertical push/pull + dips/rows + delts/biceps + L-sit'],
+        ['Tue', 'Lower A', 'Plyo + single-leg squat ladder + SL-RDL + Nordic + calves + Copenhagen + hollow'],
+        ['Wed', 'Recovery + aerobic', 'Micro-practice + Zone 2 30–40 min + targeted mobility'],
+        ['Thu', 'Upper B', 'FL emphasis (high) + planche (moderate/lean) + explosive pull/MU + horizontal push/pull + chins + triceps/rear delts + HLR'],
+        ['Fri', 'Lower B', 'Plyo + loaded BSS + hip thrust + sliding curl + shrimp/Cossack + soleus/tibialis + abductors + Pallof'],
+        ['Sat', 'Skill + conditioning', 'Handstand 15–20 min, compression, optional MU technique; then Zone 2 or intervals; mobility'],
+        ['Sun', 'Rest', 'Optional 5 min wrist + scap micro only'],
       ] },
       { type: 'p', text: 'Each upper muscle and tendon gets 2 hard exposures per week (Mon→Thu 72 h, Thu→Mon 96 h), matching frequency findings and the 36–72 h net collagen synthesis window. Conditioning sits on non-plyo days because explosive gains are most vulnerable to concurrent training.' },
     ],
@@ -84,21 +84,21 @@ export const GUIDE: GuideSection[] = [
   {
     id: 'progression',
     title: 'Progression',
-    summary: 'När du ska gå upp eller ner en nivå',
+    summary: 'When to move up or down a level',
     blocks: [
-      { type: 'h', text: 'Sessionsregel (dynamiska övningar)' },
+      { type: 'h', text: 'Session rule (dynamic exercises)' },
       { type: 'list', items: [
         'IF all sets reach the top of the rep range at ≥ the target RIR with standard form for 2 consecutive sessions, THEN next session move up one level. If the next level would give fewer reps than the bottom of the range, add load instead.',
         'IF set 1 falls below the bottom of the range, THEN next session drop one level or add band assistance.',
         'OTHERWISE keep the level and try to add 1 rep to at least one set.',
       ] },
-      { type: 'h', text: 'Statisk regel' },
+      { type: 'h', text: 'Static rule' },
       { type: 'list', items: [
         'IF you complete all prescribed holds at the target duration with perfect shape for 2 sessions AND your best single hold ≥15 s, THEN test the next level. If you can hold the new level ≥4 s, switch to it with holds = (max − 2 s).',
         'OTHERWISE do "mixed sets": 2 sets at the new level + remaining sets at the old level.',
       ] },
-      { type: 'h', text: 'Per anpassningstyp' },
-      { type: 'table', head: ['Typ', 'Regel'], rows: [
+      { type: 'h', text: 'By adaptation type' },
+      { type: 'table', head: ['Type', 'Rule'], rows: [
         ['Dynamic strength (4–6 / 3–5)', 'Double progression: top of range on all sets at target RIR ×2 sessions → harder leverage or +2–2.5 kg upper / +2.5–5 kg lower'],
         ['Dynamic hypertrophy (6–12, 8–15, 12–20)', 'Same, but RIR 0–2; add sets over the block (+1 set/week in Weeks 3–5, 9–11)'],
         ['Isometric skill', 'Train at 60–85% of max hold; 5 sets. Progress when prescribed holds are met ×2 sessions and best hold ≥15 s; new level must be holdable ≥4 s, else mixed sets'],
@@ -108,14 +108,14 @@ export const GUIDE: GuideSection[] = [
         ['Assistance reduction', 'Bands: next lighter band at top of range ×2 sessions; box pistol: lower 5–10 cm at 3 × 8'],
         ['Tempo/pauses', 'Intermediate step when a leverage jump is too large (2 s pause at the hardest point)'],
       ] },
-      { type: 'h', text: 'Prioritetsordning för överbelastning' },
+      { type: 'h', text: 'Overload priority order' },
       { type: 'list', items: ['1. Leverage (if the next step keeps you inside the rep range)', '2. External load', '3. Reps within range', '4. Sets', '5. Tempo/pauses', '6. Unilateral transitions (archer → assisted one-arm)'] },
     ],
   },
   {
     id: 'plateau',
-    title: 'Platå',
-    summary: 'Ingen ökning 3 pass i rad',
+    title: 'Plateau',
+    summary: 'No increase for 3 workouts in a row',
     blocks: [
       { type: 'p', text: 'Definition: no increase in reps, hold time or load on a given exercise for 3 consecutive exposures (~1.5 weeks at 2×/week) while sleep ≥7 h and bodyweight is stable.' },
       { type: 'list', items: [
@@ -126,7 +126,7 @@ export const GUIDE: GuideSection[] = [
         '5. Weak-link diagnosis (table below).',
         '6. Still stuck after 8 weeks: maintenance dose (1×/week) and put the slot into the gateway ability it depends on for one block.',
       ] },
-      { type: 'table', head: ['Färdighet', 'Trolig svag länk', 'Åtgärd'], rows: [
+      { type: 'table', head: ['Skill', 'Likely weak link', 'Fix'], rows: [
         ['Planche', 'Lean/protraction, straight-arm anterior delt, wrist tolerance', '+Lean volume, pseudo-planche push-ups, weighted dips'],
         ['FL', 'Scap depression/lats, hollow', 'Weighted pull-ups, FL raises, straight-arm pulldowns, hollow holds'],
         ['Handstand', 'Line (shoulder flexion), wrist strength, fear', 'Wall line drills, fingertip pressure drills, bail practice'],
@@ -138,12 +138,12 @@ export const GUIDE: GuideSection[] = [
   },
   {
     id: 'recovery',
-    title: 'Återhämtning & deload',
-    summary: 'Dagsform, trendregler, deload',
+    title: 'Recovery & deload',
+    summary: 'Readiness, trend rules, deload',
     blocks: [
-      { type: 'h', text: 'Dagsformskontroll (30 s före varje hårt pass)' },
-      { type: 'table', head: ['Flaggor', 'Åtgärd'], rows: READINESS.actions.map((a, i) => [i === 3 ? '≥3' : String(i), a]) },
-      { type: 'h', text: 'Trendregler' },
+      { type: 'h', text: 'Readiness check (30 s before every hard workout)' },
+      { type: 'table', head: ['Flags', 'Action'], rows: READINESS.actions.map((a, i) => [i === 3 ? '≥3' : String(i), a]) },
+      { type: 'h', text: 'Trend rules' },
       { type: 'list', items: [
         'IF the same exercise drops 2 consecutive sessions → cut that session’s sets by 1/3 for one week.',
         'IF performance drops across ≥2 exercises for 2 sessions, or 3 sessions on one exercise → deload that week, then resume at the previous week’s levels.',
@@ -156,17 +156,17 @@ export const GUIDE: GuideSection[] = [
   },
   {
     id: 'pain',
-    title: 'Smärta & skador',
-    summary: 'Smärtregler och minsta prehab',
+    title: 'Pain & injuries',
+    summary: 'Pain rules and minimum prehab',
     blocks: [
-      { type: 'table', head: ['Känsla', 'Klass', 'Åtgärd'], rows: [
+      { type: 'table', head: ['Sensation', 'Class', 'Action'], rows: [
         ['Burning/aching in muscle belly, gone within minutes; DOMS 24–72 h', 'Muscular fatigue', 'Normal. Train unless soreness ≥5/10 in the target muscle'],
         ['Joint/tendon discomfort 0–2/10 during, gone by next morning', 'Acceptable', 'Continue; monitor'],
         ['3–5/10 during, or still present next morning, or worse than last session', 'Modify', 'Next session: −1 leverage level and −30–50% volume for that pattern; straight-arm → bent-arm if elbow/biceps; parallettes/wedges for wrist. Re-assess in 1 week'],
         ['>5/10, sharp/pinching, rising within a set, swelling, night pain, pop/sudden weakness, numbness, or no improvement after 2 weeks', 'Stop', 'Stop that pattern and see a sports physiotherapist or physician. Sudden elbow-crease pain with bruising during planche/BL/MU needs urgent assessment'],
       ] },
-      { type: 'h', text: 'Minsta effektiva prehab' },
-      { type: 'table', head: ['Region', 'Minsta dos', 'Anpassning'], rows: [
+      { type: 'h', text: 'Minimum effective prehab' },
+      { type: 'table', head: ['Region', 'Minimum dose', 'Modification'], rows: [
         ['Wrist', 'Daily 2–3 min wrist protocol; wrist curls/reverse curls 2 × 15, 2×/wk', 'Parallettes, fists, wedges'],
         ['Medial elbow', 'Wrist flexor eccentrics 2 × 15, 2×/wk; rotate grips', 'Neutral-grip rings; reduce straight-arm volume'],
         ['Lateral elbow', 'Wrist extensor work 2 × 15, 2×/wk', 'Thicker grips/rings; reduce pull volume'],
@@ -178,42 +178,42 @@ export const GUIDE: GuideSection[] = [
   },
   {
     id: 'micro',
-    title: 'Mikroträning',
-    summary: '5–15 min dagligen, aldrig tröttande',
+    title: 'Micro-practice',
+    summary: '5–15 min daily, never fatiguing',
     blocks: [
       { type: 'list', items: MICRO_PRACTICE.rules },
-      { type: 'table', head: ['Block', 'Tid', 'Innehåll', 'Progression'], rows: MICRO_PRACTICE.blocks.map((b) => [b.title, b.duration, b.content, b.progression]) },
+      { type: 'table', head: ['Block', 'Time', 'Content', 'Progression'], rows: MICRO_PRACTICE.blocks.map((b) => [b.title, b.duration, b.content, b.progression]) },
       { type: 'p', text: MICRO_PRACTICE.layout },
     ],
   },
   {
     id: 'equipment',
-    title: 'Utrustning',
-    summary: 'Vad du behöver och vad det låser upp',
+    title: 'Equipment',
+    summary: 'What you need and what it unlocks',
     blocks: [
-      { type: 'table', head: ['Kategori', 'Utrustning', 'Låser upp'], rows: [
-        ['Nödvändig', 'Pull-up bar (wall/ceiling mount preferred)', 'All vertical pulls, FL, HLR, bar MU'],
-        ['Nödvändig', 'Gymnastic rings + straps', 'Rows, dips, ring push-ups, support, false grip, skin-the-cat, German hang, ring MU'],
-        ['Nödvändig', 'Resistance bands (light–heavy)', 'Assisted pull-ups/MU/Nordics, face pulls, dislocates, ER work'],
-        ['Nödvändig', 'Weighted vest (~20 kg) or dip belt + plates', 'Weighted pull-ups, dips, push-ups, split squats'],
-        ['Högt värde', 'Adjustable dumbbells (~25–30 kg each)', 'Loaded BSS, SL-RDL, hip thrust, lateral raises, curls, overhead extensions'],
-        ['Högt värde', 'Parallettes (low + medium)', 'L-sit, planche, deficit push-ups/HSPU, wrist-friendly grip'],
-        ['Högt värde', 'Sturdy flat bench / plyo box', 'BSS, box pistols, hip thrusts, elevated pikes, box jumps'],
-        ['Högt värde', 'Dip station (or rings)', 'Parallel dips, L-sit, support work'],
-        ['Högt värde', 'Chalk', 'Grip safety'],
-        ['Senare', 'Stall bars', 'Human flag, back extensions, Nordic anchor'],
-        ['Senare', 'Crash/landing mat', 'Freestanding HS, press, bail practice'],
-        ['Senare', 'Wrist blocks/wedges', 'Reduce wrist extension angle while tolerance builds'],
-        ['Valfritt', 'Ankle weights, rubber flooring', 'Compression drills; floor protection'],
+      { type: 'table', head: ['Category', 'Equipment', 'Unlocks'], rows: [
+        ['Essential', 'Pull-up bar (wall/ceiling mount preferred)', 'All vertical pulls, FL, HLR, bar MU'],
+        ['Essential', 'Gymnastic rings + straps', 'Rows, dips, ring push-ups, support, false grip, skin-the-cat, German hang, ring MU'],
+        ['Essential', 'Resistance bands (light–heavy)', 'Assisted pull-ups/MU/Nordics, face pulls, dislocates, ER work'],
+        ['Essential', 'Weighted vest (~20 kg) or dip belt + plates', 'Weighted pull-ups, dips, push-ups, split squats'],
+        ['High value', 'Adjustable dumbbells (~25–30 kg each)', 'Loaded BSS, SL-RDL, hip thrust, lateral raises, curls, overhead extensions'],
+        ['High value', 'Parallettes (low + medium)', 'L-sit, planche, deficit push-ups/HSPU, wrist-friendly grip'],
+        ['High value', 'Sturdy flat bench / plyo box', 'BSS, box pistols, hip thrusts, elevated pikes, box jumps'],
+        ['High value', 'Dip station (or rings)', 'Parallel dips, L-sit, support work'],
+        ['High value', 'Chalk', 'Grip safety'],
+        ['Later', 'Stall bars', 'Human flag, back extensions, Nordic anchor'],
+        ['Later', 'Crash/landing mat', 'Freestanding HS, press, bail practice'],
+        ['Later', 'Wrist blocks/wedges', 'Reduce wrist extension angle while tolerance builds'],
+        ['Optional', 'Ankle weights, rubber flooring', 'Compression drills; floor protection'],
       ] },
     ],
   },
   {
     id: 'roadmap',
-    title: 'Långsiktig plan',
-    summary: 'Prestationsstyrda faser',
+    title: 'Long-term plan',
+    summary: 'Performance-gated phases',
     blocks: [
-      { type: 'table', head: ['Fas', 'Inträde', 'Fokus', 'Typiskt'], rows: [
+      { type: 'table', head: ['Phase', 'Entry', 'Focus', 'Typical'], rows: [
         ['0 Baseline', '—', 'Week 0 tests', '1 week'],
         ['1 Foundation', 'Any', 'CTW HS 60 s, 10 pull-ups, 10–15 dips, hollow 45 s, BSS loaded, box pistol, German hang tolerance, wrists pain-free', '0–3 months'],
         ['2 Strength + basic skills', 'Phase 1 standards', 'Freestanding HS 10–30 s, tuck → adv tuck FL, planche lean → tuck, bar MU, L-sit 20–30 s, pistol, Nordic eccentrics, weighted pull-up +15–25% BW', '3–9 months'],
@@ -221,14 +221,14 @@ export const GUIDE: GuideSection[] = [
         ['4 Advanced strength', 'Straddle FL, adv tuck PL, HS 60 s, press from elevation', 'Full FL, straddle planche, press HS, full BL, flag, archer → assisted OAC', '18–36+ months'],
         ['5 Advanced integration', 'Most Phase 4 skills', 'Full planche, OAC/OAP, OAHS, 90° push-up, manna, combinations', 'Multi-year'],
       ] },
-      { type: 'h', text: 'Kontrollpunkter' },
+      { type: 'h', text: 'Checkpoints' },
       { type: 'list', items: [
         '3 months: 1 full cycle + re-test. Expected +20–50% on basic reps, freestanding kick-up attempts (if CTW was ≥60 s), lower box pistol, one level up on FL or planche.',
         '6 months: most Phase 1 standards complete; bar MU plausible.',
         '12 months: Phase 2 largely done, Phase 3 started.',
         '24+ months: Phase 3–4. Elite skills remain multi-year projects.',
       ] },
-      { type: 'h', text: 'Gateway-förmågor' },
+      { type: 'h', text: 'Gateway abilities' },
       { type: 'list', items: [
         'Scapular control + straight-arm strength → planche, FL, BL, press HS, flag.',
         '60 s chest-to-wall handstand + wrist tolerance → freestanding HS, HSPU, press, OAHS.',
@@ -242,8 +242,8 @@ export const GUIDE: GuideSection[] = [
   },
   {
     id: 'videos',
-    title: 'Videobibliotek',
-    summary: 'Verifierade tutorials',
+    title: 'Video library',
+    summary: 'Verified tutorials',
     blocks: [
       { type: 'links', items: [
         { title: 'Scapular pull-up / scap mechanics', url: 'https://antranik.org/shoulder-mechanics/', source: 'Antranik', cue: 'From passive hang, pull shoulders away from ears' },
@@ -264,8 +264,8 @@ export const GUIDE: GuideSection[] = [
         { title: 'Overcoming Gravity charts', url: 'https://stevenlow.org/overcoming-gravity/', source: 'Steven Low', cue: 'Cross-reference level equivalences' },
         { title: 'FitnessFAQs channel', url: 'https://www.youtube.com/@FitnessFAQs', source: 'FitnessFAQs', cue: 'Dips, planche, rows, triceps' },
       ] },
-      { type: 'h', text: 'Sök på dessa termer' },
-      { type: 'table', head: ['Övning', 'Sökning'], rows: [
+      { type: 'h', text: 'Search for these terms' },
+      { type: 'table', head: ['Exercise', 'Search'], rows: [
         ['Push-up', '"Antranik how to do pushups properly"'],
         ['Ring/inverted row', '"Antranik ring row maximization"'],
         ['Dips / ring dips', '"FitnessFAQs dips tutorial"'],
@@ -280,10 +280,10 @@ export const GUIDE: GuideSection[] = [
   },
   {
     id: 'myths',
-    title: 'Myter',
-    summary: 'Faktagranskning av vanliga påståenden',
+    title: 'Myths',
+    summary: 'Fact-checking common claims',
     blocks: [
-      { type: 'table', head: ['Påstående', 'Dom', 'Varför'], rows: [
+      { type: 'table', head: ['Claim', 'Verdict', 'Why'], rows: [
         ['High reps are needed for calisthenics gains', 'Unsupported', 'Hypertrophy occurs across broad rep ranges near failure; progress leverage or add weight rather than chasing 30+ reps'],
         ["Calisthenics can't build large muscles", 'Unsupported (caveat)', 'Push-up trials match moderate-load bench; lower body and small muscles need loads'],
         ['Never use weights', 'Unsupported', 'Weighted pulls/dips and loaded legs are most efficient once reps exceed ~12–15'],

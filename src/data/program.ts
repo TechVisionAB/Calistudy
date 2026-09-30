@@ -26,7 +26,7 @@ export const WEEK_PARAMS: WeekParams[] = [
   { week: 12, strengthRir: '4 (deload)', hypertrophyRir: '3–4', holds: '50–60%', sets: '~50%', notes: 'Thu–Sat full re-test' },
 ];
 
-export const WEEKDAYS = ['Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön'];
+export const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export type TestBattery = 'A' | 'B' | 'C' | 'mini';
 
@@ -43,10 +43,10 @@ export function dayPlan(week: number, weekday: number): DayPlan {
     const w0: DayPlan[] = [
       { kind: 'test', battery: 'A' },
       { kind: 'test', battery: 'B' },
-      { kind: 'micro', label: 'Mikroträning + promenad', extra: '30 min easy walk' },
+      { kind: 'micro', label: 'Micro-practice + walk', extra: '30 min easy walk' },
       { kind: 'test', battery: 'C' },
-      { kind: 'micro', label: 'Mikroträning' },
-      { kind: 'micro', label: 'Mikroträning + lätt Zon 2', extra: 'Easy Zone 2' },
+      { kind: 'micro', label: 'Micro-practice' },
+      { kind: 'micro', label: 'Micro-practice + easy Zone 2', extra: 'Easy Zone 2' },
       { kind: 'session', session: 'rest', deload: false },
     ];
     return w0[weekday];
@@ -62,9 +62,9 @@ export function dayPlan(week: number, weekday: number): DayPlan {
 export function blockOf(week: number): string {
   if (week === 0) return 'Test';
   if (week <= 5) return 'Block 1';
-  if (week === 6) return 'Deload + minitest';
+  if (week === 6) return 'Deload + mini test';
   if (week <= 11) return 'Block 2';
-  return 'Deload + fullt omtest';
+  return 'Deload + full retest';
 }
 
 /** Sets for an exercise in a given week (Section 10.2 / 10.5). 0 = skip. */

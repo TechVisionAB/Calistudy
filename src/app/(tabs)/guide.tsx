@@ -10,13 +10,13 @@ export default function Guide() {
   const { reset } = useStore();
 
   const confirmReset = () => {
-    const msg = 'All loggning, testresultat och nivåer raderas.';
+    const msg = 'All logs, test results and levels will be deleted.';
     if (Platform.OS === 'web') {
-      if (globalThis.confirm?.(`Nollställ appen? ${msg}`)) reset();
+      if (globalThis.confirm?.(`Reset the app? ${msg}`)) reset();
     } else {
-      Alert.alert('Nollställ appen?', msg, [
-        { text: 'Avbryt', style: 'cancel' },
-        { text: 'Nollställ', style: 'destructive', onPress: reset },
+      Alert.alert('Reset the app?', msg, [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Reset', style: 'destructive', onPress: reset },
       ]);
     }
   };
@@ -24,16 +24,16 @@ export default function Guide() {
   return (
     <Screen>
       <Card onPress={() => router.push('/demos')} style={{ borderColor: t.accent, borderWidth: 2 }}>
-        <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>▶ Övningsdemos</Text>
-        <Text style={{ color: t.muted, fontSize: 14 }}>Animerade genomgångar av grundövningarna. Videor finns på varje nivå och övning.</Text>
+        <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>▶ Exercise demos</Text>
+        <Text style={{ color: t.muted, fontSize: 14 }}>Animated walkthroughs of the basic exercises. Videos are available for every level and exercise.</Text>
       </Card>
       <Card onPress={() => router.push('/welcome')}>
-        <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>🏠 Min utrustning</Text>
-        <Text style={{ color: t.muted, fontSize: 14 }}>Ändra vad du har hemma – övningarna byts ut automatiskt.</Text>
+        <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>🏠 My equipment</Text>
+        <Text style={{ color: t.muted, fontSize: 14 }}>Change what you have at home – exercises are swapped automatically.</Text>
       </Card>
       <Card onPress={() => router.push('/reminders')}>
-        <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>⏰ Påminnelser</Text>
-        <Text style={{ color: t.muted, fontSize: 14 }}>Notis om dagens pass och mikroträning.</Text>
+        <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>⏰ Reminders</Text>
+        <Text style={{ color: t.muted, fontSize: 14 }}>Notifications for today’s workout and micro-practice.</Text>
       </Card>
       {GUIDE.map((s) => (
         <Card key={s.id} onPress={() => router.push({ pathname: '/guide/[id]', params: { id: s.id } })}>
@@ -42,10 +42,10 @@ export default function Guide() {
         </Card>
       ))}
       <P muted style={{ fontSize: 13, marginTop: 8 }}>
-        Baserat på “The Complete Calisthenics System for an Intermediate Home Athlete (2026 Edition)”. Mycket av innehållet bygger på indirekt evidens och
-        coachkonsensus. Vid smärta över 5/10, skarp smärta eller svullnad — kontakta fysioterapeut eller läkare.
+        Based on “The Complete Calisthenics System for an Intermediate Home Athlete (2026 Edition)”. Much of the content is based on indirect evidence and
+        coaching consensus. With pain above 5/10, sharp pain or swelling — see a physiotherapist or doctor.
       </P>
-      <Button title="Nollställ all data" variant="danger" onPress={confirmReset} />
+      <Button title="Reset all data" variant="danger" onPress={confirmReset} />
     </Screen>
   );
 }

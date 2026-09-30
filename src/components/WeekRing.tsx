@@ -42,7 +42,7 @@ export function WeekRing({ order, done, streak }: { order: SessionId[]; done: Se
           <Text style={{ color: t.text, fontSize: 22, fontWeight: '800' }}>
             {count}/{n}
           </Text>
-          <Text style={{ color: t.muted, fontSize: 11 }}>pass</Text>
+          <Text style={{ color: t.muted, fontSize: 11 }}>workouts</Text>
         </View>
       </View>
       <View style={{ flex: 1, gap: 4 }}>
@@ -53,7 +53,7 @@ export function WeekRing({ order, done, streak }: { order: SessionId[]; done: Se
         ))}
         {streak > 0 && (
           <Text style={{ color: t.accent, fontSize: 14, fontWeight: '700', marginTop: 2 }}>
-            🔥 {streak} {streak === 1 ? 'vecka' : 'veckor'} i rad
+            🔥 {streak} {streak === 1 ? 'week' : 'weeks'} in a row
           </Text>
         )}
       </View>

@@ -15,7 +15,7 @@ export default function LadderScreen() {
   const { state, setLevel } = useStore();
   const t = useTheme();
   const ladder = LADDER_BY_ID[id];
-  if (!ladder) return <Screen><P>Okänd stege.</P></Screen>;
+  if (!ladder) return <Screen><P>Unknown ladder.</P></Screen>;
   const current = state.levels[ladder.id];
 
   const history = state.workouts
@@ -29,9 +29,9 @@ export default function LadderScreen() {
     <Screen>
       <Stack.Screen options={{ title: LADDER_SV[ladder.id] ?? ladder.name }} />
       <View>
-        <Label>{ladder.group} · {ladder.kind === 'static' ? 'hållningar' : 'reps'}</Label>
+        <Label>{ladder.group} · {ladder.kind === 'static' ? 'holds' : 'reps'}</Label>
         <H1>{LADDER_SV[ladder.id] ?? ladder.name}</H1>
-        <P muted>Tryck på en nivå för att sätta den som din arbetsnivå.</P>
+        <P muted>Tap a level to set it as your working level.</P>
       </View>
 
       {ladder.levels.map((l) => {
@@ -44,12 +44,12 @@ export default function LadderScreen() {
                 <Text style={{ color: t.text, fontSize: 15, fontWeight: on ? '700' : '500' }}>{LEVEL_SV[l.code] ?? l.name}</Text>
                 {LEVEL_SV[l.code] && <Text style={{ color: t.muted, fontSize: 13 }}>{l.name}</Text>}
                 <Row style={{ flexWrap: 'nowrap' }}>
-                  <Text style={{ color: t.muted, fontSize: 13, flex: 1 }}>Gå vidare vid: {l.advance}</Text>
-                  <Explain text={`${l.code}: ${l.name}. Gå vidare vid: ${l.advance}`} context={`Nivåstege ${ladder.name}, nivå ${l.code}`} size={20} />
+                  <Text style={{ color: t.muted, fontSize: 13, flex: 1 }}>Move on at: {l.advance}</Text>
+                  <Explain text={`${l.code}: ${l.name}. Move on at: ${l.advance}`} context={`Level ladder ${ladder.name}, level ${l.code}`} size={20} />
                 </Row>
               </View>
             </View>
-            {on && <Chip text="Din nivå" tone="accent" />}
+            {on && <Chip text="Your level" tone="accent" />}
             <HowToToggle mediaKey={l.code} />
           </Card>
         );
@@ -57,13 +57,13 @@ export default function LadderScreen() {
 
       <Card>
         <P muted style={{ fontSize: 13 }}>
-          Arbetsnivå = den svåraste varianten du klarar för minst botten av rep-intervallet med full ROM och angivet tempo. För hållningar: den svåraste du håller ≥6 s med rätt form.
+          Working level = the hardest variation you can do for at least the bottom of the rep range with full ROM and the given tempo. For holds: the hardest one you can hold ≥6 s with good form.
         </P>
       </Card>
 
       {ladder.notes.length > 0 && (
         <Card>
-          <H2>Teknik & säkerhet</H2>
+          <H2>Technique & safety</H2>
           {ladder.notes.map((n) => (
             <Text key={n.label} style={{ color: t.text, fontSize: 14, lineHeight: 20 }}>
               <Text style={{ fontWeight: '700' }}>{n.label}: </Text>
@@ -73,9 +73,9 @@ export default function LadderScreen() {
         </Card>
       )}
 
-      {ladder.group === 'Ben' && (
+      {ladder.group === 'Legs' && (
         <Card>
-          <H2>Andra benstegar</H2>
+          <H2>Other leg ladders</H2>
           {OTHER_LOWER_LADDERS.map((o) => (
             <Text key={o.pattern} style={{ color: t.text, fontSize: 14, lineHeight: 20 }}>
               <Text style={{ fontWeight: '700' }}>{o.pattern}: </Text>
@@ -87,14 +87,14 @@ export default function LadderScreen() {
 
       {series.map((s) => (
         <View key={s.key} style={{ gap: 8 }}>
-          <H2>Framsteg</H2>
+          <H2>Progress</H2>
           <ProgressCard series={s} showTitle={false} />
         </View>
       ))}
 
       {history.length > 0 && (
         <Card>
-          <H2>Senaste loggar</H2>
+          <H2>Recent logs</H2>
           {history.map(({ date, e }, i) => (
             <Text key={i} style={{ color: t.text, fontSize: 14 }}>
               {date.slice(0, 10)} · {e.level} · {e.sets.map((s) => (s.value === null ? '–' : s.value)).join(' / ')} {e.unit}

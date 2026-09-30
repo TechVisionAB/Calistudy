@@ -1,81 +1,81 @@
-// Swedish plain-language layer on top of the guide's English content, plus
-// equipment rules. The guide text itself (sessions.ts, ladders.ts) stays untouched.
+// Plain-language English layer on top of the guide's content (friendly display names and cues),
+// plus equipment rules. The guide text itself (sessions.ts, ladders.ts) stays untouched.
 
 export type Equip = 'bar' | 'rings' | 'dip' | 'dumbbells' | 'weight' | 'bench' | 'bands';
 
 export const EQUIPMENT: { id: Equip; label: string; hint: string }[] = [
-  { id: 'bar', label: 'Räckhäck / dörrstång', hint: 'Pull-ups, benlyft, front lever' },
-  { id: 'rings', label: 'Romerska ringar', hint: 'Rodd, dips, ringarmhävningar' },
-  { id: 'dip', label: 'Dipsställning / parallettes', hint: 'Dips, L-sit' },
-  { id: 'dumbbells', label: 'Hantlar', hint: 'Belastade ben, axlar, armar' },
-  { id: 'weight', label: 'Viktväst / dipsbälte', hint: 'Belastade pull-ups och dips' },
-  { id: 'bench', label: 'Bänk / stadig låda', hint: 'Bulgarian split squat, box-pistol' },
-  { id: 'bands', label: 'Gummiband', hint: 'Assisterade pull-ups, axelprehab' },
+  { id: 'bar', label: 'Pull-up bar', hint: 'Pull-ups, leg raises, front lever' },
+  { id: 'rings', label: 'Gymnastic rings', hint: 'Rows, dips, ring push-ups' },
+  { id: 'dip', label: 'Dip station / parallettes', hint: 'Dips, L-sit' },
+  { id: 'dumbbells', label: 'Dumbbells', hint: 'Weighted legs, shoulders, arms' },
+  { id: 'weight', label: 'Weight vest / dip belt', hint: 'Weighted pull-ups and dips' },
+  { id: 'bench', label: 'Bench / sturdy box', hint: 'Bulgarian split squat, box pistol' },
+  { id: 'bands', label: 'Resistance bands', hint: 'Assisted pull-ups, shoulder prehab' },
 ];
 
-/** Swedish display name and cue per session exercise, keyed "session:slot". */
+/** Plain-English display name and cue per session exercise, keyed "session:slot". */
 export const EX_SV: Record<string, { name: string; cue: string }> = {
-  'upperA:A': { name: 'Handstående', cue: 'Tryck bort golvet, revbenen in' },
-  'upperA:B': { name: 'Planche', cue: 'Runda övre ryggen, raka armar, axlarna framför händerna' },
-  'upperA:C': { name: 'Front lever', cue: 'Dra stången mot höfterna, spänn sätet' },
-  'upperA:D1': { name: 'Vertikal press', cue: 'Huvudet fram till en triangel, armbågar ~45°' },
-  'upperA:D2': { name: 'Pull-ups', cue: 'Axlarna ner först, sedan armbågarna mot revbenen' },
-  'upperA:E1': { name: 'Dips', cue: 'Bröstet fram, axlarna ner, lås ut i toppen' },
-  'upperA:E2': { name: 'Rodd', cue: 'Bröstet mot händerna, kläm 1 s' },
-  'upperA:F1': { name: 'Sidolyft med hantel', cue: 'Led med armbågarna, stanna i axelhöjd' },
-  'upperA:F2': { name: 'Bicepscurl', cue: 'Stilla armbågar, full sträckning nere' },
-  'upperA:G': { name: 'L-sit', cue: 'Axlarna ner, tryck ifrån, raka knän' },
-  'lowerA:A': { name: 'Lådhopp', cue: 'Hoppa högt, landa tyst, knäna över tårna. Kliv ner.' },
-  'lowerA:B': { name: 'Enbensknäböj', cue: 'Sätt dig bakåt och ner, hälen tung' },
-  'lowerA:C': { name: 'Enbens-marklyft', cue: 'Höften bakåt, rak rygg, höften i våg' },
-  'lowerA:D': { name: 'Nordic hamstring', cue: 'Rak höft, fall så långsamt du kan' },
-  'lowerA:E': { name: 'Tåhävning på ett ben', cue: 'Tryck genom stortån, full sträckning' },
-  'lowerA:F1': { name: 'Copenhagen-planka', cue: 'Övre benet trycker ner i bänken' },
-  'lowerA:F2': { name: 'Hollow body', cue: 'Ländryggen i golvet, revbenen in' },
-  'upperB:A': { name: 'Handstående', cue: 'Handleder, axlar och höfter i linje' },
-  'upperB:B': { name: 'Front lever', cue: 'Axlarna ner, raka armar, hollow' },
-  'upperB:C': { name: 'Planche lean', cue: 'Luta tills du känner axlarna jobba' },
-  'upperB:D': { name: 'Explosiva pull-ups', cue: 'Dra stången till bröstbenet – snabbt!' },
-  'upperB:E1': { name: 'Armhävningar', cue: 'Runda ryggen i toppen, armbågar ~45°' },
-  'upperB:E2': { name: 'Rodd', cue: 'Dra ringarna mot nedre revbenen' },
-  'upperB:F1': { name: 'Chin-ups', cue: 'Död häng i botten, bröstet mot stången' },
-  'upperB:F2': { name: 'Pseudo-planche-armhävningar', cue: 'Behåll lutningen hela repet' },
-  'upperB:G1': { name: 'Tricepsextension över huvudet', cue: 'Djup stretch bakom huvudet' },
-  'upperB:G2': { name: 'Band pull-apart', cue: 'Tummarna bakåt, dra inte upp axlarna' },
-  'upperB:H': { name: 'Hängande benlyft', cue: 'Tippa bäckenet först, ingen sving' },
-  'lowerB:A1': { name: 'Pogohopp', cue: 'Studsa på framfoten, stela fotleder' },
-  'lowerB:A2': { name: 'Sidohopp', cue: 'Landa mjukt och håll 2 s' },
-  'lowerB:B': { name: 'Bulgarian split squat', cue: 'Främre smalbenet lätt framåt, tryck genom hela foten' },
-  'lowerB:C': { name: 'Höftlyft', cue: 'Hakan in, lås höften med sätet' },
-  'lowerB:D': { name: 'Glidande bencurl', cue: 'Håll höften uppe hela tiden' },
-  'lowerB:E': { name: 'Shrimp-knäböj', cue: 'Kontrollerat ner, knät över tårna' },
-  'lowerB:F1': { name: 'Tåhävning, böjda knän', cue: 'Full rörelse' },
-  'lowerB:F2': { name: 'Tibialislyft', cue: 'Tårna mot smalbenen' },
-  'lowerB:G1': { name: 'Höftabduktion', cue: 'Lätt sträckt höft, tårna framåt' },
-  'lowerB:G2': { name: 'Pallof press', cue: 'Revbenen ner, stå emot rotationen' },
+  'upperA:A': { name: 'Handstand', cue: 'Push the floor away, ribs in' },
+  'upperA:B': { name: 'Planche', cue: 'Round the upper back, straight arms, shoulders ahead of hands' },
+  'upperA:C': { name: 'Front lever', cue: 'Pull the bar toward your hips, squeeze the glutes' },
+  'upperA:D1': { name: 'Vertical press', cue: 'Head forward into a triangle, elbows ~45°' },
+  'upperA:D2': { name: 'Pull-ups', cue: 'Shoulders down first, then elbows toward the ribs' },
+  'upperA:E1': { name: 'Dips', cue: 'Chest forward, shoulders down, lock out at the top' },
+  'upperA:E2': { name: 'Row', cue: 'Chest to hands, squeeze 1 s' },
+  'upperA:F1': { name: 'Dumbbell lateral raise', cue: 'Lead with the elbows, stop at shoulder height' },
+  'upperA:F2': { name: 'Biceps curl', cue: 'Still elbows, full extension at the bottom' },
+  'upperA:G': { name: 'L-sit', cue: 'Shoulders down, push away, straight knees' },
+  'lowerA:A': { name: 'Box jump', cue: 'Jump high, land quietly, knees over toes. Step down.' },
+  'lowerA:B': { name: 'Single-leg squat', cue: 'Sit back and down, heavy heel' },
+  'lowerA:C': { name: 'Single-leg deadlift', cue: 'Hips back, flat back, hips level' },
+  'lowerA:D': { name: 'Nordic hamstring', cue: 'Straight hips, fall as slowly as you can' },
+  'lowerA:E': { name: 'Single-leg calf raise', cue: 'Push through the big toe, full extension' },
+  'lowerA:F1': { name: 'Copenhagen plank', cue: 'Top leg presses down into the bench' },
+  'lowerA:F2': { name: 'Hollow body', cue: 'Lower back into the floor, ribs in' },
+  'upperB:A': { name: 'Handstand', cue: 'Wrists, shoulders and hips in line' },
+  'upperB:B': { name: 'Front lever', cue: 'Shoulders down, straight arms, hollow' },
+  'upperB:C': { name: 'Planche lean', cue: 'Lean until you feel your shoulders working' },
+  'upperB:D': { name: 'Explosive pull-ups', cue: 'Pull the bar to your sternum – fast!' },
+  'upperB:E1': { name: 'Push-ups', cue: 'Round the back at the top, elbows ~45°' },
+  'upperB:E2': { name: 'Row', cue: 'Pull the rings to your lower ribs' },
+  'upperB:F1': { name: 'Chin-ups', cue: 'Dead hang at the bottom, chest to the bar' },
+  'upperB:F2': { name: 'Pseudo planche push-ups', cue: 'Keep the lean the whole rep' },
+  'upperB:G1': { name: 'Overhead triceps extension', cue: 'Deep stretch behind the head' },
+  'upperB:G2': { name: 'Band pull-apart', cue: 'Thumbs back, don’t shrug your shoulders' },
+  'upperB:H': { name: 'Hanging leg raise', cue: 'Tilt the pelvis first, no swinging' },
+  'lowerB:A1': { name: 'Pogo hops', cue: 'Bounce on the balls of your feet, stiff ankles' },
+  'lowerB:A2': { name: 'Lateral hops', cue: 'Land softly and hold 2 s' },
+  'lowerB:B': { name: 'Bulgarian split squat', cue: 'Front shin slightly forward, push through the whole foot' },
+  'lowerB:C': { name: 'Hip thrust', cue: 'Chin tucked, lock the hips with the glutes' },
+  'lowerB:D': { name: 'Sliding leg curl', cue: 'Keep the hips up the whole time' },
+  'lowerB:E': { name: 'Shrimp squat', cue: 'Controlled down, knee over toes' },
+  'lowerB:F1': { name: 'Bent-knee calf raise', cue: 'Full range of motion' },
+  'lowerB:F2': { name: 'Tibialis raise', cue: 'Toes toward your shins' },
+  'lowerB:G1': { name: 'Hip abduction', cue: 'Hips slightly extended, toes forward' },
+  'lowerB:G2': { name: 'Pallof press', cue: 'Ribs down, resist the rotation' },
 };
 
-/** Swedish short name per ladder level. */
+/** Plain-English short name per ladder level. */
 export const LEVEL_SV: Record<string, string> = {
-  HP1: 'Armhävning mot bänk', HP2: 'Armhävning', HP3: 'Diamantarmhävning', HP4: 'Armhävning i ringar', HP5: 'Archer-armhävning',
-  HP6: 'Pseudo-planche-armhävning', HP7: 'Armhävning med vikt', HP8: 'Enarmsarmhävning mot bänk', HP9: 'Enarmsarmhävning',
-  VP1: 'Pike push-up', VP2: 'Pike push-up, fötter på låda', VP3: 'Handståendepress mot vägg (kort)', VP4: 'Handståendepress mot vägg',
-  VP5: 'Handståendepress, djup', VP6: 'Fri handståendepress', VP7: 'Fri handståendepress, djup', VP8: '90°-armhävning',
-  DP1: 'Stödhäng på barr', DP2: 'Negativa dips', DP3: 'Dips', DP4: 'Stödhäng i ringar', DP5: 'Dips i ringar', DP6: 'Dips med vikt', DP7: 'Avancerade ringdips',
-  HS1: 'Pike-häng mot låda', HS2: 'Handstående med bröstet mot vägg', HS3: 'Handstående med axeltapp', HS4: 'Uppsparkar + tåtapp från vägg',
-  HS5: 'Fritt handstående 5–10 s', HS6: 'Fritt handstående 30 s', HS7: 'Handstående 60 s + gång', HS8: 'Press till handstående', HS9: 'Enarmshandstående',
-  PL0a: 'Planche lean', PL0b: 'Grodställning', PL1: 'Tuck planche', PL2: 'Avancerad tuck planche', PL3: 'Straddle planche', PL4: 'Full planche', PL5: 'Planche-armhävningar',
-  VPu1: 'Aktivt häng + skulderblads-pull-ups', VPu2: 'Negativa pull-ups', VPu3: 'Pull-ups med band', VPu4: 'Pull-ups', VPu5: 'Pull-ups till bröstet',
-  VPu6: 'Pull-ups med vikt', VPu7: 'Archer pull-ups', VPu8: 'Assisterad enarms-chin-up', VPu9: 'Enarms-chin-up',
-  HPu1: 'Lutande ringrodd', HPu2: 'Vågrät rodd', HPu3: 'Rodd, fötterna upphöjda', HPu4: 'Archer-rodd / rodd med väst', HPu5: 'Front lever-rodd',
-  MU0: 'Muscle-up: förkunskaper', MU1: 'Explosiva pull-ups', MU2: 'Övergångsövningar', MU3: 'Muscle-up med band', MU4: 'Muscle-up på stång', MU5: 'Muscle-up i ringar', MU6: 'Långsam / belastad muscle-up',
-  FL0: 'Front lever: förkunskaper', FL1: 'Tuck front lever', FL2: 'Avancerad tuck front lever', FL3: 'Enbens front lever', FL4: 'Straddle front lever', FL5: 'Full front lever', FL6: 'Front lever-drag',
+  HP1: 'Incline push-up (bench)', HP2: 'Push-up', HP3: 'Diamond push-up', HP4: 'Ring push-up', HP5: 'Archer push-up',
+  HP6: 'Pseudo planche push-up', HP7: 'Weighted push-up', HP8: 'One-arm push-up on bench', HP9: 'One-arm push-up',
+  VP1: 'Pike push-up', VP2: 'Pike push-up, feet on box', VP3: 'Wall handstand push-up (partial)', VP4: 'Wall handstand push-up',
+  VP5: 'Handstand push-up, deficit', VP6: 'Freestanding handstand push-up', VP7: 'Freestanding handstand push-up, deficit', VP8: '90° push-up',
+  DP1: 'Support hold on bars', DP2: 'Negative dips', DP3: 'Dips', DP4: 'Ring support hold', DP5: 'Ring dips', DP6: 'Weighted dips', DP7: 'Advanced ring dips',
+  HS1: 'Pike hold on box', HS2: 'Chest-to-wall handstand', HS3: 'Handstand with shoulder taps', HS4: 'Kick-ups + toe pulls off the wall',
+  HS5: 'Freestanding handstand 5–10 s', HS6: 'Freestanding handstand 30 s', HS7: 'Handstand 60 s + walking', HS8: 'Press to handstand', HS9: 'One-arm handstand',
+  PL0a: 'Planche lean', PL0b: 'Frog stand', PL1: 'Tuck planche', PL2: 'Advanced tuck planche', PL3: 'Straddle planche', PL4: 'Full planche', PL5: 'Planche push-ups',
+  VPu1: 'Active hang + scapular pull-ups', VPu2: 'Negative pull-ups', VPu3: 'Band-assisted pull-ups', VPu4: 'Pull-ups', VPu5: 'Chest-to-bar pull-ups',
+  VPu6: 'Weighted pull-ups', VPu7: 'Archer pull-ups', VPu8: 'Assisted one-arm chin-up', VPu9: 'One-arm chin-up',
+  HPu1: 'Incline ring row', HPu2: 'Horizontal row', HPu3: 'Feet-elevated row', HPu4: 'Archer row / weighted-vest row', HPu5: 'Front lever row',
+  MU0: 'Muscle-up: prerequisites', MU1: 'Explosive pull-ups', MU2: 'Transition drills', MU3: 'Band-assisted muscle-up', MU4: 'Bar muscle-up', MU5: 'Ring muscle-up', MU6: 'Slow / weighted muscle-up',
+  FL0: 'Front lever: prerequisites', FL1: 'Tuck front lever', FL2: 'Advanced tuck front lever', FL3: 'One-leg front lever', FL4: 'Straddle front lever', FL5: 'Full front lever', FL6: 'Front lever pulls',
   BL0: 'German hang', BL0b: 'Skin the cat', BL1: 'Tuck back lever', BL2: 'Back lever',
-  HF1: 'Vertikal flagga', HF2: 'Tuck-flagga', HF3: 'Straddle-flagga', HF4: 'Human flag',
-  CC1: 'Hollow body', CC2: 'Hängande knälyft', CC3: 'Hängande benlyft', CC4: 'Toes to bar', CC5: 'L-sit', CC6: 'Kompressionsövningar', CC7: 'V-sit', CC8: 'Manna',
-  SL1: 'Assisterad knäböj', SL2: 'Split squat', SL3: 'Bulgarian split squat', SL4: 'Box-pistol', SL5: 'Pistol med motvikt', SL6: 'Pistol squat', SL7: 'Pistol med vikt',
-  H1: 'Höftlyft', H2: 'Höftlyft på ett ben', H3: 'Enbens-marklyft', H4: 'Enbens-marklyft med hantel', H5: 'Höftlyft med vikt',
-  KF1: 'Bryggvandring', KF2: 'Glidande bencurl', KF3: 'Glidande bencurl, ett ben', KF4: 'Nordic med band', KF5: 'Nordic, excentrisk', KF6: 'Nordic, hel',
+  HF1: 'Vertical flag', HF2: 'Tuck flag', HF3: 'Straddle flag', HF4: 'Human flag',
+  CC1: 'Hollow body', CC2: 'Hanging knee raise', CC3: 'Hanging leg raise', CC4: 'Toes to bar', CC5: 'L-sit', CC6: 'Compression drills', CC7: 'V-sit', CC8: 'Manna',
+  SL1: 'Assisted squat', SL2: 'Split squat', SL3: 'Bulgarian split squat', SL4: 'Box pistol', SL5: 'Counterbalanced pistol', SL6: 'Pistol squat', SL7: 'Weighted pistol',
+  H1: 'Glute bridge', H2: 'Single-leg glute bridge', H3: 'Single-leg deadlift', H4: 'Single-leg deadlift with dumbbell', H5: 'Weighted hip thrust',
+  KF1: 'Bridge walkouts', KF2: 'Sliding leg curl', KF3: 'Single-leg sliding leg curl', KF4: 'Band-assisted Nordic', KF5: 'Nordic, eccentric', KF6: 'Nordic, full',
 };
 
 /**
@@ -83,21 +83,21 @@ export const LEVEL_SV: Record<string, string> = {
  * swapped for `alt` (and loses its ladder link, since the alternative is a different movement).
  */
 export const EX_NEEDS: Record<string, { any: Equip[]; alt: { name: string; cue: string; demo?: string } }> = {
-  'upperA:C': { any: ['bar', 'rings'], alt: { name: 'Hollow body hold', cue: 'Grunden för front lever: ländryggen i golvet', demo: 'CC1' } },
-  'upperA:D2': { any: ['bar', 'rings'], alt: { name: 'Långsam bordsrodd (3 s ner)', cue: 'Brett grepp, dra bröstet mot kanten, sänk på 3 s', demo: 'HPu1' } },
-  'upperA:E1': { any: ['dip', 'rings'], alt: { name: 'Dips mellan två stolar', cue: 'Bara stadiga stolar! Annars: diamantarmhävningar', demo: 'DP2' } },
-  'upperA:E2': { any: ['bar', 'rings'], alt: { name: 'Bordsrodd', cue: 'Ligg under ett stadigt bord, dra bröstet mot kanten', demo: 'HPu1' } },
-  'upperA:F1': { any: ['dumbbells', 'bands'], alt: { name: 'Sidolyft med vattenflaskor', cue: 'Led med armbågarna, långsamt ner', demo: 'lateral' } },
-  'upperA:F2': { any: ['dumbbells', 'rings', 'bands'], alt: { name: 'Curl med ryggsäck', cue: 'Stilla armbågar, full sträckning' } },
-  'lowerA:A': { any: ['bench'], alt: { name: 'Upphopp från knäböj', cue: 'Hoppa högt, landa tyst', demo: 'pogo' } },
-  'upperB:B': { any: ['bar', 'rings'], alt: { name: 'Hollow body hold', cue: 'Grunden för front lever: ländryggen i golvet', demo: 'CC1' } },
-  'upperB:D': { any: ['bar', 'rings'], alt: { name: 'Explosiv bordsrodd', cue: 'Dra snabbt, sänk långsamt', demo: 'HPu1' } },
-  'upperB:E2': { any: ['bar', 'rings'], alt: { name: 'Bordsrodd', cue: 'Ligg under ett stadigt bord, dra bröstet mot kanten', demo: 'HPu1' } },
-  'upperB:F1': { any: ['bar', 'rings'], alt: { name: 'Bordsrodd, underhandsgrepp', cue: 'Handflatorna mot dig, bröstet mot kanten', demo: 'HPu1' } },
-  'upperB:G1': { any: ['dumbbells', 'bands'], alt: { name: 'Diamantarmhävningar', cue: 'Händerna ihop under bröstet', demo: 'HP3' } },
-  'upperB:G2': { any: ['bands', 'dumbbells'], alt: { name: 'Y-T-lyft på mage', cue: 'Tummarna upp, kläm skulderbladen' } },
-  'upperB:H': { any: ['bar', 'rings'], alt: { name: 'Liggande benlyft', cue: 'Ländryggen i golvet, långsamt ner', demo: 'CC1' } },
-  'lowerB:G2': { any: ['bands'], alt: { name: 'Dead bug', cue: 'Ländryggen i golvet, motsatt arm och ben' } },
+  'upperA:C': { any: ['bar', 'rings'], alt: { name: 'Hollow body hold', cue: 'The foundation for front lever: lower back into the floor', demo: 'CC1' } },
+  'upperA:D2': { any: ['bar', 'rings'], alt: { name: 'Slow table row (3 s down)', cue: 'Wide grip, pull your chest to the edge, lower over 3 s', demo: 'HPu1' } },
+  'upperA:E1': { any: ['dip', 'rings'], alt: { name: 'Dips between two chairs', cue: 'Sturdy chairs only! Otherwise: diamond push-ups', demo: 'DP2' } },
+  'upperA:E2': { any: ['bar', 'rings'], alt: { name: 'Bordsrodd', cue: 'Lie under a sturdy table, pull your chest to the edge', demo: 'HPu1' } },
+  'upperA:F1': { any: ['dumbbells', 'bands'], alt: { name: 'Lateral raise with water bottles', cue: 'Lead with the elbows, slowly down', demo: 'lateral' } },
+  'upperA:F2': { any: ['dumbbells', 'rings', 'bands'], alt: { name: 'Backpack curl', cue: 'Still elbows, full extension' } },
+  'lowerA:A': { any: ['bench'], alt: { name: 'Squat jump', cue: 'Jump high, land quietly', demo: 'pogo' } },
+  'upperB:B': { any: ['bar', 'rings'], alt: { name: 'Hollow body hold', cue: 'The foundation for front lever: lower back into the floor', demo: 'CC1' } },
+  'upperB:D': { any: ['bar', 'rings'], alt: { name: 'Explosive table row', cue: 'Pull fast, lower slowly', demo: 'HPu1' } },
+  'upperB:E2': { any: ['bar', 'rings'], alt: { name: 'Bordsrodd', cue: 'Lie under a sturdy table, pull your chest to the edge', demo: 'HPu1' } },
+  'upperB:F1': { any: ['bar', 'rings'], alt: { name: 'Table row, underhand grip', cue: 'Palms facing you, chest to the edge', demo: 'HPu1' } },
+  'upperB:G1': { any: ['dumbbells', 'bands'], alt: { name: 'Diamond push-ups', cue: 'Hands together under the chest', demo: 'HP3' } },
+  'upperB:G2': { any: ['bands', 'dumbbells'], alt: { name: 'Prone Y-T raises', cue: 'Thumbs up, squeeze the shoulder blades' } },
+  'upperB:H': { any: ['bar', 'rings'], alt: { name: 'Lying leg raise', cue: 'Lower back into the floor, slowly down', demo: 'CC1' } },
+  'lowerB:G2': { any: ['bands'], alt: { name: 'Dead bug', cue: 'Lower back into the floor, opposite arm and leg' } },
 };
 
 /** Levels that can't be trained without equipment (used when estimating a starting level). */
@@ -112,75 +112,75 @@ export const LEVEL_NEEDS: Record<string, Equip[]> = {
 
 export const exKey = (session: string, slot: string) => `${session}:${slot}`;
 
-/** "RIR 2" → plain Swedish effort. */
+/** "RIR 2" → plain-English effort. */
 export function effortText(rir: string): string {
   const n = parseInt(rir, 10);
   if (Number.isNaN(n)) {
-    if (/hold reserve/i.test(rir)) return 'Sluta 2–3 s innan formen brister';
-    if (/RPE/i.test(rir)) return 'Lugnt – ska kännas lätt';
-    if (/max intent|quality|height/i.test(rir)) return 'Max fart, sluta när det blir sämre';
+    if (/hold reserve/i.test(rir)) return 'Stop 2–3 s before your form breaks';
+    if (/RPE/i.test(rir)) return 'Calm – should feel easy';
+    if (/max intent|quality|height/i.test(rir)) return 'Max speed, stop when quality drops';
     return rir;
   }
-  if (n >= 4) return 'Lätt – långt kvar';
-  if (n === 3) return 'Lätt – 3 reps kvar';
-  if (n === 2) return 'Lagom – 2 reps kvar';
-  if (n === 1) return 'Tungt – 1 rep kvar';
+  if (n >= 4) return 'Easy – plenty left';
+  if (n === 3) return 'Easy – 3 reps left';
+  if (n === 2) return 'Just right – 2 reps left';
+  if (n === 1) return 'Hard – 1 rep left';
   return 'Max';
 }
 
-/** "3-1-X-0" → "3 s ner · 1 s paus · explosivt upp". */
+/** "3-1-X-0" → "3 s down · 1 s pause · explosive up". */
 export function tempoText(tempo: string): string | null {
-  if (!/^\d/.test(tempo)) return /static/i.test(tempo) ? 'Håll stilla' : null;
+  if (!/^\d/.test(tempo)) return /static/i.test(tempo) ? 'Hold still' : null;
   const [down, pause, up, top] = tempo.split('-');
   const parts: string[] = [];
-  if (down && down !== '0') parts.push(`${down} s ner`);
-  if (pause && pause !== '0') parts.push(`${pause} s paus`);
-  if (up) parts.push(up === 'X' ? 'explosivt upp' : `${up} s upp`);
-  if (top && top !== '0') parts.push(`${top} s i toppen`);
+  if (down && down !== '0') parts.push(`${down} s down`);
+  if (pause && pause !== '0') parts.push(`${pause} s pause`);
+  if (up) parts.push(up === 'X' ? 'explosive up' : `${up} s up`);
+  if (top && top !== '0') parts.push(`${top} s at the top`);
   return parts.join(' · ');
 }
 
 /** Effort choices when logging a set, mapped to stored RIR. */
 export const EFFORTS: { label: string; rir: number }[] = [
-  { label: 'Lätt', rir: 3 },
-  { label: 'Lagom', rir: 2 },
-  { label: 'Tungt', rir: 1 },
+  { label: 'Easy', rir: 3 },
+  { label: 'Just right', rir: 2 },
+  { label: 'Hard', rir: 1 },
   { label: 'Max', rir: 0 },
 ];
 
-/** Swedish session names and one-line summaries. */
+/** Plain-English session names and one-line summaries. */
 export const SESSION_SV: Record<string, { title: string; short: string }> = {
-  upperA: { title: 'Överkropp A', short: 'Handstående, planche, pull-ups och dips' },
-  lowerA: { title: 'Ben A', short: 'Hopp, enbensknäböj, baksida lår och vader' },
-  upperB: { title: 'Överkropp B', short: 'Front lever, explosiva drag, armhävningar och rodd' },
-  lowerB: { title: 'Ben B', short: 'Bulgarian split squat, höftlyft och stabilitet' },
-  skill: { title: 'Teknik + kondition', short: 'Handstående, kompression och lätt kondition' },
-  recovery: { title: 'Återhämtning', short: 'Mikroträning, promenad och rörlighet' },
-  rest: { title: 'Vila', short: 'Vilodag' },
+  upperA: { title: 'Upper body A', short: 'Handstand, planche, pull-ups and dips' },
+  lowerA: { title: 'Legs A', short: 'Jumps, single-leg squats, hamstrings and calves' },
+  upperB: { title: 'Upper body B', short: 'Front lever, explosive pulls, push-ups and rows' },
+  lowerB: { title: 'Legs B', short: 'Bulgarian split squat, hip thrusts and stability' },
+  skill: { title: 'Skill + conditioning', short: 'Handstand, compression and light cardio' },
+  recovery: { title: 'Recovery', short: 'Micro-practice, walking and mobility' },
+  rest: { title: 'Rest', short: 'Rest day' },
 };
 
-export const TEST_SV: Record<string, string> = { A: 'Test: överkropp', B: 'Test: ben + bål', C: 'Test: rörlighet', mini: 'Minitest' };
+export const TEST_SV: Record<string, string> = { A: 'Test: upper body', B: 'Test: legs + core', C: 'Test: mobility', mini: 'Mini test' };
 
 export const LADDER_SV: Record<string, string> = {
-  HP: 'Armhävningar', VP: 'Press över huvudet', DP: 'Dips', HS: 'Handstående', PL: 'Planche', VPu: 'Pull-ups', HPu: 'Rodd',
-  MU: 'Muscle-up', FL: 'Front lever', BL: 'Back lever', HF: 'Human flag', CC: 'Bål & kompression', SL: 'Enbensknäböj', H: 'Höft & baksida', KF: 'Baksida lår (Nordic)',
+  HP: 'Push-ups', VP: 'Overhead press', DP: 'Dips', HS: 'Handstand', PL: 'Planche', VPu: 'Pull-ups', HPu: 'Rows',
+  MU: 'Muscle-up', FL: 'Front lever', BL: 'Back lever', HF: 'Human flag', CC: 'Core & compression', SL: 'Single-leg squat', H: 'Hips & posterior chain', KF: 'Hamstrings (Nordic)',
 };
 
 export const WARMUP_SV: Record<string, { title: string; steps: string[] }> = {
   push: {
-    title: 'Uppvärmning (8 min)',
-    steps: ['2 min hopp på stället eller hopprep', 'Handledsuppvärmning', 'Band dislocates ×10', 'Skulderblads-armhävningar ×10', 'Stödhäng 30 s', 'Utåtrotation med band + handledscurl 1×15', '5 lätta armhävningar'],
+    title: 'Warm-up (8 min)',
+    steps: ['2 min jumping in place or jump rope', 'Wrist warm-up', 'Band dislocates ×10', 'Scapular push-ups ×10', 'Support hold 30 s', 'Band external rotation + wrist curl 1×15', '5 easy push-ups'],
   },
   pull: {
-    title: 'Uppvärmning (8 min)',
-    steps: ['2 min hopp på stället eller hopprep', 'Handledsuppvärmning', 'Band dislocates ×10', 'Skulderblads-pull-ups ×8', 'German hang med fötterna i golvet 15–20 s', 'Utåtrotation med band 1×15', '3 lätta pull-ups'],
+    title: 'Warm-up (8 min)',
+    steps: ['2 min jumping in place or jump rope', 'Wrist warm-up', 'Band dislocates ×10', 'Scapular pull-ups ×8', 'German hang with feet on the floor 15–20 s', 'Band external rotation 1×15', '3 easy pull-ups'],
   },
   legs: {
-    title: 'Uppvärmning (8 min)',
-    steps: ['2–3 min lätt kondition', 'Knä-mot-vägg för fotleden ×10/sida', '10 djupa knäböj', '10 höftlyft', '5 lätta split squats/ben', '10 lätta pogohopp'],
+    title: 'Warm-up (8 min)',
+    steps: ['2–3 min light cardio', 'Knee-to-wall ankle mobility ×10/side', '10 deep squats', '10 glute bridges', '5 easy split squats/leg', '10 easy pogo hops'],
   },
   handstand: {
-    title: 'Uppvärmning (8 min)',
-    steps: ['Handledsuppvärmning 2–3 min', 'Skulderblads-armhävningar ×10', 'Väggglid ×8', 'Band dislocates ×10', 'Pike-häng mot låda 2×20 s', 'Utåtrotation med band + handledscurl 1×15'],
+    title: 'Warm-up (8 min)',
+    steps: ['Wrist warm-up 2–3 min', 'Scapular push-ups ×10', 'Wall slides ×8', 'Band dislocates ×10', 'Pike hold on box 2×20 s', 'Band external rotation + wrist curl 1×15'],
   },
 };

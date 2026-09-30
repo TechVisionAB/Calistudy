@@ -27,7 +27,7 @@ export async function ensurePermission(): Promise<boolean> {
   if (!remindersSupported) return false;
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync(CHANNEL, {
-      name: 'Träningspåminnelser',
+      name: 'Workout reminders',
       importance: Notifications.AndroidImportance.DEFAULT,
     });
   }
@@ -41,12 +41,12 @@ export async function ensurePermission(): Promise<boolean> {
 function morningText(state: State, dayOffset: number): string | null {
   const n = nextUp(state);
   if (dayOffset === 0) {
-    if (n.kind === 'session') return `${SESSION_SV[n.session].title} idag: ${SESSION_SV[n.session].short.toLowerCase()}.`;
-    if (n.kind === 'test') return `${TEST_SV[n.battery]} idag. Testa utvilad.`;
-    if (n.kind === 'rest') return `Vilodag – 10 min mikroträning räcker.`;
+    if (n.kind === 'session') return `${SESSION_SV[n.session].title} today: ${SESSION_SV[n.session].short.toLowerCase()}.`;
+    if (n.kind === 'test') return `${TEST_SV[n.battery]} today. Test when well rested.`;
+    if (n.kind === 'rest') return `Rest day – 10 min of micro-practice is enough.`;
     return null;
   }
-  return 'Dags att träna? Öppna appen så ser du dagens pass.';
+  return 'Time to train? Open the app to see today\'s workout.';
 }
 
 /** Micro-practice is part of the Upper A/B sessions (Mon/Thu) and optional on Sunday. */
@@ -75,7 +75,7 @@ export async function reschedule(state: State): Promise<void> {
       const body = morningText(state, i);
       if (body && at > now) {
         await Notifications.scheduleNotificationAsync({
-          content: { title: `Calistudy · vecka ${week}`, body },
+          content: { title: `Calistudy · week ${week}`, body },
           trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: at, channelId: CHANNEL },
         });
       }
@@ -86,7 +86,7 @@ export async function reschedule(state: State): Promise<void> {
       const done = (state.micro[isoDate(day)] ?? []).length > 0;
       if (!done && at > now) {
         await Notifications.scheduleNotificationAsync({
-          content: { title: 'Mikroträning', body: 'Har du hunnit med dagens 10 min? Handleder, skulderblad, handstående och kompression.' },
+          content: { title: 'Micro-practice', body: 'Have you done today\'s 10 min? Wrists, shoulder blades, handstand and compression.' },
           trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: at, channelId: CHANNEL },
         });
       }

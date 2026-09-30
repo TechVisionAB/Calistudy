@@ -56,33 +56,33 @@ export default function Welcome() {
           <>
             <Text style={{ fontSize: 56, textAlign: 'center' }}>💪</Text>
             <Text style={{ color: t.text, fontSize: 32, fontWeight: '800', textAlign: 'center', letterSpacing: -0.5 }}>
-              {alreadyStarted ? 'Ny version!' : 'Calistudy'}
+              {alreadyStarted ? 'New version!' : 'Calistudy'}
             </Text>
             <Text style={{ color: t.muted, fontSize: 17, textAlign: 'center', lineHeight: 24 }}>
               {alreadyStarted
-                ? 'Två snabba frågor så anpassar appen passen efter din utrustning. Dina nivåer och loggar finns kvar.'
-                : 'Bli starkare med kroppsvikt hemma. 4 pass i veckan, appen säger vad du ska göra och när det är dags att gå vidare.'}
+                ? 'Two quick questions so the app can fit workouts to your equipment. Your levels and logs are kept.'
+                : 'Get stronger with bodyweight training at home. 4 workouts a week – the app tells you what to do and when it is time to move on.'}
             </Text>
-            <Button title="Kom igång" onPress={() => setStep(1)} />
+            <Button title="Get started" onPress={() => setStep(1)} />
           </>
         )}
 
         {step === 1 && (
           <>
             {dots}
-            <Text style={{ color: t.text, fontSize: 26, fontWeight: '800' }}>Hur van är du?</Text>
+            <Text style={{ color: t.text, fontSize: 26, fontWeight: '800' }}>How experienced are you?</Text>
             {EXPERIENCES.map((e) => (
               <Option t={t} key={e.id} on={exp === e.id} title={e.title} desc={e.desc} onPress={() => setExp(e.id)} />
             ))}
-            <Button title="Nästa" disabled={!exp} onPress={() => setStep(2)} />
+            <Button title="Next" disabled={!exp} onPress={() => setStep(2)} />
           </>
         )}
 
         {step === 2 && (
           <>
             {dots}
-            <Text style={{ color: t.text, fontSize: 26, fontWeight: '800' }}>Vad har du hemma?</Text>
-            <Text style={{ color: t.muted, fontSize: 15 }}>Välj allt som stämmer. Saknas något byter appen ut övningen.</Text>
+            <Text style={{ color: t.text, fontSize: 26, fontWeight: '800' }}>What do you have at home?</Text>
+            <Text style={{ color: t.muted, fontSize: 15 }}>Pick everything that applies. If something is missing, the app swaps the exercise.</Text>
             {EQUIPMENT.map((e) => (
               <Option t={t}
                 key={e.id}
@@ -93,18 +93,18 @@ export default function Welcome() {
               />
             ))}
             {!equip.includes('bar') && !equip.includes('rings') && (
-              <Text style={{ color: t.accent, fontSize: 14 }}>Tips: en dörrstång (ca 300 kr) är det viktigaste köpet – den låser upp alla dragövningar.</Text>
+              <Text style={{ color: t.accent, fontSize: 14 }}>Tip: a doorway pull-up bar (around $30) is the most important buy – it unlocks all the pull exercises.</Text>
             )}
-            <Button title={alreadyStarted ? 'Klar' : 'Nästa'} onPress={() => (alreadyStarted ? finish(false) : setStep(3))} />
+            <Button title={alreadyStarted ? 'Done' : 'Next'} onPress={() => (alreadyStarted ? finish(false) : setStep(3))} />
           </>
         )}
 
         {step === 3 && (
           <>
             {dots}
-            <Text style={{ color: t.text, fontSize: 26, fontWeight: '800' }}>Hur vill du börja?</Text>
-            <Option t={t} on title="Börja träna direkt" desc="Appen gissar dina startnivåer utifrån svaren. De justeras automatiskt efter några pass." onPress={() => finish(false)} />
-            <Option t={t} on={false} title="Testa mig först" desc="Tre korta tester (ca 1 h totalt) ger exakta nivåer. Passar dig som vill få ut maximalt." onPress={() => finish(true)} />
+            <Text style={{ color: t.text, fontSize: 26, fontWeight: '800' }}>How do you want to start?</Text>
+            <Option t={t} on title="Start training right away" desc="The app estimates your starting levels from your answers. They adjust automatically after a few workouts." onPress={() => finish(false)} />
+            <Option t={t} on={false} title="Test me first" desc="Three short tests (about 1 h total) give exact levels. Best if you want to get the most out of it." onPress={() => finish(true)} />
           </>
         )}
       </ScrollView>

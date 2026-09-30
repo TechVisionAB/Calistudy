@@ -1,89 +1,89 @@
 # Calistudy
 
-Mobilapp (iOS, Android och webb) för **The Complete Calisthenics System for an Intermediate Home Athlete (2026 Edition)** — en guide för calisthenics hemma. Källtexten ligger i [`docs/guide.md`](docs/guide.md).
+Mobile app (iOS, Android and web) for **The Complete Calisthenics System for an Intermediate Home Athlete (2026 Edition)** — a guide to calisthenics at home. The source text is in [`docs/guide.md`](docs/guide.md).
 
-Byggd med [Expo](https://expo.dev) (SDK 57), React Native och Expo Router. All data sparas lokalt på enheten (AsyncStorage); inget konto eller backend behövs.
+Built with [Expo](https://expo.dev) (SDK 57), React Native and Expo Router. All data is stored locally on the device (AsyncStorage); no account or backend is needed.
 
-## Funktioner
+## Features
 
-**Kom igång på 30 sekunder:** tre frågor (erfarenhet, utrustning, börja direkt eller testa först). Appen uppskattar startnivåer och byter ut övningar du saknar utrustning för – t.ex. bordsrodd i stället för ringrodd.
+**Get started in 30 seconds:** three questions (experience, equipment, start right away or test first). The app estimates starting levels and swaps out exercises you lack the equipment for – e.g. table rows instead of ring rows.
 
-**Idag = nästa pass**, inte en låst veckodag: missar du måndag blir Överkropp A nästa pass. Appen håller isär överkropps- och benpass (≥44 h vila), visar en veckoring (4 pass) och en streak (veckor i rad med minst 3 pass).
+**Today = the next workout**, not a locked weekday: if you miss Monday, Upper A becomes the next workout. The app keeps upper-body and leg workouts apart (≥44 h rest), shows a week ring (4 workouts) and a streak (weeks in a row with at least 3 workouts).
 
-**Passet en övning i taget:** uppvärmning → övning med animation, mål ("3 × 5–8 reps · Lagom – 2 reps kvar"), stor räknare, stoppur för hållningar, Lätt/Lagom/Tungt, smärtknapp → vila i helskärm → nästa. Supersets varvas automatiskt. Efteråt: sammanfattning och "Ny nivå! 🎉" när det är dags.
+**The workout one exercise at a time:** warm-up → exercise with animation, target ("3 × 5–8 reps · Just right – 2 reps left"), big counter, stopwatch for holds, Easy/Just right/Hard, pain button → full-screen rest → next. Supersets alternate automatically. Afterwards: a summary and "New level! 🎉" when it's time.
 
-Allt på svenska i klarspråk; guidens originaltermer (RIR, tempo, Block 2-regler) finns under "Visa detaljer".
+Everything in plain English; the guide's original terms (RIR, tempo, Block 2 rules) are under "Show details".
 
-- **Idag** – dagens pass utifrån var du är i 12-veckorsprogrammet, dagsformskontroll (4 flaggor → åtgärd enligt återhämtningsalgoritmen), daglig mikroträning som checklista, veckans RIR-/hållningsparametrar och platåvarningar.
-- **Program** – hela kalendern vecka 0–12 (testvecka, Block 1, deload + minitest, Block 2, deload + fullt omtest). Välj vecka och öppna valfritt pass. Startveckan kan flyttas.
-- **Pass & träning** – uppvärmning, övningar med *din* nivå i varje stege, set/reps/vila/RIR/tempo/cue, veckojusterade set (−1 set vecka 1, +1 tillbehörsset v3–5 och v9–11, halverat i deload, ingen plyo i deload) och Block 2-reglerna. Logga reps/sekunder, RIR och smärta per set, med vilotimer som vibrerar.
-- **Automatisk progression** – efter varje pass tillämpas guidens regler: toppen av intervallet 2 pass i rad → upp en nivå; set 1 under botten → ner; statiska hållningar (≥15 s) → testa nästa nivå; smärta ≥3/10 → −1 nivå och −30–50 % volym.
-- **Nivåer** – 15 färdighetsstegar (push, pull, dips, handstående, planche, front/back lever, muscle-up, human flag, bål, enbensknäböj, höftfällning, knäflexion) med kriterier, vanliga fel och skaderisker.
-- **Tester (guidade)** – överkropp, ben + bål, rörlighet och minitestet vecka 6. En övning i taget med animation: stora knappar för antal ("5–9") eller stoppur för hållningar; följdtester (t.ex. tuck planche) visas bara när resultatet gör dem relevanta. Knappvärdena är intervallens nedre gräns, så guidens placeringsregler ger samma nivå som exakta siffror. Underkända rörlighetstester läggs in i mikroträningen.
-- **Se hur man gör** – varje övning, nivå, uppvärmning och mikroträningsblock har en demo:
-  - **Animationer:** 24 egna streckgubbsanimationer i SVG (push-up, pike, HSPU, dips, handstående, planche, pull-up, rodd, muscle-up, front lever, hollow, benlyft, L-sit, knäböj, split squat, bulgarisk, pistol, bridge, SL-RDL, Nordic). Samlade under Guide → Övningsdemos.
-  - **Muskler:** muskelkarta fram/bak (gratis MIT-biblioteket react-native-body-highlighter) med huvudmuskler, hjälpmuskler och leder som inte ska göra ont, plus "✅ Här ska det kännas / ⛔ Här ska det INTE kännas" per rörelse (`src/data/anatomy.ts`, baserat på guidens muskel- och skadeanteckningar).
-  - **Videor:** 86 instruktionsvideor från YouTube (FitnessFAQs, GMB, Antranik, Squat University, Calisthenicmovement m.fl.) som spelas inne i appen. Varje video-ID är kontrollerat mot YouTubes oEmbed. Saknar en nivå egen video visas närmaste lättare nivås video, med en markering om det.
-- **Framsteg** – kurva per övning (bästa set per pass) med nivåbyten markerade, förändring på nuvarande nivå och tabellvy. Nås från Logg-fliken och från varje nivåstege.
-- **Påminnelser** – morgonnotis med dagens faktiska pass och kvällsnotis om mikroträningen inte är avbockad. Planeras två veckor framåt och uppdateras automatiskt (Guide → Påminnelser).
-- **Logg** – historik över pass och tester.
-- **Guide** – översikt, veckoupplägg, progressions-, platå- och återhämtningsalgoritmer, smärtregler och prehab, mikroträning, utrustning, långsiktig plan, videobibliotek och myter.
+- **Today** – today's workout based on where you are in the 12-week program, a readiness check (4 flags → action according to the recovery algorithm), daily micro-practice as a checklist, the week's RIR/hold parameters and plateau warnings.
+- **Program** – the full calendar, weeks 0–12 (test week, Block 1, deload + mini test, Block 2, deload + full retest). Pick a week and open any workout. The start week can be moved.
+- **Workouts & training** – warm-up, exercises at *your* level on each ladder, sets/reps/rest/RIR/tempo/cue, week-adjusted sets (−1 set in week 1, +1 accessory set in w3–5 and w9–11, halved in deload, no plyo in deload) and the Block 2 rules. Log reps/seconds, RIR and pain per set, with a rest timer that vibrates.
+- **Automatic progression** – after each workout the guide's rules are applied: top of the range 2 workouts in a row → up one level; set 1 below the bottom → down; static holds (≥15 s) → test the next level; pain ≥3/10 → −1 level and −30–50% volume.
+- **Levels** – 15 skill ladders (push, pull, dips, handstand, planche, front/back lever, muscle-up, human flag, core, single-leg squat, hip hinge, knee flexion) with criteria, common faults and injury risks.
+- **Tests (guided)** – upper body, legs + core, mobility and the week 6 mini test. One exercise at a time with animation: big buttons for counts ("5–9") or a stopwatch for holds; follow-up tests (e.g. tuck planche) are only shown when the result makes them relevant. The button values are the lower bounds of the ranges, so the guide's placement rules give the same level as exact numbers. Failed mobility tests are added to micro-practice.
+- **How to do it** – every exercise, level, warm-up and micro-practice block has a demo:
+  - **Animations:** 24 custom stick-figure animations in SVG (push-up, pike, HSPU, dips, handstand, planche, pull-up, row, muscle-up, front lever, hollow, leg raise, L-sit, squat, split squat, Bulgarian, pistol, bridge, SL-RDL, Nordic). Collected under Guide → Exercise demos.
+  - **Muscles:** front/back muscle map (the free MIT library react-native-body-highlighter) with primary muscles, assisting muscles and joints that should not hurt, plus "✅ You should feel it here / ⛔ You should NOT feel it here" per movement (`src/data/anatomy.ts`, based on the guide's muscle and injury notes).
+  - **Videos:** 86 instructional videos from YouTube (FitnessFAQs, GMB, Antranik, Squat University, Calisthenicmovement and others) that play inside the app. Every video ID has been checked against YouTube's oEmbed. If a level has no video of its own, the video for the nearest easier level is shown, with a note saying so.
+- **Progress** – a chart per exercise (best set per workout) with level changes marked, change at the current level, and a table view. Reached from the Log tab and from each level ladder.
+- **Reminders** – a morning notification with the day's actual workout and an evening notification if micro-practice hasn't been checked off. Scheduled two weeks ahead and updated automatically (Guide → Reminders).
+- **Log** – history of workouts and tests.
+- **Guide** – overview, weekly structure, progression, plateau and recovery algorithms, pain rules and prehab, micro-practice, equipment, long-term plan, video library and myths.
 
-Gränssnittet är på svenska; övningsnamn, kriterier och cues är kvar på guidens engelska.
+The interface is in English and uses the guide's exercise names, criteria and cues.
 
-## Kom igång
+## Getting started
 
 ```bash
 npm install
-npx expo start        # skanna QR-koden med Expo Go, eller tryck i / a / w
+npx expo start        # scan the QR code with Expo Go, or press i / a / w
 ```
 
-Kontroller:
+Checks:
 
 ```bash
 npm run typecheck
 npm run lint
 ```
 
-Bygga för App Store / Google Play görs med EAS: `npx eas-cli@latest build`.
+Builds for the App Store / Google Play are made with EAS: `npx eas-cli@latest build`.
 
-## Testversion (Android)
+## Test build (Android)
 
 ```bash
-npx eas-cli@latest init                                   # första gången: kopplar projektet till ditt Expo-konto
+npx eas-cli@latest init                                   # first time: links the project to your Expo account
 npx eas-cli@latest build --profile preview --platform android
 ```
 
-Bygget tar 10–20 min i Expos moln. Du får en länk/QR-kod till en APK som testarna installerar direkt (de behöver tillåta installation från okänd källa). Profilen `preview` i `eas.json` ger intern distribution. iPhone kräver ett Apple-utvecklarkonto och registrerade enheter (eller TestFlight).
+The build takes 10–20 min in Expo's cloud. You get a link/QR code to an APK that testers install directly (they need to allow installs from unknown sources). The `preview` profile in `eas.json` gives internal distribution. iPhone requires an Apple developer account and registered devices (or TestFlight).
 
-**Mätning:** testarna skickar Logg → 📤 Skicka testrapport (anonym veckostatistik + betyg + fritext) via valfri app. Nyckeltal: tränar de fortfarande vecka 3?
+**Measurement:** testers send Log → 📤 Send test report (anonymous weekly stats + rating + free text) via any app. Key metric: are they still training in week 3?
 
-## AI-coach
+## AI coach
 
-Chatten (💬 uppe till höger, och "Fråga AI-coachen" i varje ?-ruta) svarar utifrån hela guiden, appens funktioner och användarens nivåer/senaste pass. ?-knapparna fungerar utan internet (ordlista i `src/data/glossary.ts`); chatten kräver servern nedan.
+The chat (💬 top right, and "Ask the AI coach" in every ? box) answers based on the whole guide, the app's features and the user's levels/recent workouts. The ? buttons work offline (glossary in `src/data/glossary.ts`); the chat requires the server below.
 
-API-nyckeln får aldrig ligga i appen, så anropen går via en Supabase Edge Function (`supabase/functions/coach`):
+The API key must never live in the app, so calls go through a Supabase Edge Function (`supabase/functions/coach`):
 
 ```bash
-node scripts/build-coach-knowledge.mjs          # bygger coachens kunskap från guiden + README
+node scripts/build-coach-knowledge.mjs          # builds the coach's knowledge from the guide + README
 supabase functions deploy coach
 supabase secrets set ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-Sätt sedan `EXPO_PUBLIC_COACH_URL` och `EXPO_PUBLIC_COACH_KEY` i `.env` (se `.env.example`). Modell: Claude Opus 5.5 med effort `low` och cachad systemprompt (~30k tokens guide). Före publik lansering: lägg till inloggning/rate limiting så att ingen annan kan använda funktionen på er bekostnad.
+Then set `EXPO_PUBLIC_COACH_URL` and `EXPO_PUBLIC_COACH_KEY` in `.env` (see `.env.example`). Model: Claude Opus 5.5 with effort `low` and a cached system prompt (~30k tokens of guide). Before a public launch: add sign-in/rate limiting so that nobody else can use the function at your expense.
 
-## Struktur
+## Structure
 
 ```
 src/
-  app/            Skärmar (Expo Router). (tabs)/ = flikarna, övriga = detaljvyer
-  data/           Innehåll från guiden: ladders, sessions, program, tests, guide
-                  + animations.ts (streckgubbar), videos.json (YouTube-ID:n), media.ts (uppslag)
-  lib/            store (AsyncStorage), plan (veckojustering), progression (regler)
-  components/     UI-komponenter
-docs/guide.md     Originalguiden
+  app/            Screens (Expo Router). (tabs)/ = the tabs, others = detail views
+  data/           Content from the guide: ladders, sessions, program, tests, guide
+                  + animations.ts (stick figures), videos.json (YouTube IDs), media.ts (lookup)
+  lib/            store (AsyncStorage), plan (weekly adjustment), progression (rules)
+  components/     UI components
+docs/guide.md     The original guide
 ```
 
-> Guiden hänvisar till uppvärmningar i "Section 15" som inte beskrivs i detalj. Appens uppvärmningar bygger därför på Dag 1-uppvärmningen (Section 19) plus prehab-noten i Section 15.
+> The guide refers to warm-ups in "Section 15" that are not described in detail. The app's warm-ups are therefore based on the Day 1 warm-up (Section 19) plus the prehab note in Section 15.
 
-Innehållet är till stor del indirekt evidens och coachkonsensus. Vid smärta över 5/10, skarp smärta eller svullnad: kontakta fysioterapeut eller läkare.
+The content is largely indirect evidence and coaching consensus. With pain above 5/10, sharp pain or swelling: see a physiotherapist or doctor.

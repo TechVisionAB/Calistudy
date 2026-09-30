@@ -10,7 +10,7 @@ import { useStore } from '@/lib/store';
 
 function planTitle(p: DayPlan): string {
   if (p.kind === 'session') return SESSIONS[p.session].title + (p.deload && p.session !== 'rest' ? ' · deload' : '');
-  if (p.kind === 'test') return p.battery === 'mini' ? 'Minitest' + (p.extra ? ` ${p.extra}` : '') : `Test ${p.battery}`;
+  if (p.kind === 'test') return p.battery === 'mini' ? 'Mini test' + (p.extra ? ` ${p.extra}` : '') : `Test ${p.battery}`;
   return p.label;
 }
 
@@ -25,7 +25,7 @@ export default function Program() {
   const isNext = (p: DayPlan) =>
     (next.kind === 'session' && p.kind === 'session' && p.session === next.session) ||
     (next.kind === 'test' && p.kind === 'test' && p.battery === next.battery);
-  // "Next" follows the order-based plan on Idag, not the weekday. Only fall back to
+  // "Next" follows the order-based plan on Today, not the weekday. Only fall back to
   // today's weekday when nothing is due (rest day) so the row still orients the user.
   const plans = WEEKDAYS.map((_, i) => dayPlan(week, i));
   const nextIdx = week === current ? plans.findIndex(isNext) : -1;
@@ -46,14 +46,14 @@ export default function Program() {
   return (
     <Screen>
       <Card>
-        <Label>Du är på</Label>
+        <Label>You’re on</Label>
         <H2>
-          Vecka {current} · {blockOf(current)}
+          Week {current} · {blockOf(current)}
         </H2>
-        {state.startMonday && <P muted>Vecka 0 startade {state.startMonday}. Efter vecka 12 börjar en ny cykel på vecka 1.</P>}
+        {state.startMonday && <P muted>Week 0 started {state.startMonday}. After week 12 a new cycle starts at week 1.</P>}
         <Row>
-          <Button title="− 1 vecka" variant="secondary" disabled={!state.startMonday || current === 0} onPress={() => shiftCurrent(-1)} />
-          <Button title="+ 1 vecka" variant="secondary" disabled={!state.startMonday} onPress={() => shiftCurrent(1)} />
+          <Button title="− 1 week" variant="secondary" disabled={!state.startMonday || current === 0} onPress={() => shiftCurrent(-1)} />
+          <Button title="+ 1 week" variant="secondary" disabled={!state.startMonday} onPress={() => shiftCurrent(1)} />
         </Row>
       </Card>
 
@@ -61,7 +61,7 @@ export default function Program() {
         {WEEK_PARAMS.map((p) => (
           <Chip
             key={p.week}
-            text={`V${p.week}`}
+            text={`W${p.week}`}
             tone={p.week === week ? 'accent' : p.week === current ? 'good' : 'neutral'}
             onPress={() => setWeek(p.week)}
           />
@@ -69,11 +69,11 @@ export default function Program() {
       </ScrollView>
 
       <Card>
-        <Label>Vecka {week} · {blockOf(week)}</Label>
+        <Label>Week {week} · {blockOf(week)}</Label>
         {week > 0 && (
           <>
-            <P>Styrka RIR {params.strengthRir} · Hypertrofi RIR {params.hypertrophyRir}</P>
-            <P>Hållningar: {params.holds}</P>
+            <P>Strength RIR {params.strengthRir} · Hypertrophy RIR {params.hypertrophyRir}</P>
+            <P>Holds: {params.holds}</P>
           </>
         )}
         <P muted>
@@ -82,7 +82,7 @@ export default function Program() {
         </P>
       </Card>
 
-      <P muted>Veckodagarna är ett förslag. Appen följer ordningen – missar du en dag blir det passet nästa, oavsett veckodag.</P>
+      <P muted>The weekdays are a suggestion. The app follows the order – if you miss a day, that workout is simply next, whatever the weekday.</P>
 
       <View style={{ gap: 8 }}>
         {WEEKDAYS.map((d, i) => {
@@ -90,8 +90,8 @@ export default function Program() {
           const isToday = i === nextIdx || i === todayIdx;
           const done = week === 0 && p.kind === 'test' && doneTest(p.battery);
           const sub =
-            (i === nextIdx ? 'Nästa · ' : '') +
-            (done ? 'Klart ✓' : p.kind === 'session' ? SESSIONS[p.session].short : p.kind === 'test' ? 'Baslinjetest' : 'Mikroträning');
+            (i === nextIdx ? 'Next · ' : '') +
+            (done ? 'Done ✓' : p.kind === 'session' ? SESSIONS[p.session].short : p.kind === 'test' ? 'Baseline test' : 'Micro-practice');
           return (
             <Card key={d} onPress={() => open(p)} style={isToday ? { borderColor: t.accent, borderWidth: 2 } : undefined}>
               <Row>

@@ -8,10 +8,10 @@ import { appContext, askCoach, ChatMsg, coachEnabled, getChat, setChat } from '@
 import { useStore } from '@/lib/store';
 
 const SUGGESTIONS = [
-  'Vad betyder RIR och Lätt/Lagom/Tungt?',
-  'Varför är vecka 6 lättare?',
-  'Hur vet jag när jag ska gå upp en nivå?',
-  'Vad gör jag om det gör ont i handleden?',
+  'What do RIR and Easy/Just right/Hard mean?',
+  'Why is week 6 easier?',
+  'How do I know when to move up a level?',
+  'What should I do if my wrist hurts?',
 ];
 
 export default function Coach() {
@@ -39,7 +39,7 @@ export default function Coach() {
       setMsgs(withReply);
       setChat(withReply);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Något gick fel.');
+      setError(e instanceof Error ? e.message : 'Something went wrong.');
     } finally {
       setBusy(false);
       setTimeout(() => scroll.current?.scrollToEnd({ animated: true }), 50);
@@ -56,11 +56,11 @@ export default function Coach() {
     <SafeAreaView style={{ flex: 1, backgroundColor: t.bg }} edges={['left', 'right', 'bottom']}>
       <Stack.Screen
         options={{
-          title: 'AI-coach',
+          title: 'AI coach',
           headerRight: () =>
             msgs.length ? (
               <Pressable onPress={clear} hitSlop={10}>
-                <Text style={{ color: t.accent, fontWeight: '700' }}>Ny chatt</Text>
+                <Text style={{ color: t.accent, fontWeight: '700' }}>New chat</Text>
               </Pressable>
             ) : null,
         }}
@@ -69,19 +69,19 @@ export default function Coach() {
         <ScrollView ref={scroll} contentContainerStyle={styles.screen} onContentSizeChange={() => scroll.current?.scrollToEnd({ animated: false })}>
           {!coachEnabled && (
             <Card>
-              <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>AI-coachen är inte aktiverad än</Text>
+              <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>The AI coach isn’t enabled yet</Text>
               <P muted>
-                Den behöver en server med en API-nyckel (se README → AI-coach). Tills dess förklarar ?-knapparna i appen termerna utan internet.
+                It needs a server with an API key (see README → AI coach). Until then, the ? buttons in the app explain the terms offline.
               </P>
             </Card>
           )}
           {msgs.length === 0 && (
             <View style={{ gap: 10 }}>
-              <Text style={{ color: t.text, fontSize: 22, fontWeight: '800' }}>Fråga vad du vill 💬</Text>
-              <P muted>Coachen kan hela programmet, övningarna och appen – och ser dina nivåer och senaste pass.</P>
+              <Text style={{ color: t.text, fontSize: 22, fontWeight: '800' }}>Ask anything 💬</Text>
+              <P muted>The coach knows the whole program, the exercises and the app – and can see your levels and recent workouts.</P>
               {context && (
                 <Card>
-                  <Text style={{ color: t.muted, fontSize: 13 }}>Du frågar om:</Text>
+                  <Text style={{ color: t.muted, fontSize: 13 }}>You’re asking about:</Text>
                   <Text style={{ color: t.text, fontSize: 14 }} numberOfLines={4}>
                     {context}
                   </Text>
@@ -116,7 +116,7 @@ export default function Coach() {
           {busy && (
             <Row>
               <ActivityIndicator color={t.accent} />
-              <Text style={{ color: t.muted }}>Coachen tänker…</Text>
+              <Text style={{ color: t.muted }}>The coach is thinking…</Text>
             </Row>
           )}
           {error && <Text style={{ color: t.warn }}>{error}</Text>}
@@ -126,7 +126,7 @@ export default function Coach() {
           <TextInput
             value={input}
             onChangeText={setInput}
-            placeholder={coachEnabled ? 'Skriv en fråga…' : 'Coachen är inte aktiverad'}
+            placeholder={coachEnabled ? 'Type a question…' : 'The coach is not enabled'}
             placeholderTextColor={t.muted}
             editable={coachEnabled}
             multiline
@@ -137,7 +137,7 @@ export default function Coach() {
             onPress={() => send(input)}
             disabled={!coachEnabled || busy || !input.trim()}
             style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: t.accent, alignItems: 'center', justifyContent: 'center', opacity: !coachEnabled || busy || !input.trim() ? 0.4 : 1 }}
-            accessibilityLabel="Skicka"
+            accessibilityLabel="Send"
           >
             <Text style={{ color: '#fff', fontSize: 20, fontWeight: '800' }}>↑</Text>
           </Pressable>

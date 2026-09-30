@@ -42,7 +42,7 @@ export function nextUp(state: State, now = new Date()): Next {
   const nextTest = (list: TestBattery[], since: string): Next | null => {
     const pending = list.find((b) => !testsSince(b, since));
     if (!pending) return null;
-    if (testedToday) return { kind: 'rest', note: 'Bra jobbat med testet! Nästa test imorgon.', then: pending };
+    if (testedToday) return { kind: 'rest', note: 'Nice work on the test! Next test tomorrow.', then: pending };
     return { kind: 'test', battery: pending };
   };
 
@@ -53,19 +53,19 @@ export function nextUp(state: State, now = new Date()): Next {
   const pending = hardOrder.filter((s) => !doneSessions.has(s));
 
   if (pending.length === 0) {
-    if (week === 12) return nextTest(['A', 'B', 'C'], from) ?? { kind: 'rest', note: 'Cykeln är klar! Nästa vecka börjar vecka 1 med dina nya nivåer.' };
+    if (week === 12) return nextTest(['A', 'B', 'C'], from) ?? { kind: 'rest', note: 'The cycle is complete! Next week starts Week 1 with your new levels.' };
     if (week === 6) {
       const mini = nextTest(['mini'], from);
       if (mini) return mini;
     }
-    if (trainedToday) return { kind: 'rest', note: 'Veckans pass är klara 🎉 Mikroträning och vila resten av veckan.' };
+    if (trainedToday) return { kind: 'rest', note: 'This week\'s workouts are done 🎉 Micro-practice and rest for the rest of the week.' };
     if (!doneSessions.has('skill') && week !== 6) {
-      return { kind: 'session', session: 'skill', deload, note: 'Valfritt: handstående, kompression och kondition.' };
+      return { kind: 'session', session: 'skill', deload, note: 'Optional: handstand, compression and conditioning.' };
     }
-    return { kind: 'rest', note: 'Veckans pass är klara 🎉 Mikroträning och vila resten av veckan.' };
+    return { kind: 'rest', note: 'This week\'s workouts are done 🎉 Micro-practice and rest for the rest of the week.' };
   }
 
-  if (trainedToday) return { kind: 'rest', note: 'Du har redan tränat idag. Gör mikroträningen och vila.', then: pending[0] };
+  if (trainedToday) return { kind: 'rest', note: 'You\'ve already trained today. Do your micro-practice and rest.', then: pending[0] };
 
   const lastOf = (group: SessionId[]) =>
     state.workouts.filter((w) => group.includes(w.session)).reduce<number>((m, w) => Math.max(m, new Date(w.date).getTime()), 0);
@@ -75,8 +75,8 @@ export function nextUp(state: State, now = new Date()): Next {
 
   const choice = pending.find(rested);
   if (choice) {
-    const note = choice !== pending[0] ? `${isUpper(pending[0]) ? 'Överkroppen' : 'Benen'} behöver vila – kör det här först.` : undefined;
+    const note = choice !== pending[0] ? `${isUpper(pending[0]) ? 'Your upper body' : 'Your legs'} need rest – do this one first.` : undefined;
     return { kind: 'session', session: choice, deload, note };
   }
-  return { kind: 'rest', note: 'Musklerna från förra passet återhämtar sig. Mikroträning idag, nästa pass imorgon.', then: pending[0] };
+  return { kind: 'rest', note: 'Your muscles from the last workout are recovering. Micro-practice today, next workout tomorrow.', then: pending[0] };
 }

@@ -39,7 +39,7 @@ export function suggest(current: WorkoutLog, history: WorkoutLog[]): Suggestion[
 
     const maxPain = Math.max(...sets.map((s) => s.pain ?? 0));
     if (maxPain > 5) {
-      out.push({ ladder: e.ladder, from: e.level, kind: 'modify', reason: `Smärta ${maxPain}/10: sluta med rörelsemönstret och kontakta fysioterapeut/läkare om det kvarstår.` });
+      out.push({ ladder: e.ladder, from: e.level, kind: 'modify', reason: `Pain ${maxPain}/10: stop this movement pattern and see a physiotherapist/doctor if it persists.` });
       continue;
     }
     if (maxPain >= 3) {
@@ -48,7 +48,7 @@ export function suggest(current: WorkoutLog, history: WorkoutLog[]): Suggestion[
         from: e.level,
         to: neighbour(e.ladder, e.level, -1),
         kind: 'modify',
-        reason: `Smärta ${maxPain}/10: nästa pass −1 nivå och −30–50 % volym för mönstret. Utvärdera om 1 vecka.`,
+        reason: `Pain ${maxPain}/10: next workout −1 level and −30–50% volume for this pattern. Re-evaluate in 1 week.`,
       });
       continue;
     }
@@ -61,15 +61,15 @@ export function suggest(current: WorkoutLog, history: WorkoutLog[]): Suggestion[
     if (isHold(e)) {
       const best = Math.max(...sets.map((s) => s.value));
       if (allTop(e) && prev && allTop(prev) && best >= 15) {
-        out.push({ ladder: e.ladder, from: e.level, to: neighbour(e.ladder, e.level, 1), kind: 'test', reason: 'Alla hållningar klara 2 pass i rad och bästa ≥15 s: testa nästa nivå. Klarar du ≥4 s, byt med hållningar = max − 2 s; annars blandade set.' });
+        out.push({ ladder: e.ladder, from: e.level, to: neighbour(e.ladder, e.level, 1), kind: 'test', reason: 'All holds completed 2 workouts in a row and best ≥15 s: test the next level. If you manage ≥4 s, switch with holds = max − 2 s; otherwise mixed sets.' });
       }
       continue;
     }
 
     if (sets[0].value < e.min) {
-      out.push({ ladder: e.ladder, from: e.level, to: neighbour(e.ladder, e.level, -1), kind: 'down', reason: `Set 1 (${sets[0].value}) under intervallets botten (${e.min}): gå ner en nivå eller lägg till band nästa pass.` });
+      out.push({ ladder: e.ladder, from: e.level, to: neighbour(e.ladder, e.level, -1), kind: 'down', reason: `Set 1 (${sets[0].value}) below the bottom of the range (${e.min}): drop one level or add a band next workout.` });
     } else if (allTop(e) && prev && allTop(prev)) {
-      out.push({ ladder: e.ladder, from: e.level, to: neighbour(e.ladder, e.level, 1), kind: 'up', reason: `Toppen av intervallet (${e.max}) på alla set 2 pass i rad: gå upp en nivå. Ger nästa nivå färre reps än ${e.min}, lägg till vikt istället.` });
+      out.push({ ladder: e.ladder, from: e.level, to: neighbour(e.ladder, e.level, 1), kind: 'up', reason: `Top of the range (${e.max}) on all sets 2 workouts in a row: move up one level. If the next level gives fewer than ${e.min} reps, add weight instead.` });
     }
   }
   return out;

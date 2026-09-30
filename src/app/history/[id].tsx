@@ -11,7 +11,7 @@ export default function HistoryScreen() {
   const { state, update } = useStore();
   const t = useTheme();
   const w = state.workouts.find((x) => x.id === id);
-  if (!w) return <Screen><P>Passet finns inte längre.</P></Screen>;
+  if (!w) return <Screen><P>This workout no longer exists.</P></Screen>;
 
   const remove = () => {
     const doIt = () => {
@@ -19,25 +19,25 @@ export default function HistoryScreen() {
       router.back();
     };
     if (Platform.OS === 'web') {
-      if (globalThis.confirm?.('Ta bort passet?')) doIt();
+      if (globalThis.confirm?.('Delete this workout?')) doIt();
     } else {
-      Alert.alert('Ta bort passet?', 'Det går inte att ångra.', [
-        { text: 'Avbryt', style: 'cancel' },
-        { text: 'Ta bort', style: 'destructive', onPress: doIt },
+      Alert.alert('Delete this workout?', 'This cannot be undone.', [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Delete', style: 'destructive', onPress: doIt },
       ]);
     }
   };
 
   return (
     <Screen>
-      <Stack.Screen options={{ title: SESSIONS[w.session]?.title ?? 'Pass' }} />
+      <Stack.Screen options={{ title: SESSIONS[w.session]?.title ?? 'Workout' }} />
       <Label>
-        {new Date(w.date).toLocaleString('sv-SE')} · Vecka {w.week}
+        {new Date(w.date).toLocaleString('en-GB')} · Week {w.week}
         {w.deload ? ' · deload' : ''}
       </Label>
       <H1>{SESSIONS[w.session]?.title}</H1>
-      {w.flags > 0 && <P muted>Dagsformsflaggor: {w.flags}</P>}
-      {w.entries.length === 0 && <P muted>Genomfört (inga set loggade).</P>}
+      {w.flags > 0 && <P muted>Readiness flags: {w.flags}</P>}
+      {w.entries.length === 0 && <P muted>Completed (no sets logged).</P>}
       {w.entries.map((e) => (
         <Card key={e.slot}>
           <Text style={{ color: t.text, fontWeight: '700', fontSize: 15 }}>
@@ -48,16 +48,16 @@ export default function HistoryScreen() {
             {e.sets.map((s) => (s.value === null ? '–' : s.value)).join(' / ')} {unitLabel(e.unit)}
             {e.sets.some((s) => s.rir !== null) ? `  ·  RIR ${e.sets.map((s) => s.rir ?? '–').join('/')}` : ''}
           </Text>
-          {(e.sets[0]?.pain ?? 0) > 0 && <Text style={{ color: t.warn }}>Smärta {e.sets[0].pain}/10</Text>}
+          {(e.sets[0]?.pain ?? 0) > 0 && <Text style={{ color: t.warn }}>Pain {e.sets[0].pain}/10</Text>}
         </Card>
       ))}
       {w.notes && (
         <Card>
-          <Label>Anteckningar</Label>
+          <Label>Notes</Label>
           <P>{w.notes}</P>
         </Card>
       )}
-      <Button title="Ta bort pass" variant="danger" onPress={remove} />
+      <Button title="Delete workout" variant="danger" onPress={remove} />
     </Screen>
   );
 }

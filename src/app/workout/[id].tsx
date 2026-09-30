@@ -197,16 +197,16 @@ export default function WorkoutScreen() {
     const ups = result.suggestions.filter((s) => s.kind === 'up' || s.kind === 'test');
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: t.bg }} edges={['left', 'right', 'bottom']}>
-        <Stack.Screen options={{ title: 'Klart!', headerBackVisible: false, gestureEnabled: false, headerRight: () => null }} />
+        <Stack.Screen options={{ title: 'Done!', headerBackVisible: false, gestureEnabled: false, headerRight: () => null }} />
         <ScrollView contentContainerStyle={styles.screen}>
           <Text style={{ fontSize: 64, textAlign: 'center' }}>{ups.length ? '🎉' : '💪'}</Text>
-          <H1>{ups.length ? 'Dags för nästa nivå!' : 'Bra jobbat!'}</H1>
+          <H1>{ups.length ? 'Time for the next level!' : 'Great job!'}</H1>
           <P muted>
             {SESSION_SV[session.id].title} · {sets} set · {mins} min
           </P>
           {result.suggestions.length === 0 && (
             <Card>
-              <P>Samma nivåer nästa gång – försök klara 1 rep till på minst ett set.</P>
+              <P>Same levels next time – try to get 1 more rep on at least one set.</P>
             </Card>
           )}
           {result.suggestions.map((s, i) => {
@@ -214,7 +214,7 @@ export default function WorkoutScreen() {
             return (
               <Card key={i} style={good ? { borderColor: t.good, borderWidth: 2 } : undefined}>
                 <Row>
-                  <Chip text={s.kind === 'up' ? 'Ny nivå' : s.kind === 'down' ? 'Lättare variant' : s.kind === 'test' ? 'Testa nästa' : 'Ta det lugnt'} tone={good ? 'good' : 'warn'} />
+                  <Chip text={s.kind === 'up' ? 'New level' : s.kind === 'down' ? 'Easier variation' : s.kind === 'test' ? 'Try the next one' : 'Take it easy'} tone={good ? 'good' : 'warn'} />
                 </Row>
                 <Text style={{ color: t.text, fontSize: 17, fontWeight: '700' }}>
                   {LEVEL_SV[s.from] ?? s.from}
@@ -223,7 +223,7 @@ export default function WorkoutScreen() {
                 <P muted>{s.reason}</P>
                 {s.to && (
                   <Button
-                    title={applied[i] ? (good ? 'Ny nivå satt 🎉' : 'Ändrat ✓') : good ? 'Ja, gå vidare!' : 'Byt till lättare'}
+                    title={applied[i] ? (good ? 'New level set 🎉' : 'Changed ✓') : good ? 'Yes, level up!' : 'Switch to easier'}
                     variant={applied[i] ? 'secondary' : 'primary'}
                     disabled={applied[i]}
                     onPress={() => {
@@ -237,20 +237,20 @@ export default function WorkoutScreen() {
             );
           })}
           <Card>
-            <Label>Anteckning (valfritt)</Label>
+            <Label>Note (optional)</Label>
             <TextInput
               value={notes}
               onChangeText={(x) => {
                 setNotes(x);
                 update((st) => ({ ...st, workouts: st.workouts.map((w) => (w.id === result.log.id ? { ...w, notes: x.trim() || undefined } : w)) }));
               }}
-              placeholder="Hur kändes det?"
+              placeholder="How did it feel?"
               placeholderTextColor={t.muted}
               multiline
               style={{ color: t.text, minHeight: 44, fontSize: 15 }}
             />
           </Card>
-          <Button title="Klar" onPress={() => router.dismissTo('/')} />
+          <Button title="Done" onPress={() => router.dismissTo('/')} />
         </ScrollView>
       </SafeAreaView>
     );
@@ -259,7 +259,7 @@ export default function WorkoutScreen() {
   if (!cur || !step) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: t.bg, padding: 16 }}>
-        <P>Inga övningar i det här passet.</P>
+        <P>No exercises in this workout.</P>
       </SafeAreaView>
     );
   }
@@ -280,7 +280,7 @@ export default function WorkoutScreen() {
       <SafeAreaView style={{ flex: 1, backgroundColor: t.bg }} edges={['left', 'right', 'bottom']}>
         <Stack.Screen options={{ title: SESSION_SV[session.id].title }} />
         <ScrollView contentContainerStyle={styles.screen}>
-          <Label>Innan du börjar</Label>
+          <Label>Before you start</Label>
           <H1>{w.title}</H1>
           <Card>
             {w.steps.map((x, i) => (
@@ -289,10 +289,10 @@ export default function WorkoutScreen() {
               </Text>
             ))}
           </Card>
-          <HowToToggle mediaKey="wrist" label="Visa handledsuppvärmning" />
-          <Button title="Klar – till första övningen" onPress={() => setPhase('work')} style={{ paddingVertical: 16 }} />
+          <HowToToggle mediaKey="wrist" label="Show wrist warm-up" />
+          <Button title="Done – to the first exercise" onPress={() => setPhase('work')} style={{ paddingVertical: 16 }} />
           <Pressable onPress={() => setPhase('work')} hitSlop={8}>
-            <Text style={{ color: t.muted, textAlign: 'center', fontWeight: '600' }}>Redan uppvärmd – hoppa över</Text>
+            <Text style={{ color: t.muted, textAlign: 'center', fontWeight: '600' }}>Already warmed up – skip</Text>
           </Pressable>
         </ScrollView>
       </SafeAreaView>
@@ -309,17 +309,17 @@ export default function WorkoutScreen() {
           <View style={{ height: 4, width: `${progressPct}%`, backgroundColor: t.accent }} />
         </View>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24, gap: 16 }}>
-          <Label>Vila</Label>
+          <Label>Rest</Label>
           <Text style={{ color: t.text, fontSize: 88, fontWeight: '800', fontVariant: ['tabular-nums'] }}>
             {Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, '0')}
           </Text>
           <P muted style={{ textAlign: 'center' }}>
-            Nästa: {upcoming.title} · set {nextStep.set + 1} av {upcoming.plannedSets}
+            Next: {upcoming.title} · set {nextStep.set + 1} of {upcoming.plannedSets}
           </P>
           <Row style={{ justifyContent: 'center' }}>
             <Button title="+15 s" variant="secondary" onPress={() => setRestEnd((x) => Math.max(x ?? 0, Date.now()) + 15000)} />
             <Button
-              title="Kör nu"
+              title="Go now"
               onPress={() => {
                 setRestEnd(null);
                 setPhase('work');
@@ -336,7 +336,7 @@ export default function WorkoutScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: t.bg }} edges={['left', 'right', 'bottom']}>
       <Stack.Screen options={{ title: SESSION_SV[session.id].title, headerRight: () => (
         <Pressable onPress={() => (entries.some((e) => e.sets.some((s) => s.value !== null)) ? finish(entries) : router.back())} hitSlop={10}>
-          <Text style={{ color: t.accent, fontWeight: '700' }}>Avsluta</Text>
+          <Text style={{ color: t.accent, fontWeight: '700' }}>Finish</Text>
         </Pressable>
       ) }} />
       <View style={{ height: 4, backgroundColor: t.grid }}>
@@ -344,26 +344,26 @@ export default function WorkoutScreen() {
       </View>
       <ScrollView contentContainerStyle={[styles.screen, { paddingBottom: 24 }]}>
         <Label>
-          Övning {exNo} av {plan.length} · Set {step.set + 1} av {cur.plannedSets}
+          Exercise {exNo} of {plan.length} · Set {step.set + 1} of {cur.plannedSets}
         </Label>
         <Text style={{ color: t.text, fontSize: 28, fontWeight: '800', letterSpacing: -0.5 }}>{cur.title}</Text>
         <Row>
-          {cur.swapped && <Chip text="Ersatt – du saknar utrustning" tone="accent" />}
-          {partner && <Chip text={`Växla med: ${partner.title}`} />}
+          {cur.swapped && <Chip text="Swapped – missing equipment" tone="accent" />}
+          {partner && <Chip text={`Alternate with: ${partner.title}`} />}
         </Row>
 
         {media.anim ? <Figure anim={media.anim} size={0.9} /> : null}
-        <HowToToggle mediaKey={cur.mediaKey} label={media.anim ? 'Muskler & video' : 'Se hur man gör'} />
+        <HowToToggle mediaKey={cur.mediaKey} label={media.anim ? 'Muscles & video' : 'How to do it'} />
 
         <Card>
           <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
             <Text style={{ color: t.text, fontSize: 22, fontWeight: '800' }}>
-              {hold ? 'Håll ' : ''}
+              {hold ? 'Hold ' : ''}
               {range(cur)}
             </Text>
             <Explain
-              text={`${cur.name}${cur.level ? ` (${cur.level})` : ''}. RIR ${cur.plannedRir}, tempo ${cur.tempo}, vila ${cur.rest}. ${cur.cue}`}
-              context={`Mitt i passet ${SESSION_SV[session.id].title}: övning ${cur.title}, set ${step.set + 1} av ${cur.plannedSets}, mål ${range(cur)}`}
+              text={`${cur.name}${cur.level ? ` (${cur.level})` : ''}. RIR ${cur.plannedRir}, tempo ${cur.tempo}, rest ${cur.rest}. ${cur.cue}`}
+              context={`In the middle of the workout ${SESSION_SV[session.id].title}: exercise ${cur.title}, set ${step.set + 1} of ${cur.plannedSets}, target ${range(cur)}`}
             />
           </Row>
           <Text style={{ color: t.muted, fontSize: 15 }}>
@@ -383,7 +383,7 @@ export default function WorkoutScreen() {
         <View style={{ alignItems: 'center', gap: 10 }}>
           {hold && (
             <Button
-              title={holdSecs !== null ? `Stopp · ${holdSecs} s` : '▶ Starta tidtagning'}
+              title={holdSecs !== null ? `Stop · ${holdSecs} s` : '▶ Start timer'}
               variant={holdSecs !== null ? 'primary' : 'secondary'}
               onPress={() => {
                 if (holdStart === null) setHoldStart(Date.now());
@@ -411,7 +411,7 @@ export default function WorkoutScreen() {
 
         {!hold && cur.role !== 'plyo' && (
           <View style={{ gap: 6 }}>
-            <Text style={{ color: t.muted, fontSize: 13, textAlign: 'center' }}>Hur tungt var det?</Text>
+            <Text style={{ color: t.muted, fontSize: 13, textAlign: 'center' }}>How hard was it?</Text>
             <Row style={{ justifyContent: 'center' }}>
               {EFFORTS.map((e) => (
                 <Chip key={e.label} text={`  ${e.label}  `} tone={effort === e.rir ? 'accent' : 'neutral'} onPress={() => setEffort(e.rir)} />
@@ -420,21 +420,21 @@ export default function WorkoutScreen() {
           </View>
         )}
 
-        <Button title="Klart ✓" onPress={done} style={{ paddingVertical: 16 }} />
+        <Button title="Done ✓" onPress={done} style={{ paddingVertical: 16 }} />
 
         <Row style={{ justifyContent: 'space-between' }}>
           <Pressable onPress={() => setPainOpen((x) => !x)} hitSlop={8}>
-            <Text style={{ color: pain >= 3 ? t.warn : t.muted, fontWeight: '600' }}>{pain > 0 ? `Smärta ${pain}/10` : 'Gör det ont?'}</Text>
+            <Text style={{ color: pain >= 3 ? t.warn : t.muted, fontWeight: '600' }}>{pain > 0 ? `Pain ${pain}/10` : 'Does it hurt?'}</Text>
           </Pressable>
           <Pressable onPress={skipExercise} hitSlop={8}>
-            <Text style={{ color: t.muted, fontWeight: '600' }}>Hoppa över övningen ›</Text>
+            <Text style={{ color: t.muted, fontWeight: '600' }}>Skip exercise ›</Text>
           </Pressable>
         </Row>
 
         {painOpen && (
           <Card>
-            <H2>Hur ont i led eller sena?</H2>
-            <P muted>Träningsvärk och muskeltrötthet räknas inte.</P>
+            <H2>How much joint or tendon pain?</H2>
+            <P muted>Muscle soreness and fatigue don’t count.</P>
             <Row>
               {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
                 <Chip key={n} text={` ${n} `} tone={n >= 3 ? 'warn' : 'neutral'} onPress={() => setPain(n)} />
@@ -444,13 +444,13 @@ export default function WorkoutScreen() {
         )}
         {pain >= 3 && (
           <Card style={{ borderColor: t.warn, borderWidth: 1 }}>
-            <P style={{ color: t.warn, fontWeight: '700' }}>{pain > 5 ? 'Sluta med övningen nu.' : 'Ta det försiktigt.'}</P>
+            <P style={{ color: t.warn, fontWeight: '700' }}>{pain > 5 ? 'Stop this exercise now.' : 'Take it carefully.'}</P>
             <P>
               {pain > 5
-                ? 'Skarp eller stark smärta ska inte tränas igenom. Hoppa över övningen och kontakta fysioterapeut om det inte går över.'
-                : 'Nästa gång kör du en lättare variant med mindre volym. Hoppa gärna över resten av den här övningen.'}
+                ? "Don't train through sharp or strong pain. Skip the exercise and see a physiotherapist if it doesn't go away."
+                : 'Next time you will do an easier variation with less volume. Feel free to skip the rest of this exercise.'}
             </P>
-            <Button title="Hoppa över övningen" variant="secondary" onPress={skipExercise} />
+            <Button title="Skip exercise" variant="secondary" onPress={skipExercise} />
           </Card>
         )}
       </ScrollView>

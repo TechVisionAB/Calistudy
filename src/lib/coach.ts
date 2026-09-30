@@ -30,19 +30,19 @@ export function appContext(state: State, screen?: string): string {
     .map((w) => `${w.date.slice(0, 10)} ${SESSION_SV[w.session]?.title ?? w.session}: ${w.entries.map((e) => `${e.level ?? e.name} ${e.sets.map((s) => s.value ?? '–').join('/')}`).join('; ')}`)
     .join('\n');
   return [
-    `Programvecka: ${p.week} (pass gjorda denna vecka: ${p.done.length}/${p.goal})`,
-    `Nästa i appen: ${n.kind === 'session' ? SESSION_SV[n.session].title : n.kind === 'test' ? `test ${n.battery}` : n.kind}`,
-    `Erfarenhet: ${state.profile?.experience ?? 'okänd'} · Utrustning: ${state.profile?.equipment.join(', ') || 'ingen'}`,
-    `Nivåer: ${levels}`,
-    last && `Senaste pass:\n${last}`,
-    screen && `Användaren tittar på:\n${screen}`,
+    `Program week: ${p.week} (workouts done this week: ${p.done.length}/${p.goal})`,
+    `Next in the app: ${n.kind === 'session' ? SESSION_SV[n.session].title : n.kind === 'test' ? `test ${n.battery}` : n.kind}`,
+    `Experience: ${state.profile?.experience ?? 'unknown'} · Equipment: ${state.profile?.equipment.join(', ') || 'none'}`,
+    `Levels: ${levels}`,
+    last && `Recent workouts:\n${last}`,
+    screen && `The user is looking at:\n${screen}`,
   ]
     .filter(Boolean)
     .join('\n');
 }
 
 export async function askCoach(messages: ChatMsg[], context: string): Promise<string> {
-  if (!URL) throw new Error('Coachen är inte aktiverad.');
+  if (!URL) throw new Error('The coach is not enabled.');
   const res = await fetch(URL, {
     method: 'POST',
     headers: {
@@ -52,6 +52,6 @@ export async function askCoach(messages: ChatMsg[], context: string): Promise<st
     body: JSON.stringify({ messages, context }),
   });
   const data = (await res.json().catch(() => ({}))) as { reply?: string; error?: string };
-  if (!res.ok || !data.reply) throw new Error(data.error ?? `Fel ${res.status}`);
+  if (!res.ok || !data.reply) throw new Error(data.error ?? `Error ${res.status}`);
   return data.reply;
 }

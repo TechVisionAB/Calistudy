@@ -17,7 +17,7 @@ export default function SessionScreen() {
   const t = useTheme();
   const [advanced, setAdvanced] = useState(false);
   const session = SESSIONS[params.id];
-  if (!session) return <Screen><P>Okänt pass.</P></Screen>;
+  if (!session) return <Screen><P>Unknown workout.</P></Screen>;
 
   const week = Number(params.week ?? 1);
   const flags = Number(params.flags ?? 0);
@@ -39,15 +39,15 @@ export default function SessionScreen() {
     <Screen>
       <Stack.Screen options={{ title: sv.title }} />
       <View>
-        <Label>Vecka {week} · {session.duration}</Label>
+        <Label>Week {week} · {session.duration}</Label>
         <H1>{sv.title}</H1>
         <P muted>{sv.short}</P>
       </View>
       <Row>
-        {deload && <Chip text="Lätt vecka: halva mängden, inga hopp" tone="accent" />}
-        {flags > 0 && <Chip text={`Dagsform: ${flags} ⚠︎`} tone={flags >= 3 ? 'warn' : 'accent'} />}
+        {deload && <Chip text="Easy week: half the volume, no jumps" tone="accent" />}
+        {flags > 0 && <Chip text={`Readiness: ${flags} ⚠︎`} tone={flags >= 3 ? 'warn' : 'accent'} />}
       </Row>
-      {hasSets && flags < 3 && <Button title="Starta passet" onPress={startWorkout} />}
+      {hasSets && flags < 3 && <Button title="Start workout" onPress={startWorkout} />}
       {flags > 0 && <P>{READINESS.actions[Math.min(flags, 3)]}</P>}
       {session.intro && <P muted>{session.intro}</P>}
 
@@ -65,11 +65,11 @@ export default function SessionScreen() {
         <Card key={e.slot} style={e.plannedSets === 0 ? { opacity: 0.5 } : undefined}>
           <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
             <Text style={{ color: t.text, fontWeight: '700', fontSize: 17, flex: 1 }}>{e.title}</Text>
-            <Explain text={`${e.name}${e.level ? ` (${e.level})` : ''}. RIR ${e.plannedRir}, tempo ${e.tempo}, vila ${e.rest}. ${e.cue}`} context={`Passöversikt ${sv.title}: ${e.title}`} />
+            <Explain text={`${e.name}${e.level ? ` (${e.level})` : ''}. RIR ${e.plannedRir}, tempo ${e.tempo}, rest ${e.rest}. ${e.cue}`} context={`Workout overview ${sv.title}: ${e.title}`} />
           </Row>
-          {e.swapped && <Chip text="Ersatt – du saknar utrustning" tone="accent" />}
+          {e.swapped && <Chip text="Swapped – missing equipment" tone="accent" />}
           {e.plannedSets === 0 ? (
-            <P muted>Hoppas över den här veckan.</P>
+            <P muted>Skipped this week.</P>
           ) : (
             <Text style={{ color: t.text, fontSize: 15 }}>
               {e.plannedSets} × {range(e)} <Text style={{ color: t.muted }}>· {effortText(e.plannedRir)}</Text>
@@ -79,7 +79,7 @@ export default function SessionScreen() {
           {advanced && (
             <Text style={{ color: t.muted, fontSize: 13 }}>
               {e.slot} · {e.name}
-              {e.level ? ` · ${e.level}` : ''} · vila {e.rest} · RIR {e.plannedRir} · tempo {e.tempo}
+              {e.level ? ` · ${e.level}` : ''} · rest {e.rest} · RIR {e.plannedRir} · tempo {e.tempo}
             </Text>
           )}
           <HowToToggle mediaKey={e.mediaKey} />
@@ -87,7 +87,7 @@ export default function SessionScreen() {
       ))}
 
       <Pressable onPress={() => setAdvanced((x) => !x)} hitSlop={8}>
-        <Text style={{ color: t.muted, fontWeight: '600', textAlign: 'center' }}>{advanced ? 'Dölj detaljer' : 'Visa detaljer (RIR, tempo, vila, Block 2)'}</Text>
+        <Text style={{ color: t.muted, fontWeight: '600', textAlign: 'center' }}>{advanced ? 'Hide details' : 'Show details (RIR, tempo, rest, Block 2)'}</Text>
       </Pressable>
 
       {session.steps && (
@@ -98,21 +98,21 @@ export default function SessionScreen() {
 
       {advanced && session.block2 && (
         <Card style={week >= 7 && week <= 11 ? { borderColor: t.accent, borderWidth: 2 } : undefined}>
-          <H2>Block 2-regler (vecka 7–11)</H2>
-          {week >= 7 && week <= 11 ? <P muted>Gäller denna vecka — tillämpa innan du börjar.</P> : <P muted>Gäller från vecka 7.</P>}
+          <H2>Block 2 rules (weeks 7–11)</H2>
+          {week >= 7 && week <= 11 ? <P muted>Applies this week — apply before you start.</P> : <P muted>Applies from week 7.</P>}
           <Bullets items={session.block2} />
         </Card>
       )}
 
       {flags >= 3 && hasSets ? (
         <Card>
-          <P>3+ flaggor: gör bara mikroträning + Zon 2 idag och flytta det hårda passet 24 h.</P>
-          <Button title="Starta ändå" variant="secondary" onPress={startWorkout} />
+          <P>3+ flags: do only micro-practice + Zone 2 today and push the hard workout back 24 h.</P>
+          <Button title="Start anyway" variant="secondary" onPress={startWorkout} />
         </Card>
       ) : hasSets ? (
-        <Button title="Starta passet" onPress={startWorkout} />
+        <Button title="Start workout" onPress={startWorkout} />
       ) : session.id !== 'rest' ? (
-        <Button title="Markera som genomfört" onPress={markDone} />
+        <Button title="Mark as done" onPress={markDone} />
       ) : null}
     </Screen>
   );

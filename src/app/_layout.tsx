@@ -34,22 +34,22 @@ export default function RootLayout() {
           headerTintColor: t.accent,
           headerTitleStyle: { color: t.text },
           contentStyle: { backgroundColor: t.bg },
-          headerBackTitle: 'Tillbaka',
+          headerBackTitle: 'Back',
         }}
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="session/[id]" options={{ title: 'Pass' }} />
-        <Stack.Screen name="workout/[id]" options={{ title: 'Träna', gestureEnabled: false }} />
-        <Stack.Screen name="ladder/[id]" options={{ title: 'Nivåstege' }} />
+        <Stack.Screen name="session/[id]" options={{ title: 'Workout' }} />
+        <Stack.Screen name="workout/[id]" options={{ title: 'Train', gestureEnabled: false }} />
+        <Stack.Screen name="ladder/[id]" options={{ title: 'Level ladder' }} />
         <Stack.Screen name="test/[battery]" options={{ title: 'Test' }} />
         <Stack.Screen name="guide/[id]" options={{ title: 'Guide' }} />
-        <Stack.Screen name="history/[id]" options={{ title: 'Loggat pass' }} />
-        <Stack.Screen name="demos" options={{ title: 'Övningsdemos' }} />
-        <Stack.Screen name="progress" options={{ title: 'Framsteg' }} />
-        <Stack.Screen name="reminders" options={{ title: 'Påminnelser' }} />
-        <Stack.Screen name="report" options={{ title: 'Testrapport' }} />
+        <Stack.Screen name="history/[id]" options={{ title: 'Logged workout' }} />
+        <Stack.Screen name="demos" options={{ title: 'Exercise demos' }} />
+        <Stack.Screen name="progress" options={{ title: 'Progress' }} />
+        <Stack.Screen name="reminders" options={{ title: 'Reminders' }} />
+        <Stack.Screen name="report" options={{ title: 'Test report' }} />
         <Stack.Screen name="welcome" options={{ headerShown: false, gestureEnabled: false }} />
-        <Stack.Screen name="coach" options={{ title: 'AI-coach' }} />
+        <Stack.Screen name="coach" options={{ title: 'AI coach' }} />
       </Stack>
     </StoreProvider>
   );

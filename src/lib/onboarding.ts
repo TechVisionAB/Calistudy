@@ -14,9 +14,9 @@ const START: Record<Experience, Record<string, string>> = {
 };
 
 export const EXPERIENCES: { id: Experience; title: string; desc: string }[] = [
-  { id: 'new', title: 'Nybörjare', desc: 'Tränar sällan. Klarar färre än 10 armhävningar och inga pull-ups.' },
-  { id: 'some', title: 'Lite vana', desc: '10–20 armhävningar, någon enstaka pull-up.' },
-  { id: 'solid', title: 'Van', desc: '20+ armhävningar, 5–10 pull-ups och några dips.' },
+  { id: 'new', title: 'Beginner', desc: 'Rarely trains. Fewer than 10 push-ups and no pull-ups.' },
+  { id: 'some', title: 'Some experience', desc: '10–20 push-ups, the odd pull-up.' },
+  { id: 'solid', title: 'Experienced', desc: '20+ push-ups, 5–10 pull-ups and a few dips.' },
 ];
 
 const usable = (code: string, equipment: Equip[]) => {

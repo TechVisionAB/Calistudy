@@ -51,21 +51,21 @@ export default function RemindersScreen() {
   if (!remindersSupported) {
     return (
       <Screen>
-        <Stack.Screen options={{ title: 'Påminnelser' }} />
-        <P>Påminnelser fungerar i mobilappen (iPhone/Android), inte i webbläsaren.</P>
+        <Stack.Screen options={{ title: 'Reminders' }} />
+        <P>Reminders work in the mobile app (iPhone/Android), not in the browser.</P>
       </Screen>
     );
   }
 
   const items: { key: keyof Reminders; title: string; desc: string }[] = [
-    { key: 'morning', title: 'Dagens pass', desc: 'En notis på morgonen med dagens pass enligt programmet (inte på vilodagar).' },
-    { key: 'evening', title: 'Mikroträning', desc: 'Påminner på kvällen om du inte bockat av mikroträningen (tis, ons, fre, lör).' },
+    { key: 'morning', title: "Today's workout", desc: "A morning notification with today's workout from the program (not on rest days)." },
+    { key: 'evening', title: 'Micro-practice', desc: "An evening reminder if you haven't ticked off micro-practice (Tue, Wed, Fri, Sat)." },
   ];
 
   return (
     <Screen>
-      <Stack.Screen options={{ title: 'Påminnelser' }} />
-      {!state.startMonday && <P muted>Starta programmet på Idag-fliken först, så vet appen vilket pass som gäller.</P>}
+      <Stack.Screen options={{ title: 'Reminders' }} />
+      {!state.startMonday && <P muted>Start the program from the Today tab first, so the app knows which workout is up.</P>}
       {items.map((it) => {
         const r = state.reminders[it.key];
         return (
@@ -83,10 +83,10 @@ export default function RemindersScreen() {
       })}
       {denied && (
         <Card>
-          <P style={{ color: t.warn }}>Notiser är avstängda för appen. Slå på dem i telefonens inställningar och försök igen.</P>
+          <P style={{ color: t.warn }}>Notifications are turned off for the app. Turn them on in your phone’s settings and try again.</P>
         </Card>
       )}
-      <P muted style={{ fontSize: 13 }}>Notiserna planeras två veckor framåt och uppdateras varje gång du öppnar appen.</P>
+      <P muted style={{ fontSize: 13 }}>Notifications are scheduled two weeks ahead and updated every time you open the app.</P>
     </Screen>
   );
 }

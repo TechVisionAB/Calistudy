@@ -5,7 +5,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 
 const guide = readFileSync('docs/guide.md', 'utf8');
 const readme = readFileSync('README.md', 'utf8');
-const features = readme.slice(readme.indexOf('## Funktioner'), readme.indexOf('## Kom igång')).trim();
+const features = readme.slice(readme.indexOf('## Features'), readme.indexOf('## Getting started')).trim();
 
 const glossarySrc = readFileSync('src/data/glossary.ts', 'utf8');
 const glossary = [...glossarySrc.matchAll(/term: '([^']+)'.*?text: '((?:[^'\\]|\\.)*)'/g)].map(([, term, text]) => `- ${term}: ${text.replace(/\\'/g, "'")}`).join('\n');
@@ -15,11 +15,11 @@ const levelBlock = svSrc.slice(svSrc.indexOf('export const LEVEL_SV'), svSrc.ind
 const levels = [...levelBlock.matchAll(/(\w+): '([^']+)'/g)].map(([, code, name]) => `${code} = ${name}`).join('; ');
 
 const knowledge = `<app_description>
-Appen Calistudy bygger på guiden nedan. Så fungerar appen (flikar: Idag, Program, Nivåer, Logg, Guide):
+The Calistudy app is built on the guide below. How the app works (tabs: Today, Program, Levels, Log, Guide):
 
 ${features}
 
-Svenska namn på nivåerna i appen: ${levels}
+Display names of the levels in the app: ${levels}
 </app_description>
 
 <glossary>

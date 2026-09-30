@@ -45,16 +45,16 @@ export function MuscleMap({ mediaKey }: { mediaKey?: string }) {
         <Body data={data} side="back" scale={0.62} defaultFill={base} border="none" />
       </View>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12, justifyContent: 'center' }}>
-        <Dot color={PRIMARY} label="Jobbar mest" />
-        <Dot color={SECONDARY} label="Hjälper till" />
-        <Dot color={WARN} label="Ska inte göra ont" />
+        <Dot color={PRIMARY} label="Working most" />
+        <Dot color={SECONDARY} label="Assisting" />
+        <Dot color={WARN} label="Should not hurt" />
       </View>
       <Text style={{ color: t.text, fontSize: 15, lineHeight: 21 }}>
-        <Text style={{ fontWeight: '700' }}>✅ Här ska det kännas: </Text>
+        <Text style={{ fontWeight: '700' }}>✅ You should feel it here: </Text>
         {a.feel}
       </Text>
       <Text style={{ color: t.text, fontSize: 15, lineHeight: 21 }}>
-        <Text style={{ fontWeight: '700' }}>⛔ Här ska det INTE kännas: </Text>
+        <Text style={{ fontWeight: '700' }}>⛔ You should NOT feel it here: </Text>
         {a.notFeel}
       </Text>
     </View>

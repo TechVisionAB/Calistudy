@@ -37,7 +37,7 @@ export const TEST_A: TestItem[] = [
     counts: 'Straight arms, ribs down, shoulders open',
     stop: 'Shape breaks or wrist pain',
     interpretation: '<20 s → HS1; 20–59 s → HS2; ≥60 s → HS3/HS4 test (toe pulls)',
-    inputs: [{ key: 'hs', label: 'Hålltid', unit: 's' }],
+    inputs: [{ key: 'hs', label: 'Hold time', unit: 's' }],
     place: ({ hs }) => (has(hs) ? { ladder: 'HS', level: hs < 20 ? 'HS1' : hs < 60 ? 'HS2' : 'HS3' } : null),
   },
   {
@@ -48,8 +48,8 @@ export const TEST_A: TestItem[] = [
     stop: 'Elbows bend',
     interpretation: '<20 s → PL0a; ≥20 s + dips ≥10 → test tuck planche (≥6 s → PL1)',
     inputs: [
-      { key: 'lean', label: 'Lean-hållning', unit: 's' },
-      { key: 'tuckPl', label: 'Tuck planche (om lean ≥20 s och dips ≥10)', unit: 's' },
+      { key: 'lean', label: 'Lean hold', unit: 's' },
+      { key: 'tuckPl', label: 'Tuck planche (if lean ≥20 s and dips ≥10)', unit: 's' },
     ],
     place: ({ lean, tuckPl, dips }) => {
       if (!has(lean)) return null;
@@ -85,8 +85,8 @@ export const TEST_A: TestItem[] = [
     interpretation: '0 → test negatives (≥5 s ×3 → VPu3, else VPu1–2); 1–4 → VPu3; 5–9 → VPu4; 10–14 → VPu4 + test C2B (≥3 → VPu5); ≥15 → VPu6 weighted',
     inputs: [
       { key: 'pullups', label: 'Max pull-ups', unit: 'reps' },
-      { key: 'negatives', label: 'Om 0: antal negativer ≥5 s', unit: 'reps' },
-      { key: 'c2b', label: 'Om 10–14: chest-to-bar', unit: 'reps' },
+      { key: 'negatives', label: 'If 0: negatives of ≥5 s', unit: 'reps' },
+      { key: 'c2b', label: 'If 10–14: chest-to-bar', unit: 'reps' },
     ],
     place: ({ pullups, negatives, c2b }) => {
       if (!has(pullups)) return null;
@@ -109,7 +109,7 @@ export const TEST_A: TestItem[] = [
     interpretation: '<5 → VP1 at easier incline (hands on box); 5–12 → VP1; ≥12 → test elevated pike: ≥6 → VP2; ≥10 → test wall HSPU partial',
     inputs: [
       { key: 'pike', label: 'Max pike push-ups', unit: 'reps' },
-      { key: 'elevPike', label: 'Om ≥12: elevated pike', unit: 'reps' },
+      { key: 'elevPike', label: 'If ≥12: elevated pike', unit: 'reps' },
     ],
     place: ({ pike, elevPike }) => {
       if (!has(pike)) return null;
@@ -129,7 +129,7 @@ export const TEST_A: TestItem[] = [
     interpretation: "Can't do 1 → support hold (<60 s → DP1; ≥60 s → DP2); 1–9 → DP2/DP3 (DP3 if ≥5); ≥10 → DP3, test ring support; ≥15 → DP6 (weighted)",
     inputs: [
       { key: 'dips', label: 'Max dips', unit: 'reps' },
-      { key: 'support', label: 'Om 0: support hold', unit: 's' },
+      { key: 'support', label: 'If 0: support hold', unit: 's' },
     ],
     place: ({ dips, support }) => {
       if (!has(dips)) return null;
@@ -158,8 +158,8 @@ export const TEST_A: TestItem[] = [
     interpretation: '<5 → HP1; 5–14 → HP2; 15–25 → test diamond: ≥8 → HP3/HP4; ≥26 → test archer: ≥5/side → HP5',
     inputs: [
       { key: 'pushups', label: 'Max push-ups', unit: 'reps' },
-      { key: 'diamond', label: 'Om 15–25: diamond', unit: 'reps' },
-      { key: 'archer', label: 'Om ≥26: archer', unit: 'reps/side' },
+      { key: 'diamond', label: 'If 15–25: diamond', unit: 'reps' },
+      { key: 'archer', label: 'If ≥26: archer', unit: 'reps/side' },
     ],
     place: ({ pushups, diamond, archer }) => {
       if (!has(pushups)) return null;
@@ -184,7 +184,7 @@ export const TEST_B: TestItem[] = [
     name: 'Bodyweight squat',
     how: 'Feet shoulder-width, hip crease below knee, heels down.',
     interpretation: "Can't reach depth with heels down → ankle/hip mobility priority.",
-    inputs: [{ key: 'squatDepth', label: 'Full djup med hälar i golvet? (1 = ja, 0 = nej)', unit: '' }],
+    inputs: [{ key: 'squatDepth', label: 'Full depth with heels down? (1 = yes, 0 = no)', unit: '' }],
   },
   {
     id: 'sl',
@@ -192,9 +192,9 @@ export const TEST_B: TestItem[] = [
     how: 'Split squat: rear knee lightly touches pad. BSS: rear foot on knee-height bench. Box pistol: descend on one leg to box (45 → 30 → 15 cm), stand up without rocking.',
     interpretation: 'Split squat <12 → SL2; BSS <10 → SL3; box pistol 45 cm ×5 → SL4 (lowest height with ×5 sets your box height); full pistol ×3 → SL6',
     inputs: [
-      { key: 'split', label: 'Split squat per ben', unit: 'reps' },
-      { key: 'bss', label: 'Bulgarian split squat per ben', unit: 'reps' },
-      { key: 'boxHeight', label: 'Lägsta lådhöjd med ×5', unit: 'cm' },
+      { key: 'split', label: 'Split squat per leg', unit: 'reps' },
+      { key: 'bss', label: 'Bulgarian split squat per leg', unit: 'reps' },
+      { key: 'boxHeight', label: 'Lowest box height for ×5', unit: 'cm' },
       { key: 'pistol', label: 'Full pistol', unit: 'reps' },
     ],
     place: ({ split, bss, boxHeight, pistol }) => {
@@ -210,7 +210,7 @@ export const TEST_B: TestItem[] = [
     name: 'Single-leg calf raise (step, full stretch)',
     how: '1 s up, 1 s down, full ROM.',
     interpretation: 'Record per leg. <15 → bilateral + loaded; ≥20 → single-leg loaded',
-    inputs: [{ key: 'calf', label: 'Reps (sämsta benet)', unit: 'reps' }],
+    inputs: [{ key: 'calf', label: 'Reps (weaker leg)', unit: 'reps' }],
   },
   {
     id: 'hlr',
@@ -235,14 +235,14 @@ export const TEST_B: TestItem[] = [
     name: 'Hollow body hold',
     how: 'Low back pressed to floor, arms overhead.',
     interpretation: '<30 s → tuck hollow; ≥45 s → full',
-    inputs: [{ key: 'hollow', label: 'Hålltid', unit: 's' }],
+    inputs: [{ key: 'hollow', label: 'Hold time', unit: 's' }],
   },
   {
     id: 'arch',
     name: 'Arch (superman) hold',
     how: 'Chest and thighs off floor, glutes on.',
     interpretation: '<30 s → include arch holds in micro-practice',
-    inputs: [{ key: 'arch', label: 'Hålltid', unit: 's' }],
+    inputs: [{ key: 'arch', label: 'Hold time', unit: 's' }],
   },
   {
     id: 'hinge',
@@ -250,8 +250,8 @@ export const TEST_B: TestItem[] = [
     how: '10 reps each, level pelvis, balance.',
     interpretation: 'Places H2–H4',
     inputs: [
-      { key: 'slBridge', label: 'SL glute bridge (rena reps)', unit: 'reps' },
-      { key: 'slRdl', label: 'SL-RDL kroppsvikt (rena reps)', unit: 'reps' },
+      { key: 'slBridge', label: 'SL glute bridge (clean reps)', unit: 'reps' },
+      { key: 'slRdl', label: 'SL-RDL bodyweight (clean reps)', unit: 'reps' },
     ],
     place: ({ slBridge, slRdl }) => {
       if (has(slRdl) && slRdl >= 10) return { ladder: 'H', level: 'H4' };
@@ -265,7 +265,7 @@ export const TEST_B: TestItem[] = [
     name: 'Nordic eccentric',
     how: 'Kneel, ankles anchored, lower slowly.',
     interpretation: '<3 s control → KF1–3; 3–5 s → KF4; ≥5 s → KF5',
-    inputs: [{ key: 'nordic', label: 'Kontrollerad tid', unit: 's' }],
+    inputs: [{ key: 'nordic', label: 'Controlled time', unit: 's' }],
     place: ({ nordic }) =>
       has(nordic)
         ? { ladder: 'KF', level: nordic < 3 ? 'KF2' : nordic < 5 ? 'KF4' : 'KF5', note: nordic < 3 ? 'KF1–3: pick the level you can do 3×10' : undefined }

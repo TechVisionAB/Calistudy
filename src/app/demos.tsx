@@ -10,8 +10,8 @@ export default function Demos() {
   const time = t === undefined ? undefined : Number(t);
   return (
     <Screen>
-      <Stack.Screen options={{ title: 'Övningsdemos' }} />
-      <P muted>Tryck på en animation för att pausa. Orange = närmsta arm/ben.</P>
+      <Stack.Screen options={{ title: 'Exercise demos' }} />
+      <P muted>Tap an animation to pause. Orange = nearest arm/leg.</P>
       {ANIMATIONS.map((a) => (
         <Card key={a.id}>
           <H2>{a.title}</H2>

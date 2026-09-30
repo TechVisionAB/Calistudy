@@ -18,12 +18,12 @@ import { newId, useStore } from '@/lib/store';
 type Guided = Exclude<TestBattery, 'C'>;
 
 const MOBILITY: { id: string; title: string; how: string; pass: string }[] = [
-  { id: 'overhead', title: 'Armar över huvudet', how: 'Stå med rygg, huvud och rumpa mot väggen, revbenen in. Lyft raka armar över huvudet.', pass: 'Tummarna når väggen utan att du svankar.' },
-  { id: 'wrist', title: 'Handleder', how: 'Stå på alla fyra med handflatorna i golvet och luta dig framåt.', pass: 'Ungefär rät vinkel mellan underarm och hand, utan smärta.' },
-  { id: 'pike', title: 'Baksida lår', how: 'Sitt med raka ben och sträck dig fram.', pass: 'Fingertopparna når tårna.' },
-  { id: 'ankle', title: 'Fotleder', how: 'Stå vänd mot väggen och för knät mot väggen med hälen kvar i golvet.', pass: 'Minst 10–12 cm mellan tårna och väggen.' },
-  { id: 'shoulderExt', title: 'Axlar bakåt (german hang)', how: 'Häng i ringar eller stång med armarna bakom kroppen, fötterna i golvet som stöd.', pass: '20–30 s utan obehag.' },
-  { id: 'pancake', title: 'Bred sittande stretch', how: 'Sitt med benen brett isär och fäll fram överkroppen.', pass: 'Bröstet kommer ungefär halvvägs ner (45°).' },
+  { id: 'overhead', title: 'Arms overhead', how: 'Stand with your back, head and butt against the wall, ribs down. Raise straight arms overhead.', pass: 'Your thumbs reach the wall without arching your lower back.' },
+  { id: 'wrist', title: 'Wrists', how: 'Get on all fours with your palms on the floor and lean forward.', pass: 'Roughly a right angle between forearm and hand, without pain.' },
+  { id: 'pike', title: 'Hamstrings', how: 'Sit with straight legs and reach forward.', pass: 'Your fingertips reach your toes.' },
+  { id: 'ankle', title: 'Ankles', how: 'Face the wall and bring your knee to the wall with your heel still on the floor.', pass: 'At least 10–12 cm between your toes and the wall.' },
+  { id: 'shoulderExt', title: 'Shoulder extension (german hang)', how: 'Hang from rings or a bar with your arms behind your body, feet on the floor for support.', pass: '20–30 s without discomfort.' },
+  { id: 'pancake', title: 'Wide seated stretch', how: 'Sit with your legs wide apart and fold your upper body forward.', pass: 'Your chest gets about halfway down (45°).' },
 ];
 
 function Stopwatch({ onDone, onSkip, skipLabel }: { onDone: (s: number) => void; onSkip: () => void; skipLabel?: string }) {
@@ -43,7 +43,7 @@ function Stopwatch({ onDone, onSkip, skipLabel }: { onDone: (s: number) => void;
       <Text style={{ color: t.text, fontSize: 72, fontWeight: '800', textAlign: 'center', fontVariant: ['tabular-nums'] }}>{secs} s</Text>
       {result === null ? (
         <Button
-          title={start === null ? '▶ Starta tidtagning' : '■ Stopp'}
+          title={start === null ? '▶ Start timer' : '■ Stop'}
           onPress={() => {
             if (start === null) {
               setNow(Date.now());
@@ -57,13 +57,13 @@ function Stopwatch({ onDone, onSkip, skipLabel }: { onDone: (s: number) => void;
         />
       ) : (
         <>
-          <Button title={`Spara ${result} s ›`} onPress={() => onDone(result)} style={{ paddingVertical: 16 }} />
-          <Button title="Gör om" variant="secondary" onPress={() => setResult(null)} />
+          <Button title={`Save ${result} s ›`} onPress={() => onDone(result)} style={{ paddingVertical: 16 }} />
+          <Button title="Redo" variant="secondary" onPress={() => setResult(null)} />
         </>
       )}
       {start === null && result === null && (
         <Pressable onPress={onSkip} hitSlop={8}>
-          <Text style={{ color: t.muted, textAlign: 'center', fontWeight: '600' }}>{skipLabel ?? 'Klarar inte'}</Text>
+          <Text style={{ color: t.muted, textAlign: 'center', fontWeight: '600' }}>{skipLabel ?? "Can't do it"}</Text>
         </Pressable>
       )}
     </View>
@@ -159,10 +159,10 @@ export default function TestScreen() {
     return shell(
       <>
         <Text style={{ fontSize: 56, textAlign: 'center' }}>✅</Text>
-        <H1>Klart!</H1>
+        <H1>Done!</H1>
         {places.length > 0 ? (
           <Card>
-            <H2>Dina nivåer</H2>
+            <H2>Your levels</H2>
             {places.map((p) => (
               <Text key={p.ladder} style={{ color: t.text, fontSize: 15 }}>
                 <Text style={{ fontWeight: '700' }}>{LADDER_SV[p.ladder]}:</Text> {LEVEL_SV[p.level] ?? p.level}
@@ -170,11 +170,11 @@ export default function TestScreen() {
             ))}
           </Card>
         ) : battery === 'C' ? (
-          <P>{failed.length === 0 ? 'Allt godkänt – snyggt!' : `${failed.length} saker att jobba på läggs in i din dagliga mikroträning.`}</P>
+          <P>{failed.length === 0 ? 'All passed – nice!' : `${failed.length} things to work on have been added to your daily micro-practice.`}</P>
         ) : (
-          <P>Inga nivåer ändrades.</P>
+          <P>No levels changed.</P>
         )}
-        <Button title="Tillbaka till Idag" onPress={() => router.dismissTo('/')} />
+        <Button title="Back to Today" onPress={() => router.dismissTo('/')} />
       </>,
     );
   }
@@ -183,17 +183,17 @@ export default function TestScreen() {
   if (!started) {
     return shell(
       <>
-        <Label>{battery === 'mini' ? 'Lätt vecka' : 'Test'}</Label>
+        <Label>{battery === 'mini' ? 'Easy week' : 'Test'}</Label>
         <H1>{title}</H1>
         <Card>
           <Text style={{ color: t.text, fontSize: 16, lineHeight: 24 }}>
             {battery === 'C'
-              ? 'Sex snabba rörlighetskontroller, ca 10 min. Du svarar bara "klarar" eller "klarar inte".'
-              : `Ca ${battery === 'mini' ? 15 : 20} min. En övning i taget – tryck på hur många du klarade, eller ta tid med stoppuret.`}
+              ? 'Six quick mobility checks, about 10 min. Just answer "can do" or "can\'t do".'
+              : `About ${battery === 'mini' ? 15 : 20} min. One exercise at a time – tap how many you managed, or time it with the stopwatch.`}
           </Text>
-          <Text style={{ color: t.muted, fontSize: 15, lineHeight: 22 }}>• Värm upp först{'\n'}• Vila 2–3 min mellan testerna{'\n'}• Sluta direkt om det gör ont i en led</Text>
+          <Text style={{ color: t.muted, fontSize: 15, lineHeight: 22 }}>• Warm up first{'\n'}• Rest 2–3 min between tests{'\n'}• Stop right away if a joint hurts</Text>
         </Card>
-        <Button title="Starta" onPress={() => setStarted(true)} style={{ paddingVertical: 16 }} />
+        <Button title="Start" onPress={() => setStarted(true)} style={{ paddingVertical: 16 }} />
       </>,
     );
   }
@@ -202,13 +202,13 @@ export default function TestScreen() {
   if (finished) {
     return shell(
       <>
-        <H1>Så här blev det</H1>
-        {battery !== 'C' && places.length === 0 && <P muted>Inga nivåer att ändra utifrån svaren.</P>}
+        <H1>Here’s how it went</H1>
+        {battery !== 'C' && places.length === 0 && <P muted>No levels to change based on your answers.</P>}
         {places.map((p) => (
           <Card key={p.ladder}>
             <Text style={{ color: t.muted, fontSize: 13 }}>{LADDER_SV[p.ladder]}</Text>
             <Text style={{ color: t.text, fontSize: 18, fontWeight: '700' }}>{LEVEL_SV[p.level] ?? p.level}</Text>
-            {state.levels[p.ladder] !== p.level && <Text style={{ color: t.muted, fontSize: 13 }}>Tidigare: {LEVEL_SV[state.levels[p.ladder]] ?? state.levels[p.ladder]}</Text>}
+            {state.levels[p.ladder] !== p.level && <Text style={{ color: t.muted, fontSize: 13 }}>Previously: {LEVEL_SV[state.levels[p.ladder]] ?? state.levels[p.ladder]}</Text>}
           </Card>
         ))}
         {battery === 'C' && (
@@ -220,8 +220,8 @@ export default function TestScreen() {
             ))}
           </Card>
         )}
-        <Button title={battery === 'C' ? 'Spara' : 'Spara mina nivåer'} onPress={save} style={{ paddingVertical: 16 }} />
-        <Button title="‹ Ändra senaste svaret" variant="ghost" onPress={back} />
+        <Button title={battery === 'C' ? 'Save' : 'Save my levels'} onPress={save} style={{ paddingVertical: 16 }} />
+        <Button title="‹ Change last answer" variant="ghost" onPress={back} />
       </>,
     );
   }
@@ -233,17 +233,17 @@ export default function TestScreen() {
     return shell(
       <>
         <Label>
-          {stepNo} av {MOBILITY.length}
+          {stepNo} of {MOBILITY.length}
         </Label>
         <H1>{mobility.title}</H1>
         <Text style={{ color: t.text, fontSize: 17, lineHeight: 25 }}>{mobility.how}</Text>
         <Card>
-          <Text style={{ color: t.muted, fontSize: 13 }}>Godkänt om</Text>
+          <Text style={{ color: t.muted, fontSize: 13 }}>Passes if</Text>
           <Text style={{ color: t.text, fontSize: 16, fontWeight: '600' }}>{mobility.pass}</Text>
         </Card>
-        <Button title="✅ Klarar" onPress={() => setAnswered((a) => [...a, [mobility.id]])} style={{ paddingVertical: 16 }} />
+        <Button title="✅ Can do" onPress={() => setAnswered((a) => [...a, [mobility.id]])} style={{ paddingVertical: 16 }} />
         <Button
-          title="❌ Klarar inte"
+          title="❌ Can't do"
           variant="secondary"
           onPress={() => {
             setFailed((f) => [...f, mobility.id]);
@@ -251,35 +251,35 @@ export default function TestScreen() {
           }}
           style={{ paddingVertical: 16 }}
         />
-        {answered.length > 0 && <Button title="‹ Tillbaka" variant="ghost" onPress={back} />}
+        {answered.length > 0 && <Button title="‹ Back" variant="ghost" onPress={back} />}
       </>,
     );
   }
 
   if (!current || !shown) return null;
   const media = shown.media ? mediaFor(shown.media) : {};
-  const cantLabel = shown === current && current.alt ? `${current.skipLabel ?? 'Kan inte'} – visa lättare variant` : shown.skipLabel;
+  const cantLabel = shown === current && current.alt ? `${current.skipLabel ?? "Can't do it"} – show easier variation` : shown.skipLabel;
 
   // ---------- Guided step ----------
   return shell(
     <>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Label>Test {stepNo}</Label>
-        <Explain text={`${shown.title}: ${shown.how}`} context={`${title}, testet "${shown.title}"`} />
+        <Explain text={`${shown.title}: ${shown.how}`} context={`${title}, the "${shown.title}" test`} />
       </View>
       {(shown.noEquipment || shown !== current) && (
         <View style={{ backgroundColor: t.accentSoft, borderRadius: 12, padding: 12 }}>
           <Text style={{ color: t.text, fontSize: 14, lineHeight: 20 }}>
             {shown.noEquipment
-              ? `Du har ingen utrustning för ${shown.replaces?.toLowerCase()} – det här testar samma sak hemma.`
-              : `Ingen fara! Vi testar en lättare variant av ${current.title.toLowerCase()} – den blir din startnivå.`}
+              ? `You don't have equipment for ${shown.replaces?.toLowerCase()} – this tests the same thing at home.`
+              : `No problem! We'll test an easier variation of ${current.title.toLowerCase()} – it becomes your starting level.`}
           </Text>
         </View>
       )}
       <H1>{shown.title}</H1>
       {media.anim && <Figure anim={media.anim} size={0.8} />}
       <Text style={{ color: t.text, fontSize: 17, lineHeight: 25 }}>{shown.how}</Text>
-      {shown.media && <HowToToggle mediaKey={shown.media} label={media.anim ? 'Se video' : 'Se hur man gör'} />}
+      {shown.media && <HowToToggle mediaKey={shown.media} label={media.anim ? 'Watch video' : 'How to do it'} />}
 
       {shown.kind === 'hold' ? (
         <Stopwatch key={shown.key} onDone={(sec) => answer(sec)} onSkip={cant} skipLabel={cantLabel} />
@@ -310,7 +310,7 @@ export default function TestScreen() {
           <Text style={{ color: t.muted, textAlign: 'center', fontWeight: '600' }}>{cantLabel}</Text>
         </Pressable>
       )}
-      <Button title="‹ Tillbaka" variant="ghost" onPress={back} />
+      <Button title="‹ Back" variant="ghost" onPress={back} />
     </>,
   );
 }

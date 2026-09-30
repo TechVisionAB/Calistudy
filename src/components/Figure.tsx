@@ -121,7 +121,7 @@ export function Figure({ anim, size = 1, autoplay = true, time }: { anim: Anim; 
   );
 
   return (
-    <Pressable onPress={() => setPlaying((p) => !p)} accessibilityLabel={`Animation: ${anim.title}. Tryck för att pausa.`}>
+    <Pressable onPress={() => setPlaying((p) => !p)} accessibilityLabel={`Animation: ${anim.title}. Tap to pause.`}>
       <View style={{ aspectRatio: vw / vh, width: `${size * 100}%`, alignSelf: 'center', backgroundColor: t.chip, borderRadius: 12, overflow: 'hidden' }}>
         <Svg width="100%" height="100%" viewBox={`${vx} ${vy} ${vw} ${vh}`}>
           {anim.props.map((p, i) => (
@@ -148,7 +148,7 @@ export function Figure({ anim, size = 1, autoplay = true, time }: { anim: Anim; 
           {L(s.elbow, s.hand, t.accent, 4.4)}
         </Svg>
         {!playing && time === undefined && (
-          <Text style={{ position: 'absolute', right: 8, bottom: 6, color: t.muted, fontSize: 12, fontWeight: '700' }}>⏸ pausad</Text>
+          <Text style={{ position: 'absolute', right: 8, bottom: 6, color: t.muted, fontSize: 12, fontWeight: '700' }}>⏸ paused</Text>
         )}
       </View>
     </Pressable>
