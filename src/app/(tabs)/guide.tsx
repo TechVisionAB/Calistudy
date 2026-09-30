@@ -27,6 +27,10 @@ export default function Guide() {
         <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>▶ Övningsdemos</Text>
         <Text style={{ color: t.muted, fontSize: 14 }}>Animerade genomgångar av grundövningarna. Videor finns på varje nivå och övning.</Text>
       </Card>
+      <Card onPress={() => router.push('/reminders')}>
+        <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>⏰ Påminnelser</Text>
+        <Text style={{ color: t.muted, fontSize: 14 }}>Notis om dagens pass och mikroträning.</Text>
+      </Card>
       {GUIDE.map((s) => (
         <Card key={s.id} onPress={() => router.push({ pathname: '/guide/[id]', params: { id: s.id } })}>
           <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>{s.title}</Text>

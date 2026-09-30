@@ -26,7 +26,13 @@
     },
     "plugins": [
       "expo-router",
-      "expo-status-bar"
+      "expo-status-bar",
+      [
+        "expo-notifications",
+        {
+          "color": "#E8590C"
+        }
+      ]
     ],
     "scheme": "calistudy",
     "experiments": {

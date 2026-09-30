@@ -33,6 +33,11 @@ export default function Log() {
         </Card>
       </Row>
 
+      <Card onPress={() => router.push('/progress')} style={{ borderColor: t.accent, borderWidth: 2 }}>
+        <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>📈 Framsteg</Text>
+        <Text style={{ color: t.muted, fontSize: 14 }}>Kurvor över bästa set per övning och nivå.</Text>
+      </Card>
+
       <H2>Pass</H2>
       {workouts.length === 0 && <P muted>Inga pass loggade ännu.</P>}
       {workouts.map((w) => {

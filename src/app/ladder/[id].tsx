@@ -2,6 +2,8 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { HowToToggle } from '@/components/HowTo';
+import { ProgressCard } from '@/components/ProgressCard';
+import { progressSeries } from '@/lib/progress';
 import { Card, Chip, H1, H2, Label, P, Screen, useTheme } from '@/components/ui';
 import { LADDER_BY_ID, OTHER_LOWER_LADDERS } from '@/data/ladders';
 import { useStore } from '@/lib/store';
@@ -18,6 +20,8 @@ export default function LadderScreen() {
     .flatMap((w) => w.entries.filter((e) => e.ladder === ladder.id).map((e) => ({ date: w.date, e })))
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, 8);
+
+  const series = progressSeries(state.workouts).filter((s) => s.ladder === ladder.id);
 
   return (
     <Screen>
@@ -74,6 +78,13 @@ export default function LadderScreen() {
           ))}
         </Card>
       )}
+
+      {series.map((s) => (
+        <View key={s.key} style={{ gap: 8 }}>
+          <H2>Framsteg</H2>
+          <ProgressCard series={s} showTitle={false} />
+        </View>
+      ))}
 
       {history.length > 0 && (
         <Card>

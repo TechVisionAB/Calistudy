@@ -32,6 +32,10 @@ export type WorkoutLog = {
 
 export type TestLog = { id: string; date: string; battery: TestBattery; values: Values; failed?: string[] };
 
+export type ReminderTime = { enabled: boolean; hour: number; minute: number };
+
+export type Reminders = { morning: ReminderTime; evening: ReminderTime };
+
 export type State = {
   startMonday: string | null;
   levels: Record<string, string>;
@@ -39,6 +43,7 @@ export type State = {
   tests: TestLog[];
   micro: Record<string, string[]>;
   mobilityFails: string[];
+  reminders: Reminders;
 };
 
 const KEY = 'calistudy/state/v1';
@@ -52,6 +57,10 @@ const initial: State = {
   tests: [],
   micro: {},
   mobilityFails: [],
+  reminders: {
+    morning: { enabled: false, hour: 7, minute: 30 },
+    evening: { enabled: false, hour: 19, minute: 0 },
+  },
 };
 
 type Ctx = {

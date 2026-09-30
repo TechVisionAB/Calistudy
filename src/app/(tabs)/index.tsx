@@ -146,6 +146,15 @@ export default function Today() {
           <P muted style={{ fontSize: 13 }}>RPE ≤5–6, aldrig till failure. Avbryt om kvaliteten sjunker två försök i rad.</P>
       </Card>
 
+      {!state.reminders.morning.enabled && !state.reminders.evening.enabled && (
+        <Card onPress={() => router.push('/reminders')}>
+          <Row style={{ justifyContent: 'space-between' }}>
+            <Text style={{ color: t.text, fontWeight: '700', fontSize: 15 }}>⏰ Vill du få påminnelser?</Text>
+            <Text style={{ color: t.accent, fontWeight: '700' }}>Slå på ›</Text>
+          </Row>
+        </Card>
+      )}
+
       {week > 0 && params && (
         <Card>
           <H2>Veckans parametrar</H2>

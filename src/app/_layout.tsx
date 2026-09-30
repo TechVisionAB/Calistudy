@@ -1,15 +1,32 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 
 import { useTheme } from '@/components/ui';
-import { StoreProvider } from '@/lib/store';
+import { isoDate } from '@/data/program';
+import { reschedule } from '@/lib/reminders';
+import { StoreProvider, useStore } from '@/lib/store';
+
+/** Keeps scheduled reminders in sync with the plan, settings and today's micro-practice. */
+function ReminderSync() {
+  const { state, ready } = useStore();
+  const today = isoDate(new Date());
+  const key = JSON.stringify([state.startMonday, state.reminders, (state.micro[today] ?? []).length > 0]);
+  useEffect(() => {
+    if (ready) reschedule(state).catch(() => {});
+    // Only re-plan when something that affects the notifications changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, key]);
+  return null;
+}
 
 export default function RootLayout() {
   const t = useTheme();
   const scheme = useColorScheme();
   return (
     <StoreProvider>
+      <ReminderSync />
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
       <Stack
         screenOptions={{
@@ -28,6 +45,8 @@ export default function RootLayout() {
         <Stack.Screen name="guide/[id]" options={{ title: 'Guide' }} />
         <Stack.Screen name="history/[id]" options={{ title: 'Loggat pass' }} />
         <Stack.Screen name="demos" options={{ title: 'Övningsdemos' }} />
+        <Stack.Screen name="progress" options={{ title: 'Framsteg' }} />
+        <Stack.Screen name="reminders" options={{ title: 'Påminnelser' }} />
       </Stack>
     </StoreProvider>
   );

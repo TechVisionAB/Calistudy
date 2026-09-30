@@ -15,6 +15,9 @@ const light = {
   warn: '#C92A2A',
   warnSoft: '#FDE7E7',
   chip: '#EEF0F3',
+  /** Chart series + recessive grid (validated with the dataviz palette checker). */
+  series: '#E8590C',
+  grid: '#E3E6EA',
 };
 
 const dark: typeof light = {
@@ -30,6 +33,8 @@ const dark: typeof light = {
   warn: '#FF6B6B',
   warnSoft: '#3A1C1C',
   chip: '#222833',
+  series: '#EB6420',
+  grid: '#262C36',
 };
 
 export type Theme = typeof light;
