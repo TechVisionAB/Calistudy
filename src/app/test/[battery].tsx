@@ -1,41 +1,114 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-
-import { useMemo, useState } from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { Pressable, ScrollView, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Explain } from '@/components/Explain';
-import { Bullets, Button, Card, Chip, H1, H2, Label, P, Row, Screen, useTheme } from '@/components/ui';
+import { Figure } from '@/components/Figure';
+import { HowToToggle } from '@/components/HowTo';
+import { Button, Card, H1, H2, Label, P, styles, useTheme } from '@/components/ui';
+import { activeSteps, GuidedStep } from '@/data/guidedTests';
 import { LADDER_BY_ID } from '@/data/ladders';
+import { mediaFor } from '@/data/media';
 import { TestBattery } from '@/data/program';
-import { GENERAL_RULES, MINI_RETEST, placements, TEST_A, TEST_B, TEST_C, TestItem, Values } from '@/data/tests';
+import { LADDER_SV, LEVEL_SV, TEST_SV } from '@/data/sv';
+import { placements, TEST_A, TEST_B, Values } from '@/data/tests';
 import { newId, useStore } from '@/lib/store';
 
-const MINI_ITEMS: TestItem[] = [
-  ...TEST_A.filter((x) => ['pullups', 'dips', 'hs'].includes(x.id)).map((x) => ({ ...x, inputs: x.inputs.slice(0, 1) })),
-  { id: 'pushLevel', name: 'Max push-ups at your HP level', how: '', interpretation: 'Record; compare with last cycle.', inputs: [{ key: 'pushLevel', label: 'Reps', unit: 'reps' }] },
-  { id: 'statics', name: 'Best planche / FL level holds', how: '', interpretation: 'Apply the static rule per ladder.', inputs: [{ key: 'plHold', label: 'Planche-nivå, hålltid', unit: 's' }, { key: 'flHold', label: 'FL-nivå, hålltid', unit: 's' }] },
-  { id: 'lsit', name: 'L-sit max', how: '', interpretation: 'Record.', inputs: [{ key: 'lsitFull', label: 'Hålltid', unit: 's' }] },
-  ...TEST_B.filter((x) => x.id === 'sl').map((x) => ({ ...x, name: 'Box pistol lowest height ×5', inputs: x.inputs.filter((i) => i.key === 'boxHeight' || i.key === 'pistol') })),
-  ...TEST_B.filter((x) => x.id === 'nordic'),
+type Guided = Exclude<TestBattery, 'C'>;
+
+const MOBILITY: { id: string; title: string; how: string; pass: string }[] = [
+  { id: 'overhead', title: 'Armar över huvudet', how: 'Stå med rygg, huvud och rumpa mot väggen, revbenen in. Lyft raka armar över huvudet.', pass: 'Tummarna når väggen utan att du svankar.' },
+  { id: 'wrist', title: 'Handleder', how: 'Stå på alla fyra med handflatorna i golvet och luta dig framåt.', pass: 'Ungefär rät vinkel mellan underarm och hand, utan smärta.' },
+  { id: 'pike', title: 'Baksida lår', how: 'Sitt med raka ben och sträck dig fram.', pass: 'Fingertopparna når tårna.' },
+  { id: 'ankle', title: 'Fotleder', how: 'Stå vänd mot väggen och för knät mot väggen med hälen kvar i golvet.', pass: 'Minst 10–12 cm mellan tårna och väggen.' },
+  { id: 'shoulderExt', title: 'Axlar bakåt (german hang)', how: 'Häng i ringar eller stång med armarna bakom kroppen, fötterna i golvet som stöd.', pass: '20–30 s utan obehag.' },
+  { id: 'pancake', title: 'Bred sittande stretch', how: 'Sitt med benen brett isär och fäll fram överkroppen.', pass: 'Bröstet kommer ungefär halvvägs ner (45°).' },
 ];
+
+function Stopwatch({ onDone, onSkip, skipLabel }: { onDone: (s: number) => void; onSkip: () => void; skipLabel?: string }) {
+  const t = useTheme();
+  const [start, setStart] = useState<number | null>(null);
+  const [result, setResult] = useState<number | null>(null);
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (start === null) return;
+    const iv = setInterval(() => setNow(Date.now()), 100);
+    return () => clearInterval(iv);
+  }, [start]);
+  const secs = start !== null ? Math.floor((now - start) / 1000) : result ?? 0;
+
+  return (
+    <View style={{ gap: 12, alignItems: 'stretch' }}>
+      <Text style={{ color: t.text, fontSize: 72, fontWeight: '800', textAlign: 'center', fontVariant: ['tabular-nums'] }}>{secs} s</Text>
+      {result === null ? (
+        <Button
+          title={start === null ? '▶ Starta tidtagning' : '■ Stopp'}
+          onPress={() => {
+            if (start === null) {
+              setNow(Date.now());
+              setStart(Date.now());
+            } else {
+              setResult(Math.floor((Date.now() - start) / 1000));
+              setStart(null);
+            }
+          }}
+          style={{ paddingVertical: 18 }}
+        />
+      ) : (
+        <>
+          <Button title={`Spara ${result} s ›`} onPress={() => onDone(result)} style={{ paddingVertical: 16 }} />
+          <Button title="Gör om" variant="secondary" onPress={() => setResult(null)} />
+        </>
+      )}
+      {start === null && result === null && (
+        <Pressable onPress={onSkip} hitSlop={8}>
+          <Text style={{ color: t.muted, textAlign: 'center', fontWeight: '600' }}>{skipLabel ?? 'Kan inte / hoppa över'}</Text>
+        </Pressable>
+      )}
+    </View>
+  );
+}
 
 export default function TestScreen() {
   const { battery } = useLocalSearchParams<{ battery: TestBattery }>();
   const { state, update } = useStore();
   const t = useTheme();
+  const [started, setStarted] = useState(false);
   const [values, setValues] = useState<Values>({});
-  const [failed, setFailed] = useState<string[]>(battery === 'C' ? state.mobilityFails : []);
+  const [answered, setAnswered] = useState<string[]>([]);
+  const [failed, setFailed] = useState<string[]>([]);
   const [saved, setSaved] = useState(false);
+  const title = TEST_SV[battery] ?? `Test ${battery}`;
 
-  const items = useMemo(() => (battery === 'A' ? TEST_A : battery === 'B' ? TEST_B : battery === 'mini' ? MINI_ITEMS : []), [battery]);
+  const steps = useMemo(
+    () => (battery === 'C' ? [] : activeSteps(battery as Guided, values, state.profile?.equipment ?? null)),
+    [battery, values, state.profile],
+  );
+  const current: GuidedStep | undefined = steps.find((s) => !answered.includes(s.key));
+  const mobility = battery === 'C' ? MOBILITY[answered.length] : undefined;
+  const finished = started && (battery === 'C' ? !mobility : !current);
+
   const places = useMemo(() => {
-    const all = placements(items, values);
+    if (battery === 'C') return [];
+    const all = placements([...TEST_A, ...TEST_B], values);
     if (battery !== 'mini') return all;
-    // The mini-retest only moves levels up; its tests are too coarse to demote (e.g. CTW vs freestanding HS).
+    // The mini-retest only moves levels up; its tests are too coarse to demote.
     const idx = (ladder: string, code: string) => LADDER_BY_ID[ladder]?.levels.findIndex((l) => l.code === code) ?? -1;
     return all.filter((p) => idx(p.ladder, p.level) > idx(p.ladder, state.levels[p.ladder]));
-  }, [items, values, battery, state.levels]);
-  const title = battery === 'mini' ? 'Minitest (vecka 6)' : `Test ${battery}`;
+  }, [battery, values, state.levels]);
+
+  const answer = (key: string, value: number | undefined) => {
+    setValues((v) => ({ ...v, [key]: value }));
+    setAnswered((a) => [...a, key]);
+  };
+  const back = () => {
+    const last = answered[answered.length - 1];
+    if (!last) return setStarted(false);
+    setAnswered((a) => a.slice(0, -1));
+    setValues((v) => ({ ...v, [last]: undefined }));
+    setFailed((f) => f.filter((x) => x !== last));
+  };
 
   const save = () => {
     update((s) => {
@@ -51,118 +124,168 @@ export default function TestScreen() {
     setSaved(true);
   };
 
-  const setVal = (key: string, text: string) => {
-    const n = text.trim() === '' ? undefined : Number(text.replace(',', '.'));
-    setValues((v) => ({ ...v, [key]: n !== undefined && Number.isNaN(n) ? undefined : n }));
-  };
+  const remaining = battery === 'C' ? MOBILITY.length - answered.length : steps.filter((st) => !answered.includes(st.key)).length;
+  const progress = answered.length / Math.max(1, answered.length + remaining);
 
+  const shell = (children: ReactNode) => (
+    <SafeAreaView style={{ flex: 1, backgroundColor: t.bg }} edges={['left', 'right', 'bottom']}>
+      <Stack.Screen options={{ title }} />
+      {started && !saved && (
+        <View style={{ height: 4, backgroundColor: t.grid }}>
+          <View style={{ height: 4, width: `${progress * 100}%`, backgroundColor: t.accent }} />
+        </View>
+      )}
+      <ScrollView contentContainerStyle={[styles.screen, { paddingBottom: 32 }]}>{children}</ScrollView>
+    </SafeAreaView>
+  );
+
+  // ---------- Saved ----------
   if (saved) {
-    return (
-      <Screen>
-        <Stack.Screen options={{ title }} />
-        <H1>Sparat ✓</H1>
-        {places.length > 0 && (
+    return shell(
+      <>
+        <Text style={{ fontSize: 56, textAlign: 'center' }}>✅</Text>
+        <H1>Klart!</H1>
+        {places.length > 0 ? (
           <Card>
-            <H2>Nya nivåer</H2>
-            <Bullets items={places.map((p) => `${LADDER_BY_ID[p.ladder]?.name}: ${p.level}${p.note ? ` — ${p.note}` : ''}`)} />
+            <H2>Dina nivåer</H2>
+            {places.map((p) => (
+              <Text key={p.ladder} style={{ color: t.text, fontSize: 15 }}>
+                <Text style={{ fontWeight: '700' }}>{LADDER_SV[p.ladder]}:</Text> {LEVEL_SV[p.level] ?? p.level}
+              </Text>
+            ))}
           </Card>
+        ) : battery === 'C' ? (
+          <P>{failed.length === 0 ? 'Allt godkänt – snyggt!' : `${failed.length} saker att jobba på läggs in i din dagliga mikroträning.`}</P>
+        ) : (
+          <P>Inga nivåer ändrades.</P>
         )}
-        {battery === 'C' && <P>{failed.length === 0 ? 'Alla rörlighetstester godkända.' : `${failed.length} underkända tester läggs in som riktad rörlighet i mikroträningen.`}</P>}
-        <Button title="Till nivåerna" onPress={() => router.replace('/levels')} />
-        <Button title="Tillbaka" variant="secondary" onPress={() => router.back()} />
-      </Screen>
+        <Button title="Tillbaka till Idag" onPress={() => router.dismissTo('/')} />
+      </>,
     );
   }
 
-  return (
-    <Screen>
-      <Stack.Screen options={{ title }} />
-      <View>
-        <Label>{battery === 'A' ? 'Överkropp' : battery === 'B' ? 'Underkropp + bål' : battery === 'C' ? 'Rörlighet + färdigheter' : 'Deloadvecka, lördag'}</Label>
+  // ---------- Intro ----------
+  if (!started) {
+    return shell(
+      <>
+        <Label>{battery === 'mini' ? 'Lätt vecka' : 'Test'}</Label>
         <H1>{title}</H1>
-      </View>
-
-      {battery !== 'C' && (
         <Card>
-          <H2>Regler</H2>
-          <Bullets items={battery === 'mini' ? [...MINI_RETEST, 'Update every level using the Week 0 rules.'] : GENERAL_RULES} />
+          <Text style={{ color: t.text, fontSize: 16, lineHeight: 24 }}>
+            {battery === 'C'
+              ? 'Sex snabba rörlighetskontroller, ca 10 min. Du svarar bara "klarar" eller "klarar inte".'
+              : `Ca ${battery === 'mini' ? 15 : 20} min. En övning i taget – tryck på hur många du klarade, eller ta tid med stoppuret.`}
+          </Text>
+          <Text style={{ color: t.muted, fontSize: 15, lineHeight: 22 }}>• Värm upp först{'\n'}• Vila 2–3 min mellan testerna{'\n'}• Sluta direkt om det gör ont i en led</Text>
         </Card>
-      )}
+        <Button title="Starta" onPress={() => setStarted(true)} style={{ paddingVertical: 16 }} />
+      </>,
+    );
+  }
 
-      {battery === 'C' &&
-        TEST_C.map((c) => {
-          const fail = failed.includes(c.id);
-          return (
-            <Card key={c.id}>
-              <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
-                <H2 style={{ flex: 1 }}>{c.name}</H2>
-                <Explain text={`${c.how} Godkänt: ${c.pass}. Om underkänt: ${c.fail}`} context={`Rörlighetstest: ${c.name}`} />
-              </Row>
-              <P muted>{c.how}</P>
-              <P>Godkänt: {c.pass}</P>
-              <Row>
-                <Chip text="Godkänt" tone={!fail ? 'good' : 'neutral'} onPress={() => setFailed((f) => f.filter((x) => x !== c.id))} />
-                <Chip text="Underkänt" tone={fail ? 'warn' : 'neutral'} onPress={() => setFailed((f) => (f.includes(c.id) ? f : [...f, c.id]))} />
-              </Row>
-              {fail && <P muted>→ {c.fail}</P>}
-            </Card>
-          );
-        })}
-
-      {items.map((it) => {
-        const p = it.place?.(values);
-        return (
-          <Card key={it.id}>
-            <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
-              <H2 style={{ flex: 1 }}>{it.name}</H2>
-              <Explain
-                text={[it.how, it.counts && `Räknas: ${it.counts}`, it.stop && `Stoppa: ${it.stop}`, it.interpretation].filter(Boolean).join(' · ')}
-                context={`Test ${battery}: ${it.name}`}
-              />
-            </Row>
-            {!!it.how && <P muted>{it.how}</P>}
-            {(it.counts || it.stop) && (
-              <Text style={{ color: t.muted, fontSize: 13 }}>
-                {it.counts ? `Räknas: ${it.counts}. ` : ''}
-                {it.stop ? `Stoppa: ${it.stop}.` : ''}
-              </Text>
-            )}
-            <Text style={{ color: t.text, fontSize: 13 }}>{it.interpretation}</Text>
-            {it.inputs.map((inp) => (
-              <View key={inp.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                <Text style={{ color: t.text, flex: 1, fontSize: 14 }}>{inp.label}</Text>
-                <TextInput
-                  keyboardType="numeric"
-                  inputMode="numeric"
-                  value={values[inp.key] === undefined ? '' : String(values[inp.key])}
-                  onChangeText={(x) => setVal(inp.key, x)}
-                  placeholder="–"
-                  placeholderTextColor={t.muted}
-                  style={{ width: 70, borderWidth: 1, borderColor: t.border, borderRadius: 10, padding: 8, textAlign: 'center', color: t.text, fontSize: 16, fontWeight: '700' }}
-                />
-                <Text style={{ color: t.muted, width: 60, fontSize: 13 }}>{inp.unit}</Text>
-              </View>
-            ))}
-            {p && <Chip text={`→ ${p.level}${p.note ? ` · ${p.note}` : ''}`} tone="accent" />}
+  // ---------- Summary ----------
+  if (finished) {
+    return shell(
+      <>
+        <H1>Så här blev det</H1>
+        {battery !== 'C' && places.length === 0 && <P muted>Inga nivåer att ändra utifrån svaren.</P>}
+        {places.map((p) => (
+          <Card key={p.ladder}>
+            <Text style={{ color: t.muted, fontSize: 13 }}>{LADDER_SV[p.ladder]}</Text>
+            <Text style={{ color: t.text, fontSize: 18, fontWeight: '700' }}>{LEVEL_SV[p.level] ?? p.level}</Text>
+            {state.levels[p.ladder] !== p.level && <Text style={{ color: t.muted, fontSize: 13 }}>Tidigare: {LEVEL_SV[state.levels[p.ladder]] ?? state.levels[p.ladder]}</Text>}
           </Card>
-        );
-      })}
-
-      {places.length > 0 && (
-        <Card>
-          <H2>Placering</H2>
-          {places.map((p) => (
-            <Pressable key={p.ladder} onPress={() => router.push({ pathname: '/ladder/[id]', params: { id: p.ladder } })}>
-              <Text style={{ color: t.text, fontSize: 15 }}>
-                {LADDER_BY_ID[p.ladder]?.name}: <Text style={{ fontWeight: '800', color: t.accent }}>{p.level}</Text>
-                {state.levels[p.ladder] !== p.level ? <Text style={{ color: t.muted }}> (nu {state.levels[p.ladder]})</Text> : null}
+        ))}
+        {battery === 'C' && (
+          <Card>
+            {MOBILITY.map((m) => (
+              <Text key={m.id} style={{ color: t.text, fontSize: 15 }}>
+                {failed.includes(m.id) ? '❌' : '✅'} {m.title}
               </Text>
+            ))}
+          </Card>
+        )}
+        <Button title={battery === 'C' ? 'Spara' : 'Spara mina nivåer'} onPress={save} style={{ paddingVertical: 16 }} />
+        <Button title="‹ Ändra senaste svaret" variant="ghost" onPress={back} />
+      </>,
+    );
+  }
+
+  const stepNo = answered.length + 1;
+
+  // ---------- Mobility step ----------
+  if (battery === 'C' && mobility) {
+    return shell(
+      <>
+        <Label>
+          {stepNo} av {MOBILITY.length}
+        </Label>
+        <H1>{mobility.title}</H1>
+        <Text style={{ color: t.text, fontSize: 17, lineHeight: 25 }}>{mobility.how}</Text>
+        <Card>
+          <Text style={{ color: t.muted, fontSize: 13 }}>Godkänt om</Text>
+          <Text style={{ color: t.text, fontSize: 16, fontWeight: '600' }}>{mobility.pass}</Text>
+        </Card>
+        <Button title="✅ Klarar" onPress={() => setAnswered((a) => [...a, mobility.id])} style={{ paddingVertical: 16 }} />
+        <Button
+          title="❌ Klarar inte"
+          variant="secondary"
+          onPress={() => {
+            setFailed((f) => [...f, mobility.id]);
+            setAnswered((a) => [...a, mobility.id]);
+          }}
+          style={{ paddingVertical: 16 }}
+        />
+        {answered.length > 0 && <Button title="‹ Tillbaka" variant="ghost" onPress={back} />}
+      </>,
+    );
+  }
+
+  if (!current) return null;
+  const media = current.media ? mediaFor(current.media) : {};
+
+  // ---------- Guided step ----------
+  return shell(
+    <>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Label>Test {stepNo}</Label>
+        <Explain text={`${current.title}: ${current.how}`} context={`${title}, testet "${current.title}"`} />
+      </View>
+      <H1>{current.title}</H1>
+      {media.anim && <Figure anim={media.anim} size={0.8} />}
+      <Text style={{ color: t.text, fontSize: 17, lineHeight: 25 }}>{current.how}</Text>
+      {current.media && <HowToToggle mediaKey={current.media} label={media.anim ? 'Se video' : 'Se hur man gör'} />}
+
+      {current.kind === 'hold' ? (
+        <Stopwatch key={current.key} onDone={(s) => answer(current.key, s)} onSkip={() => answer(current.key, 0)} skipLabel={current.skipLabel} />
+      ) : (
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+          {current.choices!.map((c) => (
+            <Pressable
+              key={c.label}
+              onPress={() => answer(current.key, c.value)}
+              style={({ pressed }) => ({
+                flexGrow: 1,
+                minWidth: '30%',
+                paddingVertical: 18,
+                borderRadius: 14,
+                backgroundColor: pressed ? t.accentSoft : t.card,
+                borderWidth: 2,
+                borderColor: t.accent,
+                alignItems: 'center',
+              })}
+            >
+              <Text style={{ color: t.text, fontSize: 20, fontWeight: '800' }}>{c.label}</Text>
             </Pressable>
           ))}
-        </Card>
+        </View>
       )}
-
-      <Button title={places.length > 0 ? 'Spara & tillämpa nivåer' : 'Spara resultat'} onPress={save} />
-    </Screen>
+      {current.kind === 'choice' && current.skipLabel && (
+        <Pressable onPress={() => answer(current.key, undefined)} hitSlop={8}>
+          <Text style={{ color: t.muted, textAlign: 'center', fontWeight: '600' }}>{current.skipLabel}</Text>
+        </Pressable>
+      )}
+      <Button title="‹ Tillbaka" variant="ghost" onPress={back} />
+    </>,
   );
 }

@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 
 import { Button, Card, H2, Label, P, Row, Screen, useTheme } from '@/components/ui';
 import { LADDERS, LadderGroup } from '@/data/ladders';
-import { LADDER_SV, LEVEL_SV } from '@/data/sv';
+import { LADDER_SV, LEVEL_SV, TEST_SV } from '@/data/sv';
 import { useStore } from '@/lib/store';
 
 const GROUPS: LadderGroup[] = ['Tryck', 'Drag', 'Färdigheter', 'Bål', 'Ben'];
@@ -16,16 +16,15 @@ export default function Levels() {
   return (
     <Screen>
       <Card>
-        <H2>Baslinjetest</H2>
+        <H2>Testa dig</H2>
         <P muted>
-          Testa utvilad (48 h efter senaste hårda pass). Resultaten placerar dig automatiskt i stegarna.
+          Ca 20 min per test. Appen guidar dig och sätter dina nivåer automatiskt.
           {lastTest ? ` Senaste test: ${lastTest.date.slice(0, 10)} (${lastTest.battery === 'mini' ? 'minitest' : lastTest.battery}).` : ''}
         </P>
         <Row>
           {(['A', 'B', 'C'] as const).map((b) => (
-            <Button key={b} title={`Test ${b}`} variant="secondary" onPress={() => router.push({ pathname: '/test/[battery]', params: { battery: b } })} />
+            <Button key={b} title={TEST_SV[b].replace('Test: ', '')} variant="secondary" onPress={() => router.push({ pathname: '/test/[battery]', params: { battery: b } })} />
           ))}
-          <Button title="Minitest" variant="secondary" onPress={() => router.push({ pathname: '/test/[battery]', params: { battery: 'mini' } })} />
         </Row>
       </Card>
 

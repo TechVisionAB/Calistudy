@@ -9,7 +9,6 @@ import { MICRO_PRACTICE, READINESS } from '@/data/guide';
 import { blockOf, isoDate, mondayOf, shiftDate, weekdayIndex } from '@/data/program';
 import { SessionId, SESSIONS } from '@/data/sessions';
 import { SESSION_SV, TEST_SV } from '@/data/sv';
-import { DAY1_ORDER } from '@/data/tests';
 import { weekStreak } from '@/lib/motivation';
 import { HARD, nextUp, weekProgress } from '@/lib/next';
 import { plateaus } from '@/lib/progression';
@@ -90,8 +89,7 @@ export default function Today() {
           <Card style={{ borderColor: t.accent, borderWidth: 2 }}>
             <Label>{week === 0 ? 'Startvecka' : 'Dags att testa'}</Label>
             <Text style={{ color: t.text, fontSize: 28, fontWeight: '800' }}>{TEST_SV[next.battery]}</Text>
-            <P muted>Ca 20–30 min. Testa utvilad, 3–5 min vila mellan testerna.</P>
-            {next.battery === 'A' && week === 0 && <Bullets items={DAY1_ORDER.map((x, i) => `${i + 1}. ${x}`)} />}
+            <P muted>Ca 20 min. Appen guidar dig genom en övning i taget – du trycker bara på hur många du klarade.</P>
             <Button title="Starta testet" onPress={() => router.push({ pathname: '/test/[battery]', params: { battery: next.battery } })} />
             {week === 0 && (
               <Pressable onPress={startWeek1} hitSlop={8}>
