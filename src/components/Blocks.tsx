@@ -1,9 +1,10 @@
 import { Linking, Pressable, Text, View } from 'react-native';
 
 import { Block } from '@/data/guide';
+import { Explain } from './Explain';
 import { Bullets, H2, P, useTheme } from './ui';
 
-export function Blocks({ blocks }: { blocks: Block[] }) {
+export function Blocks({ blocks, context }: { blocks: Block[]; context?: string }) {
   const t = useTheme();
   return (
     <View style={{ gap: 12 }}>
@@ -21,7 +22,10 @@ export function Blocks({ blocks }: { blocks: Block[] }) {
               <View key={i} style={{ gap: 8 }}>
                 {b.rows.map((row, r) => (
                   <View key={r} style={{ backgroundColor: t.card, borderColor: t.border, borderWidth: 1, borderRadius: 12, padding: 12, gap: 4 }}>
-                    <Text style={{ color: t.text, fontWeight: '700', fontSize: 15 }}>{row[0]}</Text>
+                    <View style={{ flexDirection: 'row', gap: 8, alignItems: 'flex-start' }}>
+                      <Text style={{ color: t.text, fontWeight: '700', fontSize: 15, flex: 1 }}>{row[0]}</Text>
+                      <Explain text={row.join(' · ')} context={context ? `Guide: ${context}` : undefined} size={20} />
+                    </View>
                     {row.slice(1).map((cell, c) => (
                       <Text key={c} style={{ color: t.text, fontSize: 14, lineHeight: 20 }}>
                         <Text style={{ color: t.muted, fontWeight: '600' }}>{b.head[c + 1]}: </Text>

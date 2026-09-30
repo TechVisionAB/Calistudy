@@ -5,6 +5,7 @@ import { Platform, Pressable, ScrollView, Text, TextInput, Vibration, View } fro
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Figure } from '@/components/Figure';
+import { Explain } from '@/components/Explain';
 import { HowToToggle } from '@/components/HowTo';
 import { Button, Card, Chip, H1, H2, Label, P, Row, styles, useTheme } from '@/components/ui';
 import { mediaFor } from '@/data/media';
@@ -354,10 +355,16 @@ export default function WorkoutScreen() {
         <HowToToggle mediaKey={cur.mediaKey} label={media.anim ? 'Video & mer' : 'Se hur man gör'} />
 
         <Card>
-          <Text style={{ color: t.text, fontSize: 22, fontWeight: '800' }}>
-            {hold ? 'Håll ' : ''}
-            {range(cur)}
-          </Text>
+          <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+            <Text style={{ color: t.text, fontSize: 22, fontWeight: '800' }}>
+              {hold ? 'Håll ' : ''}
+              {range(cur)}
+            </Text>
+            <Explain
+              text={`${cur.name}${cur.level ? ` (${cur.level})` : ''}. RIR ${cur.plannedRir}, tempo ${cur.tempo}, vila ${cur.rest}. ${cur.cue}`}
+              context={`Mitt i passet ${SESSION_SV[session.id].title}: övning ${cur.title}, set ${step.set + 1} av ${cur.plannedSets}, mål ${range(cur)}`}
+            />
+          </Row>
           <Text style={{ color: t.muted, fontSize: 15 }}>
             {effortText(cur.plannedRir)}
             {tempoText(cur.tempo) && !hold ? ` · ${tempoText(cur.tempo)}` : ''}

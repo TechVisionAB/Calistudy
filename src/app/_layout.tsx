@@ -49,6 +49,7 @@ export default function RootLayout() {
         <Stack.Screen name="reminders" options={{ title: 'Påminnelser' }} />
         <Stack.Screen name="report" options={{ title: 'Testrapport' }} />
         <Stack.Screen name="welcome" options={{ headerShown: false, gestureEnabled: false }} />
+        <Stack.Screen name="coach" options={{ title: 'AI-coach' }} />
       </Stack>
     </StoreProvider>
   );

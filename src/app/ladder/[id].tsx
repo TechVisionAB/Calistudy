@@ -1,10 +1,11 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { Text, View } from 'react-native';
 
+import { Explain } from '@/components/Explain';
 import { HowToToggle } from '@/components/HowTo';
 import { ProgressCard } from '@/components/ProgressCard';
 import { progressSeries } from '@/lib/progress';
-import { Card, Chip, H1, H2, Label, P, Screen, useTheme } from '@/components/ui';
+import { Card, Chip, H1, H2, Label, P, Row, Screen, useTheme } from '@/components/ui';
 import { LADDER_BY_ID, OTHER_LOWER_LADDERS } from '@/data/ladders';
 import { LADDER_SV, LEVEL_SV } from '@/data/sv';
 import { useStore } from '@/lib/store';
@@ -42,7 +43,10 @@ export default function LadderScreen() {
               <View style={{ flex: 1, gap: 4 }}>
                 <Text style={{ color: t.text, fontSize: 15, fontWeight: on ? '700' : '500' }}>{LEVEL_SV[l.code] ?? l.name}</Text>
                 {LEVEL_SV[l.code] && <Text style={{ color: t.muted, fontSize: 13 }}>{l.name}</Text>}
-                <Text style={{ color: t.muted, fontSize: 13 }}>Gå vidare vid: {l.advance}</Text>
+                <Row style={{ flexWrap: 'nowrap' }}>
+                  <Text style={{ color: t.muted, fontSize: 13, flex: 1 }}>Gå vidare vid: {l.advance}</Text>
+                  <Explain text={`${l.code}: ${l.name}. Gå vidare vid: ${l.advance}`} context={`Nivåstege ${ladder.name}, nivå ${l.code}`} size={20} />
+                </Row>
               </View>
             </View>
             {on && <Chip text="Din nivå" tone="accent" />}

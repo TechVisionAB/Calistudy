@@ -1,5 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Tabs } from 'expo-router';
+import { router, Tabs } from 'expo-router';
+import { Pressable } from 'react-native';
 import { ComponentProps } from 'react';
 
 import { useTheme } from '@/components/ui';
@@ -25,6 +26,11 @@ export default function TabLayout() {
         headerStyle: { backgroundColor: t.card },
         headerTitleStyle: { color: t.text, fontWeight: '800' },
         sceneStyle: { backgroundColor: t.bg },
+        headerRight: () => (
+          <Pressable onPress={() => router.push('/coach')} hitSlop={10} style={{ marginRight: 16 }} accessibilityLabel="Fråga AI-coachen">
+            <Ionicons name="chatbubble-ellipses-outline" size={24} color={t.accent} />
+          </Pressable>
+        ),
       }}
     >
       {TABS.map((tab) => (

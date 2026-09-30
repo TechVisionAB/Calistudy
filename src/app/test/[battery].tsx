@@ -1,7 +1,9 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
+
 import { useMemo, useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 
+import { Explain } from '@/components/Explain';
 import { Bullets, Button, Card, Chip, H1, H2, Label, P, Row, Screen, useTheme } from '@/components/ui';
 import { LADDER_BY_ID } from '@/data/ladders';
 import { TestBattery } from '@/data/program';
@@ -92,7 +94,10 @@ export default function TestScreen() {
           const fail = failed.includes(c.id);
           return (
             <Card key={c.id}>
-              <H2>{c.name}</H2>
+              <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+                <H2 style={{ flex: 1 }}>{c.name}</H2>
+                <Explain text={`${c.how} Godkänt: ${c.pass}. Om underkänt: ${c.fail}`} context={`Rörlighetstest: ${c.name}`} />
+              </Row>
               <P muted>{c.how}</P>
               <P>Godkänt: {c.pass}</P>
               <Row>
@@ -108,7 +113,13 @@ export default function TestScreen() {
         const p = it.place?.(values);
         return (
           <Card key={it.id}>
-            <H2>{it.name}</H2>
+            <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+              <H2 style={{ flex: 1 }}>{it.name}</H2>
+              <Explain
+                text={[it.how, it.counts && `Räknas: ${it.counts}`, it.stop && `Stoppa: ${it.stop}`, it.interpretation].filter(Boolean).join(' · ')}
+                context={`Test ${battery}: ${it.name}`}
+              />
+            </Row>
             {!!it.how && <P muted>{it.how}</P>}
             {(it.counts || it.stop) && (
               <Text style={{ color: t.muted, fontSize: 13 }}>

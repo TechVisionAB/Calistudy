@@ -1,7 +1,7 @@
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
 
 import { Blocks } from '@/components/Blocks';
-import { H1, P, Screen } from '@/components/ui';
+import { Button, H1, P, Screen } from '@/components/ui';
 import { GUIDE } from '@/data/guide';
 
 export default function GuideSectionScreen() {
@@ -13,7 +13,8 @@ export default function GuideSectionScreen() {
       <Stack.Screen options={{ title: section.title }} />
       <H1>{section.title}</H1>
       <P muted>{section.summary}</P>
-      <Blocks blocks={section.blocks} />
+      <Button title="💬 Fråga AI-coachen om det här" variant="secondary" onPress={() => router.push({ pathname: '/coach', params: { context: `Guide-avsnittet "${section.title}" (${section.summary})` } })} />
+      <Blocks blocks={section.blocks} context={section.title} />
     </Screen>
   );
 }

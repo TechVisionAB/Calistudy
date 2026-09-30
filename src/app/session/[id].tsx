@@ -2,6 +2,7 @@ import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
+import { Explain } from '@/components/Explain';
 import { HowToToggle } from '@/components/HowTo';
 import { Bullets, Button, Card, Chip, H1, H2, Label, P, Row, Screen, useTheme } from '@/components/ui';
 import { READINESS } from '@/data/guide';
@@ -62,7 +63,10 @@ export default function SessionScreen() {
 
       {plan.map((e) => (
         <Card key={e.slot} style={e.plannedSets === 0 ? { opacity: 0.5 } : undefined}>
-          <Text style={{ color: t.text, fontWeight: '700', fontSize: 17 }}>{e.title}</Text>
+          <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+            <Text style={{ color: t.text, fontWeight: '700', fontSize: 17, flex: 1 }}>{e.title}</Text>
+            <Explain text={`${e.name}${e.level ? ` (${e.level})` : ''}. RIR ${e.plannedRir}, tempo ${e.tempo}, vila ${e.rest}. ${e.cue}`} context={`Passöversikt ${sv.title}: ${e.title}`} />
+          </Row>
           {e.swapped && <Chip text="Ersatt – du saknar utrustning" tone="accent" />}
           {e.plannedSets === 0 ? (
             <P muted>Hoppas över den här veckan.</P>

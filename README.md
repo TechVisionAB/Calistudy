@@ -57,6 +57,20 @@ Bygget tar 10–20 min i Expos moln. Du får en länk/QR-kod till en APK som tes
 
 **Mätning:** testarna skickar Logg → 📤 Skicka testrapport (anonym veckostatistik + betyg + fritext) via valfri app. Nyckeltal: tränar de fortfarande vecka 3?
 
+## AI-coach
+
+Chatten (💬 uppe till höger, och "Fråga AI-coachen" i varje ?-ruta) svarar utifrån hela guiden, appens funktioner och användarens nivåer/senaste pass. ?-knapparna fungerar utan internet (ordlista i `src/data/glossary.ts`); chatten kräver servern nedan.
+
+API-nyckeln får aldrig ligga i appen, så anropen går via en Supabase Edge Function (`supabase/functions/coach`):
+
+```bash
+node scripts/build-coach-knowledge.mjs          # bygger coachens kunskap från guiden + README
+supabase functions deploy coach
+supabase secrets set ANTHROPIC_API_KEY=sk-ant-...
+```
+
+Sätt sedan `EXPO_PUBLIC_COACH_URL` och `EXPO_PUBLIC_COACH_KEY` i `.env` (se `.env.example`). Modell: Claude Opus 5.5 med effort `low` och cachad systemprompt (~30k tokens guide). Före publik lansering: lägg till inloggning/rate limiting så att ingen annan kan använda funktionen på er bekostnad.
+
 ## Struktur
 
 ```
