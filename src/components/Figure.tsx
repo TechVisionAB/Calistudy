@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
-import Svg, { Circle, G, Line, Rect } from 'react-native-svg';
+import Svg, { Circle, Ellipse, G, Line, Rect } from 'react-native-svg';
 
 import { Anim, Pose, Prop, SEG, Vec } from '@/data/animations';
 import { useTheme } from './ui';
@@ -113,6 +113,7 @@ export function Figure({ anim, size = 1, autoplay = true, time }: { anim: Anim; 
 
   const s = skeleton(interpolate(anim, time ?? clock));
   const [vx, vy, vw, vh] = anim.viewBox ?? [0, 0, 120, 80];
+  const floorY = anim.props.find((p): p is Extract<Prop, { type: 'floor' }> => p.type === 'floor')?.y;
   const body = t.text;
   const far = t.muted;
   const L = (a: Vec, b: Vec, color: string, w: number) => (
@@ -126,16 +127,25 @@ export function Figure({ anim, size = 1, autoplay = true, time }: { anim: Anim; 
           {anim.props.map((p, i) => (
             <PropShape key={i} prop={p} color={t.muted} />
           ))}
-          {L(s.hip, s.knee2, far, 3.6)}
-          {L(s.knee2, s.foot2, far, 3.6)}
-          {L(s.shoulder, s.elbow2, far, 3.2)}
-          {L(s.elbow2, s.hand2, far, 3.2)}
-          {L(s.hip, s.shoulder, body, 5.5)}
-          <Circle cx={s.head[0]} cy={s.head[1]} r={SEG.head} fill={body} />
-          {L(s.hip, s.knee, t.accent, 3.8)}
-          {L(s.knee, s.foot, t.accent, 3.8)}
-          {L(s.shoulder, s.elbow, t.accent, 3.4)}
-          {L(s.elbow, s.hand, t.accent, 3.4)}
+          {/* Soft floor shadow under the lowest point */}
+          {floorY !== undefined && (
+            <Ellipse cx={(s.hip[0] + s.shoulder[0]) / 2} cy={floorY + 0.8} rx={18} ry={1.6} fill={t.text} opacity={0.08} />
+          )}
+          {/* Far limbs: lighter, drawn behind the torso */}
+          {L(s.hip, s.knee2, far, 6.2)}
+          {L(s.knee2, s.foot2, far, 5.2)}
+          {L(s.shoulder, s.elbow2, far, 5)}
+          {L(s.elbow2, s.hand2, far, 4.2)}
+          {/* Torso: wide at the chest, narrower at the hip */}
+          {L(s.hip, s.shoulder, body, 10)}
+          {L(s.shoulder, s.shoulder, body, 11)}
+          {L(s.hip, s.hip, body, 9)}
+          <Circle cx={s.head[0]} cy={s.head[1]} r={SEG.head + 0.6} fill={body} />
+          {/* Near limbs: accent colour, tapering towards hands and feet */}
+          {L(s.hip, s.knee, t.accent, 6.6)}
+          {L(s.knee, s.foot, t.accent, 5.4)}
+          {L(s.shoulder, s.elbow, t.accent, 5.2)}
+          {L(s.elbow, s.hand, t.accent, 4.4)}
         </Svg>
         {!playing && time === undefined && (
           <Text style={{ position: 'absolute', right: 8, bottom: 6, color: t.muted, fontSize: 12, fontWeight: '700' }}>⏸ pausad</Text>

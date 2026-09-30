@@ -3,7 +3,9 @@ import { Image, Linking, Pressable, Text, View } from 'react-native';
 
 import { LADDER_BY_ID } from '@/data/ladders';
 import { mediaFor, thumbnailUrl, youtubeUrl } from '@/data/media';
+import { anatomyFor } from '@/data/anatomy';
 import { Figure } from './Figure';
+import { MuscleMap } from './MuscleMap';
 import { Chip, Row, useTheme } from './ui';
 import { YouTubePlayer } from './YouTubePlayer';
 
@@ -19,18 +21,27 @@ function levelName(code: string) {
 export function HowTo({ mediaKey }: { mediaKey: string }) {
   const t = useTheme();
   const m = mediaFor(mediaKey);
-  const [tab, setTab] = useState<'anim' | 'video'>(m.anim ? 'anim' : 'video');
+  const anatomy = anatomyFor(mediaKey);
+  const [tab, setTab] = useState<'anim' | 'muscles' | 'video'>(m.anim ? 'anim' : anatomy ? 'muscles' : 'video');
   const [playing, setPlaying] = useState(false);
-  if (!m.anim && !m.video) return null;
+  if (!m.anim && !m.video && !anatomy) return null;
+  type Tab = 'anim' | 'muscles' | 'video';
+  const tabs: [Tab, string][] = [];
+  if (m.anim) tabs.push(['anim', 'Animation']);
+  if (anatomy) tabs.push(['muscles', 'Muskler']);
+  if (m.video) tabs.push(['video', 'Video']);
 
   return (
     <View style={{ gap: 8 }}>
-      {m.anim && m.video && (
+      {tabs.length > 1 && (
         <Row>
-          <Chip text="Animation" tone={tab === 'anim' ? 'accent' : 'neutral'} onPress={() => setTab('anim')} />
-          <Chip text="Video" tone={tab === 'video' ? 'accent' : 'neutral'} onPress={() => setTab('video')} />
+          {tabs.map(([id, label]) => (
+            <Chip key={id} text={label} tone={tab === id ? 'accent' : 'neutral'} onPress={() => setTab(id)} />
+          ))}
         </Row>
       )}
+
+      {tab === 'muscles' && <MuscleMap mediaKey={mediaKey} />}
 
       {tab === 'anim' && m.anim && (
         <>
@@ -79,7 +90,8 @@ export function HowToToggle({ mediaKey, label = 'Se hur man gör' }: { mediaKey?
   const [open, setOpen] = useState(false);
   if (!mediaKey) return null;
   const m = mediaFor(mediaKey);
-  if (!m.anim && !m.video) return null;
+  const anatomy = anatomyFor(mediaKey);
+  if (!m.anim && !m.video && !anatomy) return null;
   return (
     <View style={{ gap: 8 }}>
       <Pressable onPress={() => setOpen((o) => !o)} hitSlop={6} accessibilityRole="button">
@@ -87,7 +99,7 @@ export function HowToToggle({ mediaKey, label = 'Se hur man gör' }: { mediaKey?
           {open ? '▾' : '▶'} {label}
           <Text style={{ color: t.muted, fontWeight: '400' }}>
             {'  '}
-            {[m.anim && 'animation', m.video && 'video'].filter(Boolean).join(' + ')}
+            {[m.anim && 'animation', anatomy && 'muskler', m.video && 'video'].filter(Boolean).join(' · ')}
           </Text>
         </Text>
       </Pressable>

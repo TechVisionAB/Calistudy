@@ -8,6 +8,7 @@ import { Figure } from '@/components/Figure';
 import { Explain } from '@/components/Explain';
 import { HowToToggle } from '@/components/HowTo';
 import { Button, Card, Chip, H1, H2, Label, P, Row, styles, useTheme } from '@/components/ui';
+import { anatomyFor } from '@/data/anatomy';
 import { mediaFor } from '@/data/media';
 import { SessionId, SESSIONS } from '@/data/sessions';
 import { EFFORTS, effortText, LEVEL_SV, SESSION_SV, tempoText, WARMUP_SV } from '@/data/sv';
@@ -352,7 +353,7 @@ export default function WorkoutScreen() {
         </Row>
 
         {media.anim ? <Figure anim={media.anim} size={0.9} /> : null}
-        <HowToToggle mediaKey={cur.mediaKey} label={media.anim ? 'Video & mer' : 'Se hur man gör'} />
+        <HowToToggle mediaKey={cur.mediaKey} label={media.anim ? 'Muskler & video' : 'Se hur man gör'} />
 
         <Card>
           <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
@@ -370,6 +371,12 @@ export default function WorkoutScreen() {
             {tempoText(cur.tempo) && !hold ? ` · ${tempoText(cur.tempo)}` : ''}
           </Text>
           <Text style={{ color: t.text, fontSize: 15, fontStyle: 'italic' }}>“{cur.cueSv}”</Text>
+          {anatomyFor(cur.mediaKey) && (
+            <Text style={{ color: t.muted, fontSize: 14, lineHeight: 20 }}>
+              💪 {anatomyFor(cur.mediaKey)!.feel}
+              {'\n'}⛔ {anatomyFor(cur.mediaKey)!.notFeel}
+            </Text>
+          )}
         </Card>
 
         {/* Counter */}
