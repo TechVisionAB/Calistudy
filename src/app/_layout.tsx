@@ -27,6 +27,7 @@ export default function RootLayout() {
         <Stack.Screen name="test/[battery]" options={{ title: 'Test' }} />
         <Stack.Screen name="guide/[id]" options={{ title: 'Guide' }} />
         <Stack.Screen name="history/[id]" options={{ title: 'Loggat pass' }} />
+        <Stack.Screen name="demos" options={{ title: 'Övningsdemos' }} />
       </Stack>
     </StoreProvider>
   );

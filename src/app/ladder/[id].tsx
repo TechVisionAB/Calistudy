@@ -1,6 +1,7 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { Text, View } from 'react-native';
 
+import { HowToToggle } from '@/components/HowTo';
 import { Card, Chip, H1, H2, Label, P, Screen, useTheme } from '@/components/ui';
 import { LADDER_BY_ID, OTHER_LOWER_LADDERS } from '@/data/ladders';
 import { useStore } from '@/lib/store';
@@ -39,6 +40,7 @@ export default function LadderScreen() {
               </View>
             </View>
             {on && <Chip text="Din nivå" tone="accent" />}
+            <HowToToggle mediaKey={l.code} />
           </Card>
         );
       })}

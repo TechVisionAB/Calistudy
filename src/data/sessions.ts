@@ -22,6 +22,8 @@ export type Exercise = {
   tempo: string;
   cue: string;
   role: Role;
+  /** Demo media key (videos.json / animations) for exercises without a ladder. */
+  demo?: string;
 };
 
 export type SessionId = 'upperA' | 'lowerA' | 'recovery' | 'upperB' | 'lowerB' | 'skill' | 'rest';
@@ -44,9 +46,10 @@ export type WarmupId = 'push' | 'pull' | 'legs' | 'handstand';
 
 // The guide refers to named warm-ups in "Section 15" without listing them;
 // these are built from the Day 1 warm-up (Section 19) plus the prehab note in Section 15.
-export const WARMUPS: Record<WarmupId, { title: string; steps: string[] }> = {
+export const WARMUPS: Record<WarmupId, { title: string; steps: string[]; demos: { key: string; label: string }[] }> = {
   push: {
     title: 'Push + planche (≈8 min)',
+    demos: [{ key: 'wrist', label: 'Handledsuppvärmning' }, { key: 'dislocates', label: 'Band dislocates' }, { key: 'scap', label: 'Scap push-ups' }, { key: 'DP1', label: 'Support hold' }],
     steps: [
       '2 min easy jumping jacks or skipping',
       'Wrist protocol (palm pulses, back-of-hand push-ups, finger rocks)',
@@ -59,6 +62,7 @@ export const WARMUPS: Record<WarmupId, { title: string; steps: string[] }> = {
   },
   pull: {
     title: 'Pull + front lever (≈8 min)',
+    demos: [{ key: 'wrist', label: 'Handledsuppvärmning' }, { key: 'dislocates', label: 'Band dislocates' }, { key: 'VPu1', label: 'Scap pull-ups' }, { key: 'BL0', label: 'German hang' }],
     steps: [
       '2 min easy jumping jacks or skipping',
       'Wrist protocol',
@@ -71,6 +75,7 @@ export const WARMUPS: Record<WarmupId, { title: string; steps: string[] }> = {
   },
   legs: {
     title: 'Legs (≈8 min)',
+    demos: [{ key: 'SL1', label: 'Djup knäböj' }, { key: 'SL2', label: 'Split squat' }, { key: 'pogo', label: 'Pogo hops' }],
     steps: [
       '2–3 min easy cardio (skipping, bike, brisk walk)',
       'Knee-to-wall ankle rocks ×10/side',
@@ -82,6 +87,7 @@ export const WARMUPS: Record<WarmupId, { title: string; steps: string[] }> = {
   },
   handstand: {
     title: 'Handstand (≈8 min)',
+    demos: [{ key: 'wrist', label: 'Handledsuppvärmning' }, { key: 'scap', label: 'Scap push-ups' }, { key: 'dislocates', label: 'Band dislocates' }, { key: 'HS1', label: 'Pike hold' }],
     steps: [
       'Wrist protocol (2–3 min)',
       'Scap push-ups ×10',
@@ -110,9 +116,9 @@ export const SESSIONS: Record<SessionId, Session> = {
       ex({ slot: 'D2', name: 'Vertical pull (weighted if VPu6)', ladder: 'VPu', sets: 4, min: 4, max: 6, unit: 'reps', rest: '90 s → D1', restSec: 90, rir: '2', tempo: '3-0-1-0', cue: 'Shoulders down first, then elbows to ribs', role: 'main' }),
       ex({ slot: 'E1', name: 'Dip', ladder: 'DP', sets: 3, min: 6, max: 10, unit: 'reps', rest: '75 s → E2', restSec: 75, rir: '2', tempo: '2-1-1-0', cue: 'Chest forward, shoulders down, lockout', role: 'main' }),
       ex({ slot: 'E2', name: 'Row', ladder: 'HPu', sets: 3, min: 8, max: 12, unit: 'reps', rest: '75 s → E1', restSec: 75, rir: '2', tempo: '2-0-1-1', cue: 'Chest to hands; squeeze 1 s', role: 'main' }),
-      ex({ slot: 'F1', name: 'DB lateral raise (lean-away single-arm OK)', sets: 3, min: 12, max: 20, unit: 'reps', rest: '60 s → F2', restSec: 60, rir: '1', tempo: '2-0-1-0', cue: 'Lead with elbows; stop at shoulder height', role: 'accessory' }),
+      ex({ slot: 'F1', name: 'DB lateral raise (lean-away single-arm OK)', demo: 'lateral', sets: 3, min: 12, max: 20, unit: 'reps', rest: '60 s → F2', restSec: 60, rir: '1', tempo: '2-0-1-0', cue: 'Lead with elbows; stop at shoulder height', role: 'accessory' }),
       ex({ slot: 'F2', name: 'DB or ring curl (incline DB curl preferred)', sets: 3, min: 8, max: 12, unit: 'reps', rest: '60 s → F1', restSec: 60, rir: '1', tempo: '3-0-1-0', cue: 'Elbows still; full stretch at bottom', role: 'accessory' }),
-      ex({ slot: 'G', name: 'L-sit (tuck/one-leg/full)', sets: 4, min: 10, max: 15, unit: 's', rest: '60 s', restSec: 60, rir: 'Hold reserve 3 s', tempo: 'Static', cue: 'Shoulders down, push away, knees locked', role: 'accessory' }),
+      ex({ slot: 'G', name: 'L-sit (tuck/one-leg/full)', demo: 'CC5', sets: 4, min: 10, max: 15, unit: 's', rest: '60 s', restSec: 60, rir: 'Hold reserve 3 s', tempo: 'Static', cue: 'Shoulders down, push away, knees locked', role: 'accessory' }),
     ],
     block2: [
       'D1/D2: IF VPu ≥ VPu6 → weighted pull-up 4 × 3–5 @ RIR 1–2 + 1 back-off set × 8–12 @ BW. IF VP4+ → wall HSPU 4 × 3–5 + 1 back-off set pike push-ups × 8–12. OTHERWISE keep 4 × 4–6.',
@@ -130,13 +136,13 @@ export const SESSIONS: Record<SessionId, Session> = {
     warmup: 'legs',
     intro: 'Micro-practice in the morning or before the session.',
     exercises: [
-      ex({ slot: 'A', name: 'Countermovement box jump (mid-shin to knee-height box); step down', sets: 4, min: 3, max: 3, unit: 'reps', rest: '90 s', restSec: 90, rir: 'Max intent, stop if height drops', tempo: 'X', cue: 'Jump tall, land quiet, knees track toes', role: 'plyo' }),
+      ex({ slot: 'A', name: 'Countermovement box jump (mid-shin to knee-height box); step down', demo: 'boxjump', sets: 4, min: 3, max: 3, unit: 'reps', rest: '90 s', restSec: 90, rir: 'Max intent, stop if height drops', tempo: 'X', cue: 'Jump tall, land quiet, knees track toes', role: 'plyo' }),
       ex({ slot: 'B', name: 'Single-leg squat ladder (SL4 box height as tested)', ladder: 'SL', sets: 4, min: 5, max: 8, unit: 'reps/leg', rest: '90 s between legs', restSec: 90, rir: '2', tempo: '3-1-X-0', cue: 'Sit back and down; heel stays heavy', role: 'main' }),
       ex({ slot: 'C', name: 'Single-leg RDL (DB/backpack; H3–H4)', ladder: 'H', sets: 3, min: 8, max: 12, unit: 'reps/leg', rest: '75 s', restSec: 75, rir: '2', tempo: '3-0-1-0', cue: 'Hips back, flat back, hips square', role: 'main' }),
       ex({ slot: 'D', name: 'Nordic ladder', ladder: 'KF', sets: 3, min: 3, max: 6, unit: 'reps', rest: '2 min', restSec: 120, rir: '2', tempo: 'Eccentric 3–5 s', cue: 'Hips extended; fall as slowly as possible', role: 'main' }),
-      ex({ slot: 'E', name: 'Single-leg straight-knee calf raise on step (DB when >15)', sets: 3, min: 10, max: 15, unit: 'reps/leg', rest: '60 s', restSec: 60, rir: '1', tempo: '2-2-1-1', cue: 'Big toe pressure; full stretch', role: 'main' }),
-      ex({ slot: 'F1', name: 'Copenhagen side plank (short → long lever)', sets: 3, min: 15, max: 30, unit: 's/side', rest: '45 s → F2', restSec: 45, rir: 'Hold reserve', tempo: 'Static', cue: 'Top leg drives into bench', role: 'accessory' }),
-      ex({ slot: 'F2', name: 'Hollow body hold (CC1 level)', sets: 3, min: 20, max: 40, unit: 's', rest: '45 s → F1', restSec: 45, rir: 'Hold reserve', tempo: 'Static', cue: 'Low back glued; ribs down', role: 'accessory' }),
+      ex({ slot: 'E', name: 'Single-leg straight-knee calf raise on step (DB when >15)', demo: 'calf', sets: 3, min: 10, max: 15, unit: 'reps/leg', rest: '60 s', restSec: 60, rir: '1', tempo: '2-2-1-1', cue: 'Big toe pressure; full stretch', role: 'main' }),
+      ex({ slot: 'F1', name: 'Copenhagen side plank (short → long lever)', demo: 'copenhagen', sets: 3, min: 15, max: 30, unit: 's/side', rest: '45 s → F2', restSec: 45, rir: 'Hold reserve', tempo: 'Static', cue: 'Top leg drives into bench', role: 'accessory' }),
+      ex({ slot: 'F2', name: 'Hollow body hold (CC1 level)', demo: 'CC1', sets: 3, min: 20, max: 40, unit: 's', rest: '45 s → F1', restSec: 45, rir: 'Hold reserve', tempo: 'Static', cue: 'Low back glued; ribs down', role: 'accessory' }),
     ],
     block2: [
       'B: IF SL4 at ≤30 cm box for 3 × 6 → SL5 (counterbalanced pistol, 5 kg forward) 4 × 4–6. ELSE IF SL5 3 × 6 → SL6 pistol. OTHERWISE lower the box by 5–10 cm when 3 × 8 is achieved.',
@@ -164,12 +170,12 @@ export const SESSIONS: Record<SessionId, Session> = {
     exercises: [
       ex({ slot: 'A', name: 'Handstand', ladder: 'HS', sets: 6, min: 20, max: 40, unit: 's', rest: '60 s', restSec: 60, rir: 'RPE ≤6', tempo: '—', cue: 'Stack wrists-shoulders-hips', role: 'skill' }),
       ex({ slot: 'B', name: 'Front lever (FL0 substitutes as Mon)', ladder: 'FL', sets: 5, min: 6, max: 10, unit: 's', rest: '2 min', restSec: 120, rir: 'Hold reserve 2–3 s', tempo: 'Static', cue: 'Depress, straight arms, hollow', role: 'skill' }),
-      ex({ slot: 'C', name: 'Planche lean (PL0a) or planche level −1', sets: 3, min: 10, max: 15, unit: 's', rest: '90 s', restSec: 90, rir: 'Hold reserve 3 s', tempo: 'Static', cue: 'Lean until you feel shoulders load', role: 'skill' }),
-      ex({ slot: 'D', name: 'Explosive pull-up to lower chest (if VPu4+); else negative pull-ups 3×3 (5 s)', sets: 5, min: 3, max: 3, unit: 'reps', rest: '2 min', restSec: 120, rir: 'Stop when height drops', tempo: 'X up, 2 s down', cue: 'Pull the bar to your sternum, fast', role: 'main' }),
+      ex({ slot: 'C', name: 'Planche lean (PL0a) or planche level −1', demo: 'PL0a', sets: 3, min: 10, max: 15, unit: 's', rest: '90 s', restSec: 90, rir: 'Hold reserve 3 s', tempo: 'Static', cue: 'Lean until you feel shoulders load', role: 'skill' }),
+      ex({ slot: 'D', name: 'Explosive pull-up to lower chest (if VPu4+); else negative pull-ups 3×3 (5 s)', demo: 'MU1', sets: 5, min: 3, max: 3, unit: 'reps', rest: '2 min', restSec: 120, rir: 'Stop when height drops', tempo: 'X up, 2 s down', cue: 'Pull the bar to your sternum, fast', role: 'main' }),
       ex({ slot: 'E1', name: 'Horizontal push', ladder: 'HP', sets: 4, min: 6, max: 10, unit: 'reps', rest: '90 s → E2', restSec: 90, rir: '2', tempo: '3-1-1-0', cue: 'Protract at top; elbows ~45°', role: 'main' }),
       ex({ slot: 'E2', name: 'Horizontal row (+ vest when top of range)', ladder: 'HPu', sets: 4, min: 6, max: 10, unit: 'reps', rest: '90 s → E1', restSec: 90, rir: '2', tempo: '2-0-1-1', cue: 'Pull rings to lower ribs', role: 'main' }),
-      ex({ slot: 'F1', name: 'Chin-up (supinated; band if < 6)', sets: 3, min: 6, max: 10, unit: 'reps', rest: '75 s → F2', restSec: 75, rir: '1–2', tempo: '3-0-1-0', cue: 'Full dead hang; chest to bar intent', role: 'accessory' }),
-      ex({ slot: 'F2', name: 'Pseudo-planche push-up (regress: hands at waist, on knees)', sets: 3, min: 6, max: 10, unit: 'reps', rest: '75 s → F1', restSec: 75, rir: '2', tempo: '2-1-1-0', cue: 'Keep the lean the whole rep', role: 'accessory' }),
+      ex({ slot: 'F1', name: 'Chin-up (supinated; band if < 6)', demo: 'VPu4', sets: 3, min: 6, max: 10, unit: 'reps', rest: '75 s → F2', restSec: 75, rir: '1–2', tempo: '3-0-1-0', cue: 'Full dead hang; chest to bar intent', role: 'accessory' }),
+      ex({ slot: 'F2', name: 'Pseudo-planche push-up (regress: hands at waist, on knees)', demo: 'HP6', sets: 3, min: 6, max: 10, unit: 'reps', rest: '75 s → F1', restSec: 75, rir: '2', tempo: '2-1-1-0', cue: 'Keep the lean the whole rep', role: 'accessory' }),
       ex({ slot: 'G1', name: 'Overhead DB/band triceps extension', sets: 3, min: 10, max: 15, unit: 'reps', rest: '60 s → G2', restSec: 60, rir: '1', tempo: '3-1-1-0', cue: 'Deep stretch behind head; elbows forward', role: 'accessory' }),
       ex({ slot: 'G2', name: 'Band pull-apart or DB reverse fly', sets: 3, min: 15, max: 25, unit: 'reps', rest: '60 s → G1', restSec: 60, rir: '1', tempo: '2-0-1-1', cue: 'Thumbs back; no shrug', role: 'accessory' }),
       ex({ slot: 'H', name: 'Hanging leg raise (CC2–CC4 level)', ladder: 'CC', sets: 3, min: 6, max: 12, unit: 'reps', rest: '75 s', restSec: 75, rir: '2', tempo: '2-1-1-0', cue: 'Posterior tilt first; no swing', role: 'core' }),
@@ -189,16 +195,16 @@ export const SESSIONS: Record<SessionId, Session> = {
     warmup: 'legs',
     intro: 'Micro-practice beforehand or separately.',
     exercises: [
-      ex({ slot: 'A1', name: 'Pogo hops (stiff ankles)', sets: 3, min: 10, max: 10, unit: 'reps', rest: '60 s → A2', restSec: 60, rir: 'Quality', tempo: 'Fast', cue: 'Bounce off the ball of the foot', role: 'plyo' }),
+      ex({ slot: 'A1', name: 'Pogo hops (stiff ankles)', demo: 'pogo', sets: 3, min: 10, max: 10, unit: 'reps', rest: '60 s → A2', restSec: 60, rir: 'Quality', tempo: 'Fast', cue: 'Bounce off the ball of the foot', role: 'plyo' }),
       ex({ slot: 'A2', name: 'Lateral bound, stick landing', sets: 3, min: 3, max: 3, unit: 'reps/side', rest: '60 s', restSec: 60, rir: 'Quality', tempo: 'X, 2 s stick', cue: 'Land soft, hold 2 s', role: 'plyo' }),
-      ex({ slot: 'B', name: 'Bulgarian split squat, loaded (start BW if SL3 < 3×10)', sets: 4, min: 6, max: 10, unit: 'reps/leg', rest: '90 s between legs', restSec: 90, rir: '1–2', tempo: '3-0-1-0', cue: 'Front shin slightly forward; drive through the whole foot', role: 'main' }),
-      ex({ slot: 'C', name: 'Hip thrust on bench (DB/vest; single-leg when BW is too easy)', sets: 3, min: 8, max: 12, unit: 'reps', rest: '90 s', restSec: 90, rir: '1', tempo: '1-0-1-1', cue: 'Chin tucked, ribs down, lock with glutes', role: 'main' }),
-      ex({ slot: 'D', name: 'Sliding leg curl (KF1–KF3 level)', sets: 3, min: 8, max: 12, unit: 'reps', rest: '75 s', restSec: 75, rir: '2', tempo: '3-0-1-0', cue: 'Hips high throughout', role: 'main' }),
-      ex({ slot: 'E', name: 'Shrimp squat (beginner) or Cossack squat', sets: 3, min: 5, max: 8, unit: 'reps/leg', rest: '75 s', restSec: 75, rir: '2', tempo: '3-1-1-0', cue: 'Control down; knee over toes', role: 'main' }),
-      ex({ slot: 'F1', name: 'Bent-knee calf raise (soleus)', sets: 3, min: 15, max: 20, unit: 'reps', rest: '45 s → F2', restSec: 45, rir: '1', tempo: '2-1-1-0', cue: 'Full ROM', role: 'accessory' }),
-      ex({ slot: 'F2', name: 'Tibialis raise (back against wall)', sets: 2, min: 15, max: 20, unit: 'reps', rest: '45 s', restSec: 45, rir: '1–2', tempo: '2-0-1-1', cue: 'Toes to shins', role: 'accessory' }),
+      ex({ slot: 'B', name: 'Bulgarian split squat, loaded (start BW if SL3 < 3×10)', demo: 'SL3', sets: 4, min: 6, max: 10, unit: 'reps/leg', rest: '90 s between legs', restSec: 90, rir: '1–2', tempo: '3-0-1-0', cue: 'Front shin slightly forward; drive through the whole foot', role: 'main' }),
+      ex({ slot: 'C', name: 'Hip thrust on bench (DB/vest; single-leg when BW is too easy)', demo: 'H5', sets: 3, min: 8, max: 12, unit: 'reps', rest: '90 s', restSec: 90, rir: '1', tempo: '1-0-1-1', cue: 'Chin tucked, ribs down, lock with glutes', role: 'main' }),
+      ex({ slot: 'D', name: 'Sliding leg curl (KF1–KF3 level)', demo: 'KF2', sets: 3, min: 8, max: 12, unit: 'reps', rest: '75 s', restSec: 75, rir: '2', tempo: '3-0-1-0', cue: 'Hips high throughout', role: 'main' }),
+      ex({ slot: 'E', name: 'Shrimp squat (beginner) or Cossack squat', demo: 'shrimp', sets: 3, min: 5, max: 8, unit: 'reps/leg', rest: '75 s', restSec: 75, rir: '2', tempo: '3-1-1-0', cue: 'Control down; knee over toes', role: 'main' }),
+      ex({ slot: 'F1', name: 'Bent-knee calf raise (soleus)', demo: 'calf', sets: 3, min: 15, max: 20, unit: 'reps', rest: '45 s → F2', restSec: 45, rir: '1', tempo: '2-1-1-0', cue: 'Full ROM', role: 'accessory' }),
+      ex({ slot: 'F2', name: 'Tibialis raise (back against wall)', demo: 'tibialis', sets: 2, min: 15, max: 20, unit: 'reps', rest: '45 s', restSec: 45, rir: '1–2', tempo: '2-0-1-1', cue: 'Toes to shins', role: 'accessory' }),
       ex({ slot: 'G1', name: 'Side-lying hip abduction or banded lateral walk', sets: 2, min: 15, max: 20, unit: 'reps/side', rest: '45 s → G2', restSec: 45, rir: '1', tempo: '2-0-1-1', cue: 'Slight hip extension; toes forward', role: 'accessory' }),
-      ex({ slot: 'G2', name: 'Pallof press (band)', sets: 3, min: 10, max: 10, unit: 'reps/side', rest: '45 s', restSec: 45, rir: '2', tempo: '2-2-2-0', cue: 'Ribs down; resist rotation', role: 'accessory' }),
+      ex({ slot: 'G2', name: 'Pallof press (band)', demo: 'pallof', sets: 3, min: 10, max: 10, unit: 'reps/side', rest: '45 s', restSec: 45, rir: '2', tempo: '2-2-2-0', cue: 'Ribs down; resist rotation', role: 'accessory' }),
     ],
     block2: [
       'B: Load BSS: add 2.5–5 kg per hand whenever 4 × 10 @ RIR 1–2 is reached. IF DBs are maxed → rear-foot-elevated deficit (front foot on 5–10 cm plate) or 1.5-rep method.',

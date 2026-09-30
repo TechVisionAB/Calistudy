@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, Vibration, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { HowToToggle } from '@/components/HowTo';
 import { Button, Card, Chip, H1, H2, Label, P, Row, Stepper, styles, useTheme } from '@/components/ui';
 import { SessionId, SESSIONS } from '@/data/sessions';
 import { isHoldUnit, planSession, range, rirLabel, unitLabel } from '@/lib/plan';
@@ -172,6 +173,7 @@ export default function WorkoutScreen() {
                 Mål {p.plannedSets} × {range(p)} · {rirLabel(p.plannedRir)} · vila {p.rest} · tempo {p.tempo}
               </Text>
               <Text style={{ color: t.muted, fontSize: 13, fontStyle: 'italic' }}>“{p.cue}”</Text>
+              <HowToToggle mediaKey={p.mediaKey} />
               {prev && (
                 <Text style={{ color: t.muted, fontSize: 13 }}>
                   Förra: {prev.sets.map((s) => (s.value === null ? '–' : s.value)).join(' / ')} {unitLabel(prev.unit)}

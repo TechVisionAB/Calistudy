@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
+import { HowToToggle } from '@/components/HowTo';
 import { Bullets, Button, Card, Chip, H1, H2, Label, P, Row, Screen, useTheme } from '@/components/ui';
 import { MICRO_PRACTICE, READINESS } from '@/data/guide';
 import { blockOf, dayPlan, isoDate, mondayOf, programWeek, shiftDate, WEEK_PARAMS, WEEKDAYS, weekdayIndex } from '@/data/program';
@@ -137,6 +138,7 @@ export default function Today() {
                     {b.title} <Text style={{ color: t.muted, fontWeight: '400' }}>· {b.duration}</Text>
                   </Text>
                   <Text style={{ color: t.muted, fontSize: 14, lineHeight: 20 }}>{b.content}</Text>
+                  <HowToToggle mediaKey={b.id === 'hs' ? state.levels.HS : b.demo} label="Visa" />
                 </View>
               </Pressable>
             );

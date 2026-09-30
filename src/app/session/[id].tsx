@@ -1,6 +1,7 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { Text, View } from 'react-native';
 
+import { HowToToggle } from '@/components/HowTo';
 import { Bullets, Button, Card, Chip, H1, H2, Label, P, Row, Screen, useTheme } from '@/components/ui';
 import { READINESS } from '@/data/guide';
 import { SessionId, SESSIONS, WARMUPS } from '@/data/sessions';
@@ -48,6 +49,9 @@ export default function SessionScreen() {
         <Card>
           <H2>Uppvärmning: {WARMUPS[session.warmup].title}</H2>
           <Bullets items={WARMUPS[session.warmup].steps} />
+          {WARMUPS[session.warmup].demos.map((d) => (
+            <HowToToggle key={d.key} mediaKey={d.key} label={d.label} />
+          ))}
         </Card>
       )}
 
@@ -70,6 +74,7 @@ export default function SessionScreen() {
             </Text>
           )}
           <Text style={{ color: t.muted, fontSize: 14, fontStyle: 'italic' }}>“{e.cue}”</Text>
+          <HowToToggle mediaKey={e.mediaKey} />
         </Card>
       ))}
 

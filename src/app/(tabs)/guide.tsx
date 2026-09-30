@@ -23,6 +23,10 @@ export default function Guide() {
 
   return (
     <Screen>
+      <Card onPress={() => router.push('/demos')} style={{ borderColor: t.accent, borderWidth: 2 }}>
+        <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>▶ Övningsdemos</Text>
+        <Text style={{ color: t.muted, fontSize: 14 }}>Animerade genomgångar av grundövningarna. Videor finns på varje nivå och övning.</Text>
+      </Card>
       {GUIDE.map((s) => (
         <Card key={s.id} onPress={() => router.push({ pathname: '/guide/[id]', params: { id: s.id } })}>
           <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>{s.title}</Text>

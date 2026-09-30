@@ -7,6 +7,8 @@ export type PlannedExercise = Exercise & {
   plannedRir: string;
   level?: string;
   levelName?: string;
+  /** Key for HowTo demo media: the athlete's level, or the exercise's own demo key. */
+  mediaKey?: string;
 };
 
 /** Resolve a session for a given week, readiness flags and the athlete's levels. */
@@ -21,7 +23,7 @@ export function planSession(id: SessionId, week: number, flags: number, levels: 
     }
     const level = e.ladder ? levels[e.ladder] : undefined;
     const levelName = e.ladder ? LADDER_BY_ID[e.ladder]?.levels.find((l) => l.code === level)?.name : undefined;
-    return { ...e, plannedSets: sets, plannedRir: rir, level, levelName };
+    return { ...e, plannedSets: sets, plannedRir: rir, level, levelName, mediaKey: level ?? e.demo };
   });
 }
 

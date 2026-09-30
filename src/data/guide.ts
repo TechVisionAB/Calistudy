@@ -17,11 +17,11 @@ export const MICRO_PRACTICE = {
     'On Upper A/B days the handstand block inside the session replaces micro-practice.',
   ],
   blocks: [
-    { id: 'wrist', title: 'Handleder', duration: '2–3 min', content: 'Palm pulses ×10, back-of-hand wrist push-ups ×10 (from knees), finger-forward/sideways/backward rocks ×10 each, fist push-up hold 15 s', progression: 'Move from knees → plank position as tolerance improves' },
-    { id: 'scap', title: 'Skulderbladskontroll', duration: '2 min', content: 'Scap push-ups ×10, scap pull-ups or band scap depressions ×8, wall slides ×8', progression: 'Add pauses (2 s)' },
-    { id: 'hs', title: 'Handstående', duration: '5–8 min', content: 'At your HS level: 3–5 × 20–45 s CTW, or 5–8 freestanding attempts', progression: 'Challenge point: 60–80% success rate' },
-    { id: 'compression', title: 'Kompression', duration: '2 min', content: 'Seated pike leg lifts 2 × 8 (2 s holds), tuck L-sit on floor 2 × 10 s', progression: 'Add pancake lifts; increase hold to 3 s' },
-    { id: 'mobility', title: 'Riktad rörlighet (bara underkända tester)', duration: '3–5 min', content: 'Overhead: thoracic extension + shoulder flexion stretch 2 × 30 s. Ankle: knee-to-wall rocks 2 × 10. Pike: pike folds with active compression 2 × 30 s. Shoulder extension: assisted German hang 2 × 15 s (only if pain-free in Week 0)', progression: 'Stop dedicated work once the test standard is met; then maintain 1×/week' },
+    { id: 'wrist', demo: 'wrist' as string | undefined, title: 'Handleder', duration: '2–3 min', content: 'Palm pulses ×10, back-of-hand wrist push-ups ×10 (from knees), finger-forward/sideways/backward rocks ×10 each, fist push-up hold 15 s', progression: 'Move from knees → plank position as tolerance improves' },
+    { id: 'scap', demo: 'scap' as string | undefined, title: 'Skulderbladskontroll', duration: '2 min', content: 'Scap push-ups ×10, scap pull-ups or band scap depressions ×8, wall slides ×8', progression: 'Add pauses (2 s)' },
+    { id: 'hs', demo: undefined as string | undefined, title: 'Handstående', duration: '5–8 min', content: 'At your HS level: 3–5 × 20–45 s CTW, or 5–8 freestanding attempts', progression: 'Challenge point: 60–80% success rate' },
+    { id: 'compression', demo: 'CC6' as string | undefined, title: 'Kompression', duration: '2 min', content: 'Seated pike leg lifts 2 × 8 (2 s holds), tuck L-sit on floor 2 × 10 s', progression: 'Add pancake lifts; increase hold to 3 s' },
+    { id: 'mobility', demo: 'BL0' as string | undefined, title: 'Riktad rörlighet (bara underkända tester)', duration: '3–5 min', content: 'Overhead: thoracic extension + shoulder flexion stretch 2 × 30 s. Ankle: knee-to-wall rocks 2 × 10. Pike: pike folds with active compression 2 × 30 s. Shoulder extension: assisted German hang 2 × 15 s (only if pain-free in Week 0)', progression: 'Stop dedicated work once the test standard is met; then maintain 1×/week' },
   ],
   layout: 'Tis, ons, fre, lör: fulla 10–15 min. Sön: valfritt 5 min (handled + skulderblad). Mån/tor: ingår i passet.',
 };
