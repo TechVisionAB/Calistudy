@@ -5,6 +5,7 @@ import { ScrollView, Text, View } from 'react-native';
 import { Button, Card, Chip, H2, Label, P, Row, Screen, useTheme } from '@/components/ui';
 import { blockOf, dayPlan, DayPlan, programWeek, shiftDate, WEEK_PARAMS, WEEKDAYS, weekdayIndex } from '@/data/program';
 import { SESSIONS } from '@/data/sessions';
+import { nextUp } from '@/lib/next';
 import { useStore } from '@/lib/store';
 
 function planTitle(p: DayPlan): string {
@@ -20,7 +21,16 @@ export default function Program() {
   const [selected, setWeek] = useState<number | null>(null);
   const week = selected ?? current;
   const params = WEEK_PARAMS[week];
-  const todayIdx = weekdayIndex();
+  const next = nextUp(state);
+  const isNext = (p: DayPlan) =>
+    (next.kind === 'session' && p.kind === 'session' && p.session === next.session) ||
+    (next.kind === 'test' && p.kind === 'test' && p.battery === next.battery);
+  // "Next" follows the order-based plan on Idag, not the weekday. Only fall back to
+  // today's weekday when nothing is due (rest day) so the row still orients the user.
+  const plans = WEEKDAYS.map((_, i) => dayPlan(week, i));
+  const nextIdx = week === current ? plans.findIndex(isNext) : -1;
+  const todayIdx = week === current && nextIdx === -1 ? weekdayIndex() : -1;
+  const doneTest = (b: string) => !!state.startMonday && state.tests.some((x) => x.battery === b && x.date.slice(0, 10) >= state.startMonday!);
 
   const open = (p: DayPlan) => {
     if (p.kind === 'session') router.push({ pathname: '/session/[id]', params: { id: p.session, week: String(week) } });
@@ -72,11 +82,16 @@ export default function Program() {
         </P>
       </Card>
 
+      <P muted>Veckodagarna är ett förslag. Appen följer ordningen – missar du en dag blir det passet nästa, oavsett veckodag.</P>
+
       <View style={{ gap: 8 }}>
         {WEEKDAYS.map((d, i) => {
-          const p = dayPlan(week, i);
-          const isToday = week === current && i === todayIdx;
-          const sub = p.kind === 'session' ? SESSIONS[p.session].short : p.kind === 'test' ? 'Baslinjetest' : 'Mikroträning';
+          const p = plans[i];
+          const isToday = i === nextIdx || i === todayIdx;
+          const done = week === 0 && p.kind === 'test' && doneTest(p.battery);
+          const sub =
+            (i === nextIdx ? 'Nästa · ' : '') +
+            (done ? 'Klart ✓' : p.kind === 'session' ? SESSIONS[p.session].short : p.kind === 'test' ? 'Baslinjetest' : 'Mikroträning');
           return (
             <Card key={d} onPress={() => open(p)} style={isToday ? { borderColor: t.accent, borderWidth: 2 } : undefined}>
               <Row>
