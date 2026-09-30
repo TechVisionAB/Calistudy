@@ -1,29 +1,72 @@
 import { LADDER_BY_ID } from '@/data/ladders';
 import { rirForWeek, setsForWeek } from '@/data/program';
 import { Exercise, SessionId, SESSIONS, Unit } from '@/data/sessions';
+import { Equip, EX_NEEDS, EX_SV, exKey, LEVEL_SV } from '@/data/sv';
 
 export type PlannedExercise = Exercise & {
   plannedSets: number;
   plannedRir: string;
   level?: string;
   levelName?: string;
+  /** Swedish display name (level name for ladder exercises) and cue. */
+  title: string;
+  cueSv: string;
+  /** True when the exercise was replaced because equipment is missing. */
+  swapped: boolean;
   /** Key for HowTo demo media: the athlete's level, or the exercise's own demo key. */
   mediaKey?: string;
 };
 
-/** Resolve a session for a given week, readiness flags and the athlete's levels. */
-export function planSession(id: SessionId, week: number, flags: number, levels: Record<string, string>): PlannedExercise[] {
+/**
+ * Resolve a session for a given week, readiness flags, the athlete's levels and
+ * equipment (null = unknown, no substitutions).
+ */
+export function planSession(
+  id: SessionId,
+  week: number,
+  flags: number,
+  levels: Record<string, string>,
+  equipment: Equip[] | null = null,
+): PlannedExercise[] {
   return SESSIONS[id].exercises.map((e) => {
     let sets = setsForWeek(e, week);
     let rir = rirForWeek(e, week);
     // Readiness: 2 flags → −1 set per exercise, RIR +1 (Section 14).
     if (flags === 2 && sets > 1) {
       sets -= 1;
-      rir = `${rir} (+1)`;
+      const n = parseInt(rir, 10);
+      rir = Number.isNaN(n) ? rir : String(n + 1);
+    }
+    const key = exKey(id, e.slot);
+    const need = EX_NEEDS[key];
+    const sv = EX_SV[key];
+    if (equipment && need && !need.any.some((x) => equipment.includes(x))) {
+      return {
+        ...e,
+        ladder: undefined,
+        name: need.alt.name,
+        cue: need.alt.cue,
+        plannedSets: sets,
+        plannedRir: rir,
+        title: need.alt.name,
+        cueSv: need.alt.cue,
+        swapped: true,
+        mediaKey: need.alt.demo,
+      };
     }
     const level = e.ladder ? levels[e.ladder] : undefined;
     const levelName = e.ladder ? LADDER_BY_ID[e.ladder]?.levels.find((l) => l.code === level)?.name : undefined;
-    return { ...e, plannedSets: sets, plannedRir: rir, level, levelName, mediaKey: level ?? e.demo };
+    return {
+      ...e,
+      plannedSets: sets,
+      plannedRir: rir,
+      level,
+      levelName,
+      title: (level && LEVEL_SV[level]) || sv?.name || e.name,
+      cueSv: sv?.cue ?? e.cue,
+      swapped: false,
+      mediaKey: level ?? e.demo,
+    };
   });
 }
 

@@ -6,6 +6,14 @@ Byggd med [Expo](https://expo.dev) (SDK 57), React Native och Expo Router. All d
 
 ## Funktioner
 
+**Kom igång på 30 sekunder:** tre frågor (erfarenhet, utrustning, börja direkt eller testa först). Appen uppskattar startnivåer och byter ut övningar du saknar utrustning för – t.ex. bordsrodd i stället för ringrodd.
+
+**Idag = nästa pass**, inte en låst veckodag: missar du måndag blir Överkropp A nästa pass. Appen håller isär överkropps- och benpass (≥44 h vila), visar en veckoring (4 pass) och en streak (veckor i rad med minst 3 pass).
+
+**Passet en övning i taget:** uppvärmning → övning med animation, mål ("3 × 5–8 reps · Lagom – 2 reps kvar"), stor räknare, stoppur för hållningar, Lätt/Lagom/Tungt, smärtknapp → vila i helskärm → nästa. Supersets varvas automatiskt. Efteråt: sammanfattning och "Ny nivå! 🎉" när det är dags.
+
+Allt på svenska i klarspråk; guidens originaltermer (RIR, tempo, Block 2-regler) finns under "Visa detaljer".
+
 - **Idag** – dagens pass utifrån var du är i 12-veckorsprogrammet, dagsformskontroll (4 flaggor → åtgärd enligt återhämtningsalgoritmen), daglig mikroträning som checklista, veckans RIR-/hållningsparametrar och platåvarningar.
 - **Program** – hela kalendern vecka 0–12 (testvecka, Block 1, deload + minitest, Block 2, deload + fullt omtest). Välj vecka och öppna valfritt pass. Startveckan kan flyttas.
 - **Pass & träning** – uppvärmning, övningar med *din* nivå i varje stege, set/reps/vila/RIR/tempo/cue, veckojusterade set (−1 set vecka 1, +1 tillbehörsset v3–5 och v9–11, halverat i deload, ingen plyo i deload) och Block 2-reglerna. Logga reps/sekunder, RIR och smärta per set, med vilotimer som vibrerar.

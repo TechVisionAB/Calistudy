@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 
 import { Button, Card, H2, Label, P, Row, Screen, useTheme } from '@/components/ui';
 import { LADDERS, LadderGroup } from '@/data/ladders';
+import { LADDER_SV, LEVEL_SV } from '@/data/sv';
 import { useStore } from '@/lib/store';
 
 const GROUPS: LadderGroup[] = ['Tryck', 'Drag', 'Färdigheter', 'Bål', 'Ben'];
@@ -38,10 +39,10 @@ export default function Levels() {
             return (
               <Card key={l.id} onPress={() => router.push({ pathname: '/ladder/[id]', params: { id: l.id } })}>
                 <Row style={{ justifyContent: 'space-between' }}>
-                  <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>{l.name}</Text>
+                  <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>{LADDER_SV[l.id] ?? l.name}</Text>
                   <Text style={{ color: t.accent, fontWeight: '800' }}>{code}</Text>
                 </Row>
-                <Text style={{ color: t.muted, fontSize: 14 }}>{lvl?.name}</Text>
+                <Text style={{ color: t.muted, fontSize: 14 }}>{(code && LEVEL_SV[code]) || lvl?.name}</Text>
                 <View style={{ flexDirection: 'row', gap: 3 }}>
                   {l.levels.map((x, i) => (
                     <View key={x.code} style={{ flex: 1, height: 5, borderRadius: 3, backgroundColor: i <= idx ? t.accent : t.chip }} />

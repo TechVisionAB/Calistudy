@@ -417,7 +417,7 @@ export const LEVEL_ANIM: Record<string, string> = {
   HP1: 'incline', HP2: 'pushup', HP3: 'pushup', HP4: 'pushup', HP5: 'pushup', HP6: 'pseudo', HP7: 'pushup', HP8: 'incline', HP9: 'pushup',
   VP1: 'pike', VP2: 'pike', VP3: 'hspu', VP4: 'hspu', VP5: 'hspu', VP6: 'hspu', VP7: 'hspu',
   DP1: 'dip', DP2: 'dip', DP3: 'dip', DP5: 'dip', DP6: 'dip', DP7: 'dip',
-  HS1: 'handstand', HS2: 'handstand', HS3: 'handstand', HS4: 'handstand', HS5: 'handstand', HS6: 'handstand', HS7: 'handstand',
+  HS1: 'pike', HS2: 'handstand', HS3: 'handstand', HS4: 'handstand', HS5: 'handstand', HS6: 'handstand', HS7: 'handstand',
   PL0a: 'lean', PL1: 'tuckPlanche', PL2: 'tuckPlanche', PL3: 'tuckPlanche', PL4: 'tuckPlanche',
   VPu1: 'pullup', VPu2: 'pullup', VPu3: 'pullup', VPu4: 'pullup', VPu5: 'pullup', VPu6: 'pullup', VPu7: 'pullup', VPu8: 'pullup', VPu9: 'pullup',
   HPu1: 'row', HPu2: 'row', HPu3: 'row', HPu4: 'row', HPu5: 'frontLever',

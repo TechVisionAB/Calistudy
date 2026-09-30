@@ -6,6 +6,7 @@ import { ProgressCard } from '@/components/ProgressCard';
 import { progressSeries } from '@/lib/progress';
 import { Card, Chip, H1, H2, Label, P, Screen, useTheme } from '@/components/ui';
 import { LADDER_BY_ID, OTHER_LOWER_LADDERS } from '@/data/ladders';
+import { LADDER_SV, LEVEL_SV } from '@/data/sv';
 import { useStore } from '@/lib/store';
 
 export default function LadderScreen() {
@@ -25,10 +26,10 @@ export default function LadderScreen() {
 
   return (
     <Screen>
-      <Stack.Screen options={{ title: ladder.name }} />
+      <Stack.Screen options={{ title: LADDER_SV[ladder.id] ?? ladder.name }} />
       <View>
         <Label>{ladder.group} · {ladder.kind === 'static' ? 'hållningar' : 'reps'}</Label>
-        <H1>{ladder.name}</H1>
+        <H1>{LADDER_SV[ladder.id] ?? ladder.name}</H1>
         <P muted>Tryck på en nivå för att sätta den som din arbetsnivå.</P>
       </View>
 
@@ -39,7 +40,8 @@ export default function LadderScreen() {
             <View style={{ flexDirection: 'row', gap: 10 }}>
               <Text style={{ color: on ? t.accent : t.muted, fontWeight: '800', width: 48 }}>{l.code}</Text>
               <View style={{ flex: 1, gap: 4 }}>
-                <Text style={{ color: t.text, fontSize: 15, fontWeight: on ? '700' : '500' }}>{l.name}</Text>
+                <Text style={{ color: t.text, fontSize: 15, fontWeight: on ? '700' : '500' }}>{LEVEL_SV[l.code] ?? l.name}</Text>
+                {LEVEL_SV[l.code] && <Text style={{ color: t.muted, fontSize: 13 }}>{l.name}</Text>}
                 <Text style={{ color: t.muted, fontSize: 13 }}>Gå vidare vid: {l.advance}</Text>
               </View>
             </View>

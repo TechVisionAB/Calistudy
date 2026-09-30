@@ -27,6 +27,10 @@ export default function Guide() {
         <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>▶ Övningsdemos</Text>
         <Text style={{ color: t.muted, fontSize: 14 }}>Animerade genomgångar av grundövningarna. Videor finns på varje nivå och övning.</Text>
       </Card>
+      <Card onPress={() => router.push('/welcome')}>
+        <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>🏠 Min utrustning</Text>
+        <Text style={{ color: t.muted, fontSize: 14 }}>Ändra vad du har hemma – övningarna byts ut automatiskt.</Text>
+      </Card>
       <Card onPress={() => router.push('/reminders')}>
         <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>⏰ Påminnelser</Text>
         <Text style={{ color: t.muted, fontSize: 14 }}>Notis om dagens pass och mikroträning.</Text>

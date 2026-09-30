@@ -4,6 +4,7 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, 
 import { LADDERS } from '@/data/ladders';
 import { SessionId, Unit } from '@/data/sessions';
 import { TestBattery } from '@/data/program';
+import { Equip } from '@/data/sv';
 import { Values } from '@/data/tests';
 
 export type SetLog = { value: number | null; rir: number | null; pain: number | null };
@@ -36,7 +37,12 @@ export type ReminderTime = { enabled: boolean; hour: number; minute: number };
 
 export type Reminders = { morning: ReminderTime; evening: ReminderTime };
 
+export type Experience = 'new' | 'some' | 'solid';
+
+export type Profile = { experience: Experience; equipment: Equip[] };
+
 export type State = {
+  profile: Profile | null;
   startMonday: string | null;
   levels: Record<string, string>;
   workouts: WorkoutLog[];
@@ -51,6 +57,7 @@ const KEY = 'calistudy/state/v1';
 const defaultLevels = () => Object.fromEntries(LADDERS.map((l) => [l.id, l.levels[0].code]));
 
 const initial: State = {
+  profile: null,
   startMonday: null,
   levels: defaultLevels(),
   workouts: [],

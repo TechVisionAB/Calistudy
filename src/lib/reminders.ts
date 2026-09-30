@@ -1,8 +1,9 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
-import { dayPlan, isoDate, programWeek, weekdayIndex } from '@/data/program';
-import { SESSIONS } from '@/data/sessions';
+import { isoDate, programWeek, weekdayIndex } from '@/data/program';
+import { SESSION_SV, TEST_SV } from '@/data/sv';
+import { nextUp } from './next';
 import { State } from './store';
 
 const CHANNEL = 'reminders';
@@ -36,13 +37,16 @@ export async function ensurePermission(): Promise<boolean> {
   return asked.granted;
 }
 
-function morningText(week: number, weekday: number): string | null {
-  const p = dayPlan(week, weekday);
-  if (p.kind === 'test') return p.battery === 'mini' ? 'Minitest idag (deloadvecka). Värm upp ordentligt först.' : `Test ${p.battery} idag. Testa utvilad.`;
-  if (p.kind === 'micro') return `${p.label} idag. 10–15 min, aldrig till failure.`;
-  if (p.session === 'rest') return null;
-  const s = SESSIONS[p.session];
-  return `${s.title}${p.deload ? ' (deload)' : ''} idag: ${s.short.toLowerCase()} · ${s.duration}.`;
+/** Today's text follows the actual next session; later days get a neutral nudge. */
+function morningText(state: State, dayOffset: number): string | null {
+  const n = nextUp(state);
+  if (dayOffset === 0) {
+    if (n.kind === 'session') return `${SESSION_SV[n.session].title} idag: ${SESSION_SV[n.session].short.toLowerCase()}.`;
+    if (n.kind === 'test') return `${TEST_SV[n.battery]} idag. Testa utvilad.`;
+    if (n.kind === 'rest') return `Vilodag – 10 min mikroträning räcker.`;
+    return null;
+  }
+  return 'Dags att träna? Öppna appen så ser du dagens pass.';
 }
 
 /** Micro-practice is part of the Upper A/B sessions (Mon/Thu) and optional on Sunday. */
@@ -68,7 +72,7 @@ export async function reschedule(state: State): Promise<void> {
 
     if (morning.enabled) {
       const at = new Date(day.getFullYear(), day.getMonth(), day.getDate(), morning.hour, morning.minute);
-      const body = morningText(week, wd);
+      const body = morningText(state, i);
       if (body && at > now) {
         await Notifications.scheduleNotificationAsync({
           content: { title: `Calistudy · vecka ${week}`, body },
