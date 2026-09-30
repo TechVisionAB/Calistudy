@@ -38,6 +38,17 @@ npm run lint
 
 Bygga för App Store / Google Play görs med EAS: `npx eas-cli@latest build`.
 
+## Testversion (Android)
+
+```bash
+npx eas-cli@latest init                                   # första gången: kopplar projektet till ditt Expo-konto
+npx eas-cli@latest build --profile preview --platform android
+```
+
+Bygget tar 10–20 min i Expos moln. Du får en länk/QR-kod till en APK som testarna installerar direkt (de behöver tillåta installation från okänd källa). Profilen `preview` i `eas.json` ger intern distribution. iPhone kräver ett Apple-utvecklarkonto och registrerade enheter (eller TestFlight).
+
+**Mätning:** testarna skickar Logg → 📤 Skicka testrapport (anonym veckostatistik + betyg + fritext) via valfri app. Nyckeltal: tränar de fortfarande vecka 3?
+
 ## Struktur
 
 ```

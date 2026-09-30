@@ -38,6 +38,11 @@ export default function Log() {
         <Text style={{ color: t.muted, fontSize: 14 }}>Kurvor över bästa set per övning och nivå.</Text>
       </Card>
 
+      <Card onPress={() => router.push('/report')}>
+        <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>📤 Skicka testrapport</Text>
+        <Text style={{ color: t.muted, fontSize: 14 }}>Dela din träningsstatistik och dina tankar om appen.</Text>
+      </Card>
+
       <H2>Pass</H2>
       {workouts.length === 0 && <P muted>Inga pass loggade ännu.</P>}
       {workouts.map((w) => {
