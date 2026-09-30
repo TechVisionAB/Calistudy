@@ -7,7 +7,7 @@ import { Explain } from '@/components/Explain';
 import { Figure } from '@/components/Figure';
 import { HowToToggle } from '@/components/HowTo';
 import { Button, Card, H1, H2, Label, P, styles, useTheme } from '@/components/ui';
-import { activeSteps, GuidedStep } from '@/data/guidedTests';
+import { activeSteps, altPlacements, GuidedStep } from '@/data/guidedTests';
 import { LADDER_BY_ID } from '@/data/ladders';
 import { mediaFor } from '@/data/media';
 import { TestBattery } from '@/data/program';
@@ -63,7 +63,7 @@ function Stopwatch({ onDone, onSkip, skipLabel }: { onDone: (s: number) => void;
       )}
       {start === null && result === null && (
         <Pressable onPress={onSkip} hitSlop={8}>
-          <Text style={{ color: t.muted, textAlign: 'center', fontWeight: '600' }}>{skipLabel ?? 'Kan inte / hoppa över'}</Text>
+          <Text style={{ color: t.muted, textAlign: 'center', fontWeight: '600' }}>{skipLabel ?? 'Klarar inte'}</Text>
         </Pressable>
       )}
     </View>
@@ -76,7 +76,10 @@ export default function TestScreen() {
   const t = useTheme();
   const [started, setStarted] = useState(false);
   const [values, setValues] = useState<Values>({});
-  const [answered, setAnswered] = useState<string[]>([]);
+  // Each answer is a group: [testKey] or [testKey, alternativeKey] when the easier variant was used.
+  const [answered, setAnswered] = useState<string[][]>([]);
+  const [altOpen, setAltOpen] = useState(false);
+  const done = answered.flat();
   const [failed, setFailed] = useState<string[]>([]);
   const [saved, setSaved] = useState(false);
   const title = TEST_SV[battery] ?? `Test ${battery}`;
@@ -85,29 +88,41 @@ export default function TestScreen() {
     () => (battery === 'C' ? [] : activeSteps(battery as Guided, values, state.profile?.equipment ?? null)),
     [battery, values, state.profile],
   );
-  const current: GuidedStep | undefined = steps.find((s) => !answered.includes(s.key));
+  const current: GuidedStep | undefined = steps.find((s) => !done.includes(s.key));
+  const shown: GuidedStep | undefined = current && altOpen && current.alt ? current.alt : current;
   const mobility = battery === 'C' ? MOBILITY[answered.length] : undefined;
   const finished = started && (battery === 'C' ? !mobility : !current);
 
   const places = useMemo(() => {
     if (battery === 'C') return [];
-    const all = placements([...TEST_A, ...TEST_B], values);
+    // Alternative tests carry their own scoring and win over the guide's rule for the same ladder.
+    const alt = altPlacements(values);
+    const all = [...placements([...TEST_A, ...TEST_B], values).filter((p) => !alt.some((a) => a.ladder === p.ladder)), ...alt];
     if (battery !== 'mini') return all;
     // The mini-retest only moves levels up; its tests are too coarse to demote.
     const idx = (ladder: string, code: string) => LADDER_BY_ID[ladder]?.levels.findIndex((l) => l.code === code) ?? -1;
     return all.filter((p) => idx(p.ladder, p.level) > idx(p.ladder, state.levels[p.ladder]));
   }, [battery, values, state.levels]);
 
-  const answer = (key: string, value: number | undefined) => {
-    setValues((v) => ({ ...v, [key]: value }));
-    setAnswered((a) => [...a, key]);
+  const answer = (value: number | undefined) => {
+    if (!current || !shown) return;
+    const group = shown === current ? [current.key] : [current.key, shown.key];
+    setValues((v) => ({ ...v, [shown.key]: value }));
+    setAnswered((a) => [...a, group]);
+    setAltOpen(false);
+  };
+  /** "Can't" never just skips: it opens the easier variant, or counts as 0 (which still places a level). */
+  const cant = () => {
+    if (shown === current && current?.alt) setAltOpen(true);
+    else answer(0);
   };
   const back = () => {
+    if (altOpen) return setAltOpen(false);
     const last = answered[answered.length - 1];
     if (!last) return setStarted(false);
     setAnswered((a) => a.slice(0, -1));
-    setValues((v) => ({ ...v, [last]: undefined }));
-    setFailed((f) => f.filter((x) => x !== last));
+    setValues((v) => ({ ...v, ...Object.fromEntries(last.map((k) => [k, undefined])) }));
+    setFailed((f) => f.filter((x) => !last.includes(x)));
   };
 
   const save = () => {
@@ -124,7 +139,7 @@ export default function TestScreen() {
     setSaved(true);
   };
 
-  const remaining = battery === 'C' ? MOBILITY.length - answered.length : steps.filter((st) => !answered.includes(st.key)).length;
+  const remaining = battery === 'C' ? MOBILITY.length - answered.length : steps.filter((st) => !done.includes(st.key)).length;
   const progress = answered.length / Math.max(1, answered.length + remaining);
 
   const shell = (children: ReactNode) => (
@@ -226,13 +241,13 @@ export default function TestScreen() {
           <Text style={{ color: t.muted, fontSize: 13 }}>Godkänt om</Text>
           <Text style={{ color: t.text, fontSize: 16, fontWeight: '600' }}>{mobility.pass}</Text>
         </Card>
-        <Button title="✅ Klarar" onPress={() => setAnswered((a) => [...a, mobility.id])} style={{ paddingVertical: 16 }} />
+        <Button title="✅ Klarar" onPress={() => setAnswered((a) => [...a, [mobility.id]])} style={{ paddingVertical: 16 }} />
         <Button
           title="❌ Klarar inte"
           variant="secondary"
           onPress={() => {
             setFailed((f) => [...f, mobility.id]);
-            setAnswered((a) => [...a, mobility.id]);
+            setAnswered((a) => [...a, [mobility.id]]);
           }}
           style={{ paddingVertical: 16 }}
         />
@@ -241,29 +256,39 @@ export default function TestScreen() {
     );
   }
 
-  if (!current) return null;
-  const media = current.media ? mediaFor(current.media) : {};
+  if (!current || !shown) return null;
+  const media = shown.media ? mediaFor(shown.media) : {};
+  const cantLabel = shown === current && current.alt ? `${current.skipLabel ?? 'Kan inte'} – visa lättare variant` : shown.skipLabel;
 
   // ---------- Guided step ----------
   return shell(
     <>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Label>Test {stepNo}</Label>
-        <Explain text={`${current.title}: ${current.how}`} context={`${title}, testet "${current.title}"`} />
+        <Explain text={`${shown.title}: ${shown.how}`} context={`${title}, testet "${shown.title}"`} />
       </View>
-      <H1>{current.title}</H1>
+      {(shown.noEquipment || shown !== current) && (
+        <View style={{ backgroundColor: t.accentSoft, borderRadius: 12, padding: 12 }}>
+          <Text style={{ color: t.text, fontSize: 14, lineHeight: 20 }}>
+            {shown.noEquipment
+              ? `Du har ingen utrustning för ${shown.replaces?.toLowerCase()} – det här testar samma sak hemma.`
+              : `Ingen fara! Vi testar en lättare variant av ${current.title.toLowerCase()} – den blir din startnivå.`}
+          </Text>
+        </View>
+      )}
+      <H1>{shown.title}</H1>
       {media.anim && <Figure anim={media.anim} size={0.8} />}
-      <Text style={{ color: t.text, fontSize: 17, lineHeight: 25 }}>{current.how}</Text>
-      {current.media && <HowToToggle mediaKey={current.media} label={media.anim ? 'Se video' : 'Se hur man gör'} />}
+      <Text style={{ color: t.text, fontSize: 17, lineHeight: 25 }}>{shown.how}</Text>
+      {shown.media && <HowToToggle mediaKey={shown.media} label={media.anim ? 'Se video' : 'Se hur man gör'} />}
 
-      {current.kind === 'hold' ? (
-        <Stopwatch key={current.key} onDone={(s) => answer(current.key, s)} onSkip={() => answer(current.key, 0)} skipLabel={current.skipLabel} />
+      {shown.kind === 'hold' ? (
+        <Stopwatch key={shown.key} onDone={(sec) => answer(sec)} onSkip={cant} skipLabel={cantLabel} />
       ) : (
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-          {current.choices!.map((c) => (
+          {shown.choices!.map((c) => (
             <Pressable
               key={c.label}
-              onPress={() => answer(current.key, c.value)}
+              onPress={() => answer(c.value)}
               style={({ pressed }) => ({
                 flexGrow: 1,
                 minWidth: '30%',
@@ -280,9 +305,9 @@ export default function TestScreen() {
           ))}
         </View>
       )}
-      {current.kind === 'choice' && current.skipLabel && (
-        <Pressable onPress={() => answer(current.key, undefined)} hitSlop={8}>
-          <Text style={{ color: t.muted, textAlign: 'center', fontWeight: '600' }}>{current.skipLabel}</Text>
+      {shown.kind === 'choice' && cantLabel && (
+        <Pressable onPress={cant} hitSlop={8}>
+          <Text style={{ color: t.muted, textAlign: 'center', fontWeight: '600' }}>{cantLabel}</Text>
         </Pressable>
       )}
       <Button title="‹ Tillbaka" variant="ghost" onPress={back} />
