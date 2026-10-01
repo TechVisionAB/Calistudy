@@ -5,6 +5,7 @@ import { Alert, Platform, Pressable, Text, View } from 'react-native';
 import { Button, Card, H2, P, Row, Screen, useTheme } from '@/components/ui';
 import { EQUIPMENT } from '@/data/sv';
 import { EXPERIENCES } from '@/lib/onboarding';
+import { speak } from '@/lib/voice';
 import { startFull, startStarter } from '@/lib/starter';
 import { Currency, Experience, State, Units, useStore } from '@/lib/store';
 
@@ -69,6 +70,10 @@ export default function SettingsScreen() {
   const switchPlan = (title: string, fn: (s: State) => State) => confirmThen(title, KEPT, 'Switch', () => update(fn));
 
   const setUnits = (units: Units) => update((s) => ({ ...s, settings: { ...s.settings, units } }));
+  const setVoice = (voice: boolean) => {
+    update((s) => ({ ...s, settings: { ...s.settings, voice } }));
+    if (voice) speak('Voice coach on. I will count down your rest and call out the next set.');
+  };
   const setCurrency = (currency: Currency) => update((s) => ({ ...s, settings: { ...s.settings, currency } }));
 
   const equipment = state.profile?.equipment ?? [];
@@ -94,6 +99,19 @@ export default function SettingsScreen() {
         ) : (
           <Button title="Switch to Starter" variant="secondary" onPress={() => switchPlan('Switch to the Starter plan?', startStarter)} />
         )}
+      </Card>
+
+      <Card>
+        <H2>Voice coach</H2>
+        <Text style={{ color: t.muted, fontSize: 14, lineHeight: 20 }}>Spoken cues during workouts: rest countdown, “3, 2, 1 – go”, next set and exercise.</Text>
+        <Segmented<'on' | 'off'>
+          value={state.settings.voice ? 'on' : 'off'}
+          onChange={(v) => setVoice(v === 'on')}
+          options={[
+            { id: 'on', label: 'On' },
+            { id: 'off', label: 'Off' },
+          ]}
+        />
       </Card>
 
       <Card>

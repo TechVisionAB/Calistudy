@@ -4,9 +4,11 @@ import { Image, Linking, Pressable, Text, View } from 'react-native';
 import { LADDER_BY_ID } from '@/data/ladders';
 import { mediaFor, thumbnailUrl, youtubeUrl } from '@/data/media';
 import { anatomyFor } from '@/data/anatomy';
+import { photoFor } from '@/data/photos';
 import { useUnits } from '@/lib/units';
 import { Figure } from './Figure';
 import { MuscleMap } from './MuscleMap';
+import { PhotoDemo } from './PhotoDemo';
 import { Chip, Row, useTheme } from './ui';
 import { YouTubePlayer } from './YouTubePlayer';
 
@@ -18,17 +20,21 @@ function levelName(code: string) {
   return undefined;
 }
 
-/** Animation + video demo for a level code or exercise key. */
+type Tab = 'photo' | 'anim' | 'muscles' | 'video';
+
+/** Photo + animation + muscles + video demo for a level code or exercise key. */
 export function HowTo({ mediaKey }: { mediaKey: string }) {
   const t = useTheme();
   const u = useUnits();
   const m = mediaFor(mediaKey);
   const anatomy = anatomyFor(mediaKey);
-  const [tab, setTab] = useState<'anim' | 'muscles' | 'video'>(m.anim ? 'anim' : anatomy ? 'muscles' : 'video');
+  const [photoFailed, setPhotoFailed] = useState(false);
+  const photo = photoFailed ? undefined : photoFor(mediaKey);
+  const [tab, setTab] = useState<Tab>(photo ? 'photo' : m.anim ? 'anim' : anatomy ? 'muscles' : 'video');
   const [playing, setPlaying] = useState(false);
-  if (!m.anim && !m.video && !anatomy) return null;
-  type Tab = 'anim' | 'muscles' | 'video';
+  if (!photo && !m.anim && !m.video && !anatomy) return null;
   const tabs: [Tab, string][] = [];
+  if (photo) tabs.push(['photo', 'Photo']);
   if (m.anim) tabs.push(['anim', 'Animation']);
   if (anatomy) tabs.push(['muscles', 'Muscles']);
   if (m.video) tabs.push(['video', 'Video']);
@@ -41,6 +47,16 @@ export function HowTo({ mediaKey }: { mediaKey: string }) {
             <Chip key={id} text={label} tone={tab === id ? 'accent' : 'neutral'} onPress={() => setTab(id)} />
           ))}
         </Row>
+      )}
+
+      {tab === 'photo' && photo && (
+        <PhotoDemo
+          mediaKey={mediaKey}
+          onFail={() => {
+            setPhotoFailed(true);
+            setTab(m.anim ? 'anim' : anatomy ? 'muscles' : 'video');
+          }}
+        />
       )}
 
       {tab === 'muscles' && <MuscleMap mediaKey={mediaKey} />}
@@ -93,7 +109,8 @@ export function HowToToggle({ mediaKey, label = 'How to do it' }: { mediaKey?: s
   if (!mediaKey) return null;
   const m = mediaFor(mediaKey);
   const anatomy = anatomyFor(mediaKey);
-  if (!m.anim && !m.video && !anatomy) return null;
+  const photo = photoFor(mediaKey);
+  if (!photo && !m.anim && !m.video && !anatomy) return null;
   return (
     <View style={{ gap: 8 }}>
       <Pressable onPress={() => setOpen((o) => !o)} hitSlop={6} accessibilityRole="button">
@@ -101,11 +118,22 @@ export function HowToToggle({ mediaKey, label = 'How to do it' }: { mediaKey?: s
           {open ? '▾' : '▶'} {label}
           <Text style={{ color: t.muted, fontWeight: '400' }}>
             {'  '}
-            {[m.anim && 'animation', anatomy && 'muscles', m.video && 'video'].filter(Boolean).join(' · ')}
+            {[photo ? 'photos' : m.anim && 'animation', anatomy && 'muscles', m.video && 'video'].filter(Boolean).join(' · ')}
           </Text>
         </Text>
       </Pressable>
       {open && <HowTo mediaKey={mediaKey} />}
     </View>
   );
+}
+
+/** Best single inline visual: real photos → else stick-figure animation → else nothing. */
+export function DemoMedia({ mediaKey, compact }: { mediaKey?: string; compact?: boolean }) {
+  const [failedKey, setFailedKey] = useState<string>();
+  if (!mediaKey) return null;
+  if (failedKey !== mediaKey && photoFor(mediaKey)) {
+    return <PhotoDemo mediaKey={mediaKey} compact={compact} onFail={() => setFailedKey(mediaKey)} />;
+  }
+  const anim = mediaFor(mediaKey).anim;
+  return anim ? <Figure anim={anim} size={compact ? 0.7 : 1} /> : null;
 }

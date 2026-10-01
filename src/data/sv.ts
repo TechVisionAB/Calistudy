@@ -1,3 +1,5 @@
+import { GUIDED_WARMUPS, stepAmount } from './warmups';
+
 // Plain-language English layer on top of the guide's content (friendly display names and cues),
 // plus equipment rules. The guide text itself (sessions.ts, ladders.ts) stays untouched.
 
@@ -98,18 +100,18 @@ export const EX_NEEDS: Record<string, { any: Equip[]; alt: { name: string; cue: 
   'upperA:C': { any: ['bar', 'rings'], alt: { name: 'Hollow body hold', cue: 'The foundation for front lever: lower back into the floor', demo: 'CC1' } },
   'upperA:D2': { any: ['bar', 'rings'], alt: { name: 'Slow table row (3 s down)', cue: 'Wide grip, pull your chest to the edge, lower over 3 s', demo: 'HPu1' } },
   'upperA:E1': { any: ['dip', 'rings'], alt: { name: 'Dips between two chairs', cue: 'Sturdy chairs only! Otherwise: diamond push-ups', demo: 'DP2' } },
-  'upperA:E2': { any: ['bar', 'rings'], alt: { name: 'Table row', cue: 'Lie under a sturdy table, pull your chest to the edge', demo: 'HPu1' } },
+  'upperA:E2': { any: ['rings'], alt: { name: 'Table row', cue: 'Lie under a sturdy table, pull your chest to the edge', demo: 'HPu1' } },
   'upperA:F1': { any: ['dumbbells', 'bands'], alt: { name: 'Lateral raise with water bottles', cue: 'Lead with the elbows, slowly down', demo: 'lateral' } },
   'upperA:F2': { any: ['dumbbells', 'rings', 'bands'], alt: { name: 'Backpack curl', cue: 'Still elbows, full extension' } },
   'lowerA:A': { any: ['bench'], alt: { name: 'Squat jump', cue: 'Jump high, land quietly', demo: 'pogo' } },
   'upperB:B': { any: ['bar', 'rings'], alt: { name: 'Hollow body hold', cue: 'The foundation for front lever: lower back into the floor', demo: 'CC1' } },
   'upperB:D': { any: ['bar', 'rings'], alt: { name: 'Explosive table row', cue: 'Pull fast, lower slowly', demo: 'HPu1' } },
-  'upperB:E2': { any: ['bar', 'rings'], alt: { name: 'Table row', cue: 'Lie under a sturdy table, pull your chest to the edge', demo: 'HPu1' } },
+  'upperB:E2': { any: ['rings'], alt: { name: 'Table row', cue: 'Lie under a sturdy table, pull your chest to the edge', demo: 'HPu1' } },
   'upperB:F1': { any: ['bar', 'rings'], alt: { name: 'Table row, underhand grip', cue: 'Palms facing you, chest to the edge', demo: 'HPu1' } },
   'upperB:G1': { any: ['dumbbells', 'bands'], alt: { name: 'Diamond push-ups', cue: 'Hands together under the chest', demo: 'HP3' } },
   'upperB:G2': { any: ['bands', 'dumbbells'], alt: { name: 'Prone Y-T raises', cue: 'Thumbs up, squeeze the shoulder blades' } },
   'upperB:H': { any: ['bar', 'rings'], alt: { name: 'Lying leg raise', cue: 'Lower back into the floor, slowly down', demo: 'CC1' } },
-  'starterA:C': { any: ['bar', 'rings'], alt: { name: 'Table row', cue: 'Lie under a sturdy table, pull your chest to the edge', demo: 'HPu1' } },
+  'starterA:C': { any: ['rings'], alt: { name: 'Table row', cue: 'Lie under a sturdy table, pull your chest to the edge', demo: 'HPu1' } },
   'starterB:C': { any: ['bar', 'rings'], alt: { name: 'Slow table row (3 s down)', cue: 'Underhand grip, chest to the edge, lower over 3 s', demo: 'HPu1' } },
   'starterB:D': { any: ['dip', 'rings'], alt: { name: 'Chair dips', cue: 'Sturdy chair against a wall; knees bent to make it easier', demo: 'DP2' } },
   'lowerB:G2': { any: ['bands'], alt: { name: 'Dead bug', cue: 'Lower back into the floor, opposite arm and leg' } },
@@ -120,7 +122,7 @@ export const LEVEL_NEEDS: Record<string, Equip[]> = {
   HP4: ['rings'], HP7: ['weight'],
   DP1: ['dip', 'rings'], DP2: ['dip', 'rings'], DP3: ['dip', 'rings'], DP4: ['rings'], DP5: ['rings'], DP6: ['dip'], DP7: ['rings'],
   VPu1: ['bar', 'rings'], VPu2: ['bar', 'rings'], VPu3: ['bar', 'rings'], VPu4: ['bar', 'rings'], VPu5: ['bar'], VPu6: ['weight'],
-  HPu1: ['rings', 'bar'], HPu2: ['rings', 'bar'], HPu3: ['rings', 'bar'], HPu4: ['rings'],
+  HPu1: ['rings'], HPu2: ['rings'], HPu3: ['rings'], HPu4: ['rings'],
   FL1: ['bar', 'rings'], FL2: ['bar', 'rings'], CC2: ['bar', 'rings'], CC3: ['bar', 'rings'], CC4: ['bar'],
   SL3: ['bench'], SL4: ['bench'],
 };
@@ -183,25 +185,7 @@ export const LADDER_SV: Record<string, string> = {
   MU: 'Muscle-up', FL: 'Front lever', BL: 'Back lever', HF: 'Human flag', CC: 'Core & compression', SL: 'Single-leg squat', H: 'Hips & posterior chain', KF: 'Hamstrings (Nordic)',
 };
 
-export const WARMUP_SV: Record<string, { title: string; steps: string[] }> = {
-  push: {
-    title: 'Warm-up (8 min)',
-    steps: ['2 min jumping in place or jump rope', 'Wrist warm-up', 'Band dislocates ×10', 'Scapular push-ups ×10', 'Support hold 30 s', 'Band external rotation + wrist curl 1×15', '5 easy push-ups'],
-  },
-  pull: {
-    title: 'Warm-up (8 min)',
-    steps: ['2 min jumping in place or jump rope', 'Wrist warm-up', 'Band dislocates ×10', 'Scapular pull-ups ×8', 'German hang with feet on the floor 15–20 s', 'Band external rotation 1×15', '3 easy pull-ups'],
-  },
-  legs: {
-    title: 'Warm-up (8 min)',
-    steps: ['2–3 min light cardio', 'Knee-to-wall ankle mobility ×10/side', '10 deep squats', '10 glute bridges', '5 easy split squats/leg', '10 easy pogo hops'],
-  },
-  starter: {
-    title: 'Warm-up (5 min)',
-    steps: ['1 min jumping jacks or marching on the spot', 'Arm circles ×10 each way', 'Wrist circles, 30 s', '10 slow bodyweight squats', '10 glute bridges', '5 easy push-ups (knees or bench is fine)'],
-  },
-  handstand: {
-    title: 'Warm-up (8 min)',
-    steps: ['Wrist warm-up 2–3 min', 'Scapular push-ups ×10', 'Wall slides ×8', 'Band dislocates ×10', 'Pike hold on box 2×20 s', 'Band external rotation + wrist curl 1×15'],
-  },
-};
+/** Warm-up overview (title + one line per step), derived from the guided warm-ups. */
+export const WARMUP_SV: Record<string, { title: string; steps: string[] }> = Object.fromEntries(
+  Object.entries(GUIDED_WARMUPS).map(([id, w]) => [id, { title: `${w.title} (${w.minutes} min)`, steps: w.steps.map((s) => `${s.name} ${stepAmount(s)}`) }]),
+);

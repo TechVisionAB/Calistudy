@@ -46,7 +46,7 @@ export type Track = 'starter' | 'full';
 
 export type Units = 'metric' | 'imperial';
 export type Currency = 'USD' | 'EUR' | 'GBP' | 'SEK';
-export type Settings = { units: Units; currency: Currency };
+export type Settings = { units: Units; currency: Currency; /** Spoken cues during workouts (rest countdown, next set). */ voice: boolean };
 
 export type State = {
   profile: Profile | null;
@@ -82,7 +82,7 @@ const initial: State = {
   },
   track: 'full',
   starterStart: null,
-  settings: { units: 'metric', currency: 'USD' },
+  settings: { units: 'metric', currency: 'USD', voice: true },
 };
 
 type Ctx = {

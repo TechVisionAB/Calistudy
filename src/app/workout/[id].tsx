@@ -4,21 +4,26 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, Pressable, ScrollView, Text, TextInput, Vibration, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Figure } from '@/components/Figure';
 import { Explain } from '@/components/Explain';
-import { HowToToggle } from '@/components/HowTo';
+import { DemoMedia, HowToToggle } from '@/components/HowTo';
 import { Button, Card, Chip, H1, H2, Label, P, Row, styles, useTheme } from '@/components/ui';
 import { anatomyFor } from '@/data/anatomy';
-import { mediaFor } from '@/data/media';
+import { alternativesFor } from '@/data/alternatives';
+import { LADDER_BY_ID } from '@/data/ladders';
+import { GUIDED_WARMUPS, stepAmount } from '@/data/warmups';
 import { SessionId, SESSIONS } from '@/data/sessions';
-import { EFFORTS, effortText, LEVEL_SV, SESSION_SV, tempoText, WARMUP_SV } from '@/data/sv';
+import { EFFORTS, effortText, LEVEL_SV, SESSION_SV, tempoText } from '@/data/sv';
 import { isHoldUnit, planSession, PlannedExercise, range, unitLabel } from '@/lib/plan';
 import { Suggestion, suggest } from '@/lib/progression';
 import { EntryLog, newId, SetLog, useStore, WorkoutLog } from '@/lib/store';
 import { useUnits } from '@/lib/units';
+import { spokenDuration, useVoice } from '@/lib/voice';
 import { EarnedMilestone, FirstTime, formatDelta, formatValue, newMilestones, PersonalRecord, personalRecords } from '@/lib/wins';
 
 type Step = { ex: number; set: number };
+
+/** Wall-clock time for event handlers (kept out of render for the React compiler). */
+const clock = () => Date.now();
 
 const haptic = (kind: 'tap' | 'success' | 'warn') => {
   if (Platform.OS === 'web') return;
@@ -42,6 +47,127 @@ function buildSteps(plan: PlannedExercise[]): Step[] {
   return steps;
 }
 
+/** "6 to 12 reps", "15 to 30 seconds" – targets as a coach would say them. */
+function spokenTarget(e: { min: number; max: number; unit: string }): string {
+  const n = e.min === e.max ? `${e.min}` : `${e.min} to ${e.max}`;
+  if (e.unit.startsWith('s')) return `hold ${n} seconds${e.unit === 's/side' ? ' per side' : ''}`;
+  return `${n} reps${e.unit === 'reps/side' ? ' per side' : e.unit === 'reps/leg' ? ' per leg' : ''}`;
+}
+
+const REST_TIPS = [
+  'Breathe slowly – in through the nose, out through the mouth.',
+  'Shake out your arms and shoulders.',
+  'Sip some water.',
+  'Stopping with a couple of reps left is the plan – not a failure.',
+  'Good form beats more reps. Every set counts.',
+  'Strength is built one set at a time. You’re doing it.',
+];
+
+/** Step-by-step warm-up: one movement at a time with its own demo, timer or rep target. */
+function GuidedWarmup({ id, title, onDone }: { id: keyof typeof GUIDED_WARMUPS; title: string; onDone: () => void }) {
+  const t = useTheme();
+  const say = useVoice();
+  const w = GUIDED_WARMUPS[id];
+  const [i, setI] = useState(0);
+  const [end, setEnd] = useState<number | null>(null);
+  const [now, setNow] = useState(() => Date.now());
+  const [showAll, setShowAll] = useState(false);
+  const cued = useRef<string>('');
+  const step = w.steps[i];
+  const left = end === null ? null : Math.max(0, Math.ceil((end - now) / 1000));
+
+  const go = (next: number) => {
+    setEnd(null);
+    if (next >= w.steps.length) {
+      say('Warm-up done. Let’s train.');
+      onDone();
+      return;
+    }
+    setI(next);
+    const s = w.steps[next];
+    say(`Next: ${s.name}. ${s.secs ? spokenDuration(s.secs) : s.reps?.replace('×', '') ?? ''}`);
+  };
+
+  // Ticks the countdown; cues "3, 2, 1" and moves on by itself at zero.
+  useEffect(() => {
+    if (end === null) return;
+    const iv = setInterval(() => {
+      const t = Date.now();
+      setNow(t);
+      const l = Math.max(0, Math.ceil((end - t) / 1000));
+      const key = `${i}:${l}`;
+      if (cued.current === key) return;
+      cued.current = key;
+      if (l === 3) say('3, 2, 1');
+      if (l === 0) {
+        clearInterval(iv);
+        Vibration.vibrate(200);
+        go(i + 1);
+      }
+    }, 200);
+    return () => clearInterval(iv);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [end, i]);
+
+  const start = () => {
+    setNow(Date.now());
+    setEnd(Date.now() + (step.secs ?? 0) * 1000);
+    say(`${step.name}. Go!`);
+  };
+
+  return (
+    <ScrollView contentContainerStyle={styles.screen}>
+      <Stack.Screen options={{ title }} />
+      <Label>
+        Warm-up · step {i + 1} of {w.steps.length}
+      </Label>
+      <View style={{ flexDirection: 'row', gap: 4 }}>
+        {w.steps.map((_, k) => (
+          <View key={k} style={{ flex: 1, height: 4, borderRadius: 2, backgroundColor: k <= i ? t.accent : t.grid }} />
+        ))}
+      </View>
+      <DemoMedia mediaKey={step.demo} />
+      <HowToToggle mediaKey={step.demo} label="Video & muscles" />
+      <Text style={{ color: t.text, fontSize: 28, fontWeight: '800', letterSpacing: -0.5 }}>{step.name}</Text>
+      <Text style={{ color: t.accent, fontSize: 20, fontWeight: '800' }}>{stepAmount(step)}</Text>
+      <P muted>{step.tip}</P>
+      {step.secs ? (
+        left === null ? (
+          <Button title={`▶ Start ${stepAmount(step)}`} onPress={start} style={{ paddingVertical: 16 }} />
+        ) : (
+          <>
+            <Text style={{ color: t.text, fontSize: 72, fontWeight: '800', textAlign: 'center', fontVariant: ['tabular-nums'] }}>
+              {Math.floor(left / 60)}:{String(left % 60).padStart(2, '0')}
+            </Text>
+            <Button title="Next ›" variant="secondary" onPress={() => go(i + 1)} />
+          </>
+        )
+      ) : (
+        <Button title="Done ✓" onPress={() => go(i + 1)} style={{ paddingVertical: 16 }} />
+      )}
+      <Row style={{ justifyContent: 'space-between' }}>
+        <Pressable onPress={() => setShowAll((x) => !x)} hitSlop={8}>
+          <Text style={{ color: t.muted, fontWeight: '600' }}>{showAll ? 'Hide steps' : `All ${w.steps.length} steps · ${w.minutes} min`}</Text>
+        </Pressable>
+        <Pressable onPress={onDone} hitSlop={8}>
+          <Text style={{ color: t.muted, fontWeight: '600' }}>Already warm – skip ›</Text>
+        </Pressable>
+      </Row>
+      {showAll && (
+        <Card>
+          {w.steps.map((s, k) => (
+            <Pressable key={k} onPress={() => go(k)}>
+              <Text style={{ color: k === i ? t.accent : k < i ? t.muted : t.text, fontSize: 15, lineHeight: 26, fontWeight: k === i ? '700' : '400' }}>
+                {k < i ? '✓' : `${k + 1}.`} {s.name} · {stepAmount(s)}
+              </Text>
+            </Pressable>
+          ))}
+        </Card>
+      )}
+    </ScrollView>
+  );
+}
+
 export default function WorkoutScreen() {
   const params = useLocalSearchParams<{ id: SessionId; week?: string; flags?: string }>();
   const { state, update, setLevel } = useStore();
@@ -58,6 +184,12 @@ export default function WorkoutScreen() {
     [session?.id, week, flags],
   );
   const steps = useMemo(() => buildSteps(plan), [plan]);
+  const say = useVoice();
+  // Mid-workout swaps (easier level or an alternative exercise), by plan index.
+  const [overrides, setOverrides] = useState<Record<number, Partial<PlannedExercise>>>({});
+  const exAt = (i: number): PlannedExercise => ({ ...plan[i], ...overrides[i] });
+  const [swapOpen, setSwapOpen] = useState(false);
+  const [userSwapped, setUserSwapped] = useState<Record<number, boolean>>({});
 
   const [entries, setEntries] = useState<EntryLog[]>(() =>
     plan.map((e) => ({
@@ -82,6 +214,7 @@ export default function WorkoutScreen() {
   const [notes, setNotes] = useState('');
   const [result, setResult] = useState<{
     log: WorkoutLog;
+    mins: number;
     suggestions: Suggestion[];
     records: PersonalRecord[];
     firsts: FirstTime[];
@@ -101,23 +234,48 @@ export default function WorkoutScreen() {
     return () => clearInterval(iv);
   }, [restEnd, holdStart]);
   const remaining = restEnd === null ? 0 : Math.max(0, Math.ceil((restEnd - now) / 1000));
+  const lastCue = useRef('');
   useEffect(() => {
-    if (phase === 'rest' && restEnd !== null && remaining === 0 && !buzzed.current) {
+    if (phase !== 'rest' || restEnd === null) return;
+    const key = `${stepIdx}:${remaining}`;
+    if (lastCue.current === key) return;
+    lastCue.current = key;
+    if (remaining === 10) say('10 seconds');
+    if (remaining === 3) say('3, 2, 1');
+    if (remaining === 0 && !buzzed.current) {
       buzzed.current = true;
       Vibration.vibrate([0, 300, 150, 300]);
+      const e = steps[stepIdx] ? exAt(steps[stepIdx].ex) : undefined;
+      if (e) say(`Go! ${e.title}, ${spokenTarget(e)}.`);
       setPhase('work');
       setRestEnd(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [remaining, phase, restEnd]);
 
+  // Hold timer: call out when the target is reached.
+  const holdNow = holdStart !== null ? Math.floor((now - holdStart) / 1000) : null;
+  const holdCue = useRef('');
+  useEffect(() => {
+    if (holdNow === null || !steps[stepIdx]) return;
+    const e = exAt(steps[stepIdx].ex);
+    const key = `${stepIdx}:${holdNow}`;
+    if (holdCue.current === key) return;
+    holdCue.current = key;
+    if (holdNow === e.min && e.min !== e.max) say(`${e.min} seconds. That’s the target – keep going if you can.`);
+    else if (holdNow === e.max) say(`${e.max} seconds. Great – stop.`);
+    else if (holdNow > 0 && holdNow % 10 === 0 && holdNow < e.max) say(`${holdNow}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [holdNow]);
+
   const step = steps[stepIdx];
-  const cur = step ? plan[step.ex] : undefined;
+  const cur = step ? exAt(step.ex) : undefined;
 
   // Pre-fill the counter with last time's value for this set, else the target.
   const initialValue = (idx: number): number | null => {
     const st = steps[idx];
     if (!st) return null;
-    const ex = plan[st.ex];
+    const ex = exAt(st.ex);
     const prev = state.workouts
       .find((w) => w.session === params.id && w.entries.some((e) => e.slot === ex.slot && e.level === ex.level))
       ?.entries.find((e) => e.slot === ex.slot)?.sets[st.set]?.value;
@@ -151,14 +309,22 @@ export default function WorkoutScreen() {
     goTo(stepIdx + 1);
     if (rest && cur) {
       buzzed.current = false;
-      setRestEnd(Date.now() + cur.restSec * 1000);
+      setRestEnd(clock() + cur.restSec * 1000);
       setPhase('rest');
+      const ns = steps[stepIdx + 1];
+      const ne = exAt(ns.ex);
+      const newExercise = ns.ex !== step!.ex;
+      const lastSet = ns.set === ne.plannedSets - 1;
+      say(
+        `Nice work. Rest ${spokenDuration(cur.restSec)}. ` +
+          (newExercise ? `Next exercise: ${ne.title}.` : lastSet ? `Then the last set of ${ne.title}.` : `Then set ${ns.set + 1} of ${ne.plannedSets}.`),
+      );
     }
   };
 
   const done = () => {
     let v = value;
-    if (holdStart !== null) v = Math.round((Date.now() - holdStart) / 1000);
+    if (holdStart !== null) v = Math.round((clock() - holdStart) / 1000);
     const latest = record({ value: v, rir: effort });
     haptic('tap');
     advance(true, latest);
@@ -198,15 +364,16 @@ export default function WorkoutScreen() {
     setRestEnd(null);
     setHoldStart(null);
     haptic('success');
+    say(records.length ? 'Workout complete – and a new personal record! Great job.' : 'Workout complete. Great job!');
     // A second, lighter buzz when there's something extra to celebrate.
     if (records.length || badges.length) setTimeout(() => haptic('tap'), 450);
-    setResult({ log, suggestions, records, firsts, badges });
+    setResult({ log, mins: Math.max(1, Math.round((clock() - startedAt) / 60000)), suggestions, records, firsts, badges });
   }
 
   // ---------- Summary ----------
   if (result) {
     const sets = result.log.entries.reduce((n, e) => n + e.sets.filter((s) => s.value !== null).length, 0);
-    const mins = Math.max(1, Math.round((Date.now() - startedAt) / 60000));
+    const mins = result.mins;
     const ups = result.suggestions.filter((s) => s.kind === 'up' || s.kind === 'test');
     const { records, badges } = result;
     const newLevels = result.firsts.filter((f) => f.newLevel);
@@ -313,68 +480,105 @@ export default function WorkoutScreen() {
   }
 
   const progressPct = (stepIdx / steps.length) * 100;
-  const media = cur.mediaKey ? mediaFor(cur.mediaKey) : {};
-  const partner = plan.find((p, i) => i !== step.ex && p.slot[0] === cur.slot[0] && /\d$/.test(p.slot) && /\d$/.test(cur.slot));
+  const partnerIdx = plan.findIndex((p, i) => i !== step.ex && p.slot[0] === cur.slot[0] && /\d$/.test(p.slot) && /\d$/.test(cur.slot));
+  const partner = partnerIdx === -1 ? undefined : exAt(partnerIdx);
   const exNo = new Set(steps.slice(0, stepIdx + 1).map((s) => s.ex)).size;
   const hold = isHoldUnit(cur.unit);
   const pain = entries[step.ex].sets[0]?.pain ?? 0;
-  const holdSecs = holdStart !== null ? Math.floor((now - holdStart) / 1000) : null;
+  const holdSecs = holdNow;
   const nextStep = steps[stepIdx];
+
+  // Swap options: one level easier on the ladder, plus ways to do it with no equipment.
+  const ladderLevels = cur.ladder && cur.level ? LADDER_BY_ID[cur.ladder]?.levels.map((l) => l.code) ?? [] : [];
+  const easier = cur.level ? ladderLevels[ladderLevels.indexOf(cur.level) - 1] : undefined;
+  const alts = alternativesFor(cur.ladder ?? plan[step.ex].ladder, plan[step.ex].demo ?? plan[step.ex].mediaKey).filter((a) => a.name !== cur.title);
+  const applySwap = (patch: Partial<PlannedExercise>, entry: Partial<EntryLog>, spoken: string) => {
+    setOverrides((o) => ({ ...o, [step.ex]: { ...o[step.ex], ...patch } }));
+    setEntries((es) => es.map((e, i) => (i === step.ex ? { ...e, ...entry } : e)));
+    setSwapOpen(false);
+    setUserSwapped((x) => ({ ...x, [step.ex]: true }));
+    haptic('tap');
+    say(spoken);
+  };
+  const swapEasier = () =>
+    easier &&
+    applySwap(
+      { level: easier, title: LEVEL_SV[easier] ?? easier, mediaKey: easier, levelName: LADDER_BY_ID[cur.ladder!]?.levels.find((l) => l.code === easier)?.name },
+      { level: easier },
+      `Switched to ${LEVEL_SV[easier] ?? 'an easier version'}. Good call.`,
+    );
+  const swapAlt = (a: { name: string; cue: string; demo?: string }) =>
+    applySwap(
+      { title: a.name, name: a.name, cueSv: a.cue, cue: a.cue, mediaKey: a.demo, ladder: undefined, level: undefined, swapped: false },
+      { name: a.name, ladder: undefined, level: undefined },
+      `Switched to ${a.name}.`,
+    );
 
   // ---------- Warm-up ----------
   if (phase === 'warmup' && session.warmup) {
-    const w = WARMUP_SV[session.warmup];
+    const toWork = () => {
+      setPhase('work');
+      say(`First exercise: ${cur.title}. ${spokenTarget(cur)}.`);
+    };
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: t.bg }} edges={['left', 'right', 'bottom']}>
-        <Stack.Screen options={{ title: SESSION_SV[session.id].title }} />
-        <ScrollView contentContainerStyle={styles.screen}>
-          <Label>Before you start</Label>
-          <H1>{w.title}</H1>
-          <Card>
-            {w.steps.map((x, i) => (
-              <Text key={i} style={{ color: t.text, fontSize: 16, lineHeight: 26 }}>
-                {i + 1}. {x}
-              </Text>
-            ))}
-          </Card>
-          <HowToToggle mediaKey="wrist" label="Show wrist warm-up" />
-          <Button title="Done – to the first exercise" onPress={() => setPhase('work')} style={{ paddingVertical: 16 }} />
-          <Pressable onPress={() => setPhase('work')} hitSlop={8}>
-            <Text style={{ color: t.muted, textAlign: 'center', fontWeight: '600' }}>Already warmed up – skip</Text>
-          </Pressable>
-        </ScrollView>
+        <GuidedWarmup id={session.warmup} title={SESSION_SV[session.id].title} onDone={toWork} />
       </SafeAreaView>
     );
   }
 
   // ---------- Rest ----------
   if (phase === 'rest') {
-    const upcoming = plan[nextStep.ex];
+    const upcoming = exAt(nextStep.ex);
+    const prevStep = steps[stepIdx - 1];
+    const newExercise = !prevStep || prevStep.ex !== nextStep.ex;
+    const lastSet = nextStep.set === upcoming.plannedSets - 1;
+    const lastValue = !newExercise && prevStep ? entries[prevStep.ex].sets[prevStep.set]?.value : null;
+    const pct = Math.round((stepIdx / steps.length) * 100);
+    const halfway = stepIdx === Math.ceil(steps.length / 2);
+    const minsLeft = Math.max(1, Math.round(((steps.length - stepIdx) * (45 + upcoming.restSec)) / 60));
+    const goNow = () => {
+      setRestEnd(null);
+      setPhase('work');
+      say(`Go! ${upcoming.title}, ${spokenTarget(upcoming)}.`);
+    };
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: t.bg }} edges={['left', 'right', 'bottom']}>
         <Stack.Screen options={{ title: SESSION_SV[session.id].title }} />
         <View style={{ height: 4, backgroundColor: t.grid }}>
           <View style={{ height: 4, width: `${progressPct}%`, backgroundColor: t.accent }} />
         </View>
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24, gap: 16 }}>
-          <Label>Rest</Label>
-          <Text style={{ color: t.text, fontSize: 88, fontWeight: '800', fontVariant: ['tabular-nums'] }}>
+        <ScrollView contentContainerStyle={[styles.screen, { alignItems: 'stretch', gap: 14 }]}>
+          <Text style={{ color: t.muted, fontSize: 14, fontWeight: '700', textAlign: 'center' }}>
+            {halfway ? 'Halfway there! 🎉' : `${pct}% done`} · about {minsLeft} min left
+          </Text>
+          <Text style={{ color: t.text, fontSize: 88, fontWeight: '800', textAlign: 'center', fontVariant: ['tabular-nums'] }}>
             {Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, '0')}
           </Text>
-          <P muted style={{ textAlign: 'center' }}>
-            Next: {u(upcoming.title)} · set {nextStep.set + 1} of {upcoming.plannedSets}
-          </P>
           <Row style={{ justifyContent: 'center' }}>
             <Button title="+15 s" variant="secondary" onPress={() => setRestEnd((x) => Math.max(x ?? 0, Date.now()) + 15000)} />
-            <Button
-              title="Go now"
-              onPress={() => {
-                setRestEnd(null);
-                setPhase('work');
-              }}
-            />
+            <Button title="I’m ready – go" onPress={goNow} />
           </Row>
-        </View>
+
+          <Card>
+            <Label>{newExercise ? 'Next exercise' : lastSet ? 'Last set – finish strong 💪' : `Next: set ${nextStep.set + 1} of ${upcoming.plannedSets}`}</Label>
+            <Text style={{ color: t.text, fontSize: 20, fontWeight: '800' }}>
+              {u(upcoming.title)} <Text style={{ color: t.muted, fontWeight: '500', fontSize: 16 }}>· {range(upcoming)}</Text>
+            </Text>
+            {lastValue != null && (
+              <P muted>
+                Last set: {lastValue} {unitLabel(upcoming.unit)}. Matching it is a win – one more is a bonus.
+              </P>
+            )}
+            {newExercise && (
+              <>
+                <DemoMedia mediaKey={upcoming.mediaKey} />
+                <P muted>Have a look now so you know what’s coming. Too hard or missing equipment? You can swap it on the next screen.</P>
+              </>
+            )}
+          </Card>
+          <Text style={{ color: t.muted, fontSize: 15, textAlign: 'center', lineHeight: 21 }}>{REST_TIPS[stepIdx % REST_TIPS.length]}</Text>
+        </ScrollView>
       </SafeAreaView>
     );
   }
@@ -396,12 +600,12 @@ export default function WorkoutScreen() {
         </Label>
         <Text style={{ color: t.text, fontSize: 28, fontWeight: '800', letterSpacing: -0.5 }}>{u(cur.title)}</Text>
         <Row>
-          {cur.swapped && <Chip text="Swapped – missing equipment" tone="accent" />}
+          {userSwapped[step.ex] ? <Chip text="Your swap ✓" tone="good" /> : cur.swapped && <Chip text="Swapped – missing equipment" tone="accent" />}
           {partner && <Chip text={`Alternate with: ${u(partner.title)}`} />}
         </Row>
 
-        {media.anim ? <Figure anim={media.anim} size={0.9} /> : null}
-        <HowToToggle mediaKey={cur.mediaKey} label={media.anim ? 'Muscles & video' : 'How to do it'} />
+        <DemoMedia mediaKey={cur.mediaKey} />
+        <HowToToggle mediaKey={cur.mediaKey} label="More: muscles & video" />
 
         <Card>
           <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
@@ -434,8 +638,10 @@ export default function WorkoutScreen() {
               title={holdSecs !== null ? `Stop · ${holdSecs} s` : '▶ Start timer'}
               variant={holdSecs !== null ? 'primary' : 'secondary'}
               onPress={() => {
-                if (holdStart === null) setHoldStart(Date.now());
-                else {
+                if (holdStart === null) {
+                  setHoldStart(Date.now());
+                  say('Go');
+                } else {
                   setValue(Math.round((Date.now() - holdStart) / 1000));
                   setHoldStart(null);
                 }
@@ -469,6 +675,31 @@ export default function WorkoutScreen() {
         )}
 
         <Button title="Done ✓" onPress={done} style={{ paddingVertical: 16 }} />
+
+        <Pressable onPress={() => setSwapOpen((x) => !x)} hitSlop={8}>
+          <Text style={{ color: t.accent, fontWeight: '700', textAlign: 'center' }}>⇄ Too hard or missing equipment? Swap it</Text>
+        </Pressable>
+        {swapOpen && (
+          <Card>
+            <H2>Pick another way</H2>
+            <P muted>There’s always an option. Swapping is smart training, not giving up.</P>
+            {easier && (
+              <Pressable onPress={swapEasier} style={{ paddingVertical: 8, gap: 2 }}>
+                <Text style={{ color: t.text, fontSize: 16, fontWeight: '700' }}>⬇ Easier: {u(LEVEL_SV[easier] ?? easier)}</Text>
+                <Text style={{ color: t.muted, fontSize: 14 }}>Same movement, one step easier. Your level updates automatically later.</Text>
+              </Pressable>
+            )}
+            {alts.map((a) => (
+              <Pressable key={a.name} onPress={() => swapAlt(a)} style={{ paddingVertical: 8, gap: 2 }}>
+                <Text style={{ color: t.text, fontSize: 16, fontWeight: '700' }}>⇄ {u(a.name)}</Text>
+                <Text style={{ color: t.muted, fontSize: 14 }}>
+                  {u(a.cue)}
+                  {a.needs ? ` · Needs: ${a.needs.toLowerCase()}` : ' · No equipment'}
+                </Text>
+              </Pressable>
+            ))}
+          </Card>
+        )}
 
         <Row style={{ justifyContent: 'space-between' }}>
           <Pressable onPress={() => setPainOpen((x) => !x)} hitSlop={8}>
