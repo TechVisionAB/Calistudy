@@ -41,6 +41,13 @@ export type Experience = 'new' | 'some' | 'solid';
 
 export type Profile = { experience: Experience; equipment: Equip[] };
 
+/** 'starter' = 3 short full-body workouts a week for beginners; 'full' = the guide's 12-week program. */
+export type Track = 'starter' | 'full';
+
+export type Units = 'metric' | 'imperial';
+export type Currency = 'USD' | 'EUR' | 'GBP' | 'SEK';
+export type Settings = { units: Units; currency: Currency };
+
 export type State = {
   profile: Profile | null;
   startMonday: string | null;
@@ -50,6 +57,11 @@ export type State = {
   micro: Record<string, string[]>;
   mobilityFails: string[];
   reminders: Reminders;
+  /** Missing in data saved before Starter mode existed → treated as 'full'. */
+  track: Track;
+  /** ISO date the starter plan began (week 1 of Starter). */
+  starterStart: string | null;
+  settings: Settings;
 };
 
 const KEY = 'calistudy/state/v1';
@@ -68,6 +80,9 @@ const initial: State = {
     morning: { enabled: false, hour: 7, minute: 30 },
     evening: { enabled: false, hour: 19, minute: 0 },
   },
+  track: 'full',
+  starterStart: null,
+  settings: { units: 'metric', currency: 'USD' },
 };
 
 type Ctx = {
@@ -89,7 +104,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       .then((raw) => {
         if (raw) {
           const saved = JSON.parse(raw) as Partial<State>;
-          setState({ ...initial, ...saved, levels: { ...defaultLevels(), ...saved.levels } });
+          setState({ ...initial, ...saved, levels: { ...defaultLevels(), ...saved.levels }, settings: { ...initial.settings, ...saved.settings } });
         }
       })
       .catch(() => {})

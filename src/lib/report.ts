@@ -32,7 +32,7 @@ export function buildReport(state: State, answers: { rating: number | null; best
   const lines = [
     'CALISTUDY TEST REPORT',
     `App version: ${Constants.expoConfig?.version ?? '?'}`,
-    `Started: ${state.startMonday ?? 'not started'} · now program week ${week}`,
+    `Started: ${state.startMonday ?? 'not started'} · plan: ${state.track} · now program week ${week}`,
     `Total workouts: ${state.workouts.length} · logged sets: ${sets} · tests: ${state.tests.length}`,
     `Reminders: morning ${state.reminders.morning.enabled ? 'on' : 'off'}, evening ${state.reminders.evening.enabled ? 'on' : 'off'}`,
     '',

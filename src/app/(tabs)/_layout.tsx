@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { ComponentProps } from 'react';
 
 import { useTheme } from '@/components/ui';
@@ -27,9 +27,14 @@ export default function TabLayout() {
         headerTitleStyle: { color: t.text, fontWeight: '800' },
         sceneStyle: { backgroundColor: t.bg },
         headerRight: () => (
-          <Pressable onPress={() => router.push('/coach')} hitSlop={10} style={{ marginRight: 16 }} accessibilityLabel="Ask the AI coach">
-            <Ionicons name="chatbubble-ellipses-outline" size={24} color={t.accent} />
-          </Pressable>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 18, marginRight: 16 }}>
+            <Pressable onPress={() => router.push('/coach')} hitSlop={8} accessibilityLabel="Ask the AI coach">
+              <Ionicons name="chatbubble-ellipses-outline" size={24} color={t.accent} />
+            </Pressable>
+            <Pressable onPress={() => router.push('/settings')} hitSlop={8} accessibilityLabel="Settings">
+              <Ionicons name="settings-outline" size={24} color={t.accent} />
+            </Pressable>
+          </View>
         ),
       }}
     >

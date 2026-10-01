@@ -30,7 +30,7 @@ export function appContext(state: State, screen?: string): string {
     .map((w) => `${w.date.slice(0, 10)} ${SESSION_SV[w.session]?.title ?? w.session}: ${w.entries.map((e) => `${e.level ?? e.name} ${e.sets.map((s) => s.value ?? '–').join('/')}`).join('; ')}`)
     .join('\n');
   return [
-    `Program week: ${p.week} (workouts done this week: ${p.done.length}/${p.goal})`,
+    `${state.track === 'starter' ? 'Plan: Starter (3 short full-body workouts/week), starter week' : 'Plan: full program, week'} ${p.week} (workouts done this week: ${p.done.length}/${p.goal})`,
     `Next in the app: ${n.kind === 'session' ? SESSION_SV[n.session].title : n.kind === 'test' ? `test ${n.battery}` : n.kind}`,
     `Experience: ${state.profile?.experience ?? 'unknown'} · Equipment: ${state.profile?.equipment.join(', ') || 'none'}`,
     `Levels: ${levels}`,

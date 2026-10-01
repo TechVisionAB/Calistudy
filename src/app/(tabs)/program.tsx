@@ -5,7 +5,10 @@ import { ScrollView, Text, View } from 'react-native';
 import { Button, Card, Chip, H2, Label, P, Row, Screen, useTheme } from '@/components/ui';
 import { blockOf, dayPlan, DayPlan, programWeek, shiftDate, WEEK_PARAMS, WEEKDAYS, weekdayIndex } from '@/data/program';
 import { SESSIONS } from '@/data/sessions';
+import { GraduationCard, UnlockTeaser } from '@/components/StarterCards';
+import { SESSION_SV } from '@/data/sv';
 import { nextUp } from '@/lib/next';
+import { isStarter, STARTER, STARTER_PER_WEEK, starterWeek } from '@/lib/starter';
 import { useStore } from '@/lib/store';
 
 function planTitle(p: DayPlan): string {
@@ -14,7 +17,44 @@ function planTitle(p: DayPlan): string {
   return p.label;
 }
 
+function StarterProgram() {
+  const { state } = useStore();
+  const t = useTheme();
+  const week = starterWeek(state);
+  return (
+    <Screen>
+      <Card>
+        <Label>Your plan</Label>
+        <H2>Starter · week {week}</H2>
+        <P>{STARTER_PER_WEEK} short full-body workouts a week, about 30 min each. Any days you like – just leave a rest day in between (e.g. Mon, Wed, Fri).</P>
+        <P muted>The app alternates the two workouts and moves each exercise up a level when you’re ready.</P>
+      </Card>
+      {STARTER.map((id) => (
+        <Card key={id} onPress={() => router.push({ pathname: '/session/[id]', params: { id, week: String(week) } })}>
+          <Row>
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>{SESSION_SV[id].title}</Text>
+              <Text style={{ color: t.muted, fontSize: 13 }}>
+                {SESSION_SV[id].short} · {SESSIONS[id].duration}
+              </Text>
+            </View>
+            <Text style={{ color: t.muted, fontSize: 18 }}>›</Text>
+          </Row>
+        </Card>
+      ))}
+      <UnlockTeaser week={week} />
+      <GraduationCard />
+    </Screen>
+  );
+}
+
 export default function Program() {
+  const { state } = useStore();
+  if (isStarter(state)) return <StarterProgram />;
+  return <FullProgram />;
+}
+
+function FullProgram() {
   const { state, update } = useStore();
   const t = useTheme();
   const current = state.startMonday ? programWeek(state.startMonday) : 0;

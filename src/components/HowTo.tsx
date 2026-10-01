@@ -4,6 +4,7 @@ import { Image, Linking, Pressable, Text, View } from 'react-native';
 import { LADDER_BY_ID } from '@/data/ladders';
 import { mediaFor, thumbnailUrl, youtubeUrl } from '@/data/media';
 import { anatomyFor } from '@/data/anatomy';
+import { useUnits } from '@/lib/units';
 import { Figure } from './Figure';
 import { MuscleMap } from './MuscleMap';
 import { Chip, Row, useTheme } from './ui';
@@ -20,6 +21,7 @@ function levelName(code: string) {
 /** Animation + video demo for a level code or exercise key. */
 export function HowTo({ mediaKey }: { mediaKey: string }) {
   const t = useTheme();
+  const u = useUnits();
   const m = mediaFor(mediaKey);
   const anatomy = anatomyFor(mediaKey);
   const [tab, setTab] = useState<'anim' | 'muscles' | 'video'>(m.anim ? 'anim' : anatomy ? 'muscles' : 'video');
@@ -46,7 +48,7 @@ export function HowTo({ mediaKey }: { mediaKey: string }) {
       {tab === 'anim' && m.anim && (
         <>
           <Figure anim={m.anim} />
-          <Text style={{ color: t.muted, fontSize: 13, lineHeight: 18 }}>{m.anim.caption}</Text>
+          <Text style={{ color: t.muted, fontSize: 13, lineHeight: 18 }}>{u(m.anim.caption)}</Text>
         </>
       )}
 

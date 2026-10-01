@@ -5,12 +5,14 @@ import { Button, Card, H2, Label, P, Row, Screen, useTheme } from '@/components/
 import { LADDERS, LadderGroup } from '@/data/ladders';
 import { LADDER_SV, LEVEL_SV, TEST_SV } from '@/data/sv';
 import { useStore } from '@/lib/store';
+import { useUnits } from '@/lib/units';
 
 const GROUPS: LadderGroup[] = ['Push', 'Pull', 'Skills', 'Core', 'Legs'];
 
 export default function Levels() {
   const { state } = useStore();
   const t = useTheme();
+  const u = useUnits();
   const lastTest = [...state.tests].sort((a, b) => b.date.localeCompare(a.date))[0];
 
   return (
@@ -41,7 +43,7 @@ export default function Levels() {
                   <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>{LADDER_SV[l.id] ?? l.name}</Text>
                   <Text style={{ color: t.accent, fontWeight: '800' }}>{code}</Text>
                 </Row>
-                <Text style={{ color: t.muted, fontSize: 14 }}>{(code && LEVEL_SV[code]) || lvl?.name}</Text>
+                <Text style={{ color: t.muted, fontSize: 14 }}>{u((code && LEVEL_SV[code]) || lvl?.name || '')}</Text>
                 <View style={{ flexDirection: 'row', gap: 3 }}>
                   {l.levels.map((x, i) => (
                     <View key={x.code} style={{ flex: 1, height: 5, borderRadius: 3, backgroundColor: i <= idx ? t.accent : t.chip }} />

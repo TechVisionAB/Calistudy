@@ -12,7 +12,7 @@ import { StoreProvider, useStore } from '@/lib/store';
 function ReminderSync() {
   const { state, ready } = useStore();
   const today = isoDate(new Date());
-  const key = JSON.stringify([state.startMonday, state.reminders, (state.micro[today] ?? []).length > 0, state.workouts.length, state.tests.length]);
+  const key = JSON.stringify([state.startMonday, state.track, state.reminders, (state.micro[today] ?? []).length > 0, state.workouts.length, state.tests.length]);
   useEffect(() => {
     if (ready) reschedule(state).catch(() => {});
     // Only re-plan when something that affects the notifications changes.
@@ -47,6 +47,7 @@ export default function RootLayout() {
         <Stack.Screen name="demos" options={{ title: 'Exercise demos' }} />
         <Stack.Screen name="progress" options={{ title: 'Progress' }} />
         <Stack.Screen name="reminders" options={{ title: 'Reminders' }} />
+        <Stack.Screen name="settings" options={{ title: 'Settings' }} />
         <Stack.Screen name="report" options={{ title: 'Test report' }} />
         <Stack.Screen name="welcome" options={{ headerShown: false, gestureEnabled: false }} />
         <Stack.Screen name="coach" options={{ title: 'AI coach' }} />

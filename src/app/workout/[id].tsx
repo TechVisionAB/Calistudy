@@ -15,6 +15,8 @@ import { EFFORTS, effortText, LEVEL_SV, SESSION_SV, tempoText, WARMUP_SV } from 
 import { isHoldUnit, planSession, PlannedExercise, range, unitLabel } from '@/lib/plan';
 import { Suggestion, suggest } from '@/lib/progression';
 import { EntryLog, newId, SetLog, useStore, WorkoutLog } from '@/lib/store';
+import { useUnits } from '@/lib/units';
+import { EarnedMilestone, FirstTime, formatDelta, formatValue, newMilestones, PersonalRecord, personalRecords } from '@/lib/wins';
 
 type Step = { ex: number; set: number };
 
@@ -44,6 +46,7 @@ export default function WorkoutScreen() {
   const params = useLocalSearchParams<{ id: SessionId; week?: string; flags?: string }>();
   const { state, update, setLevel } = useStore();
   const t = useTheme();
+  const u = useUnits();
   const session = SESSIONS[params.id];
   const week = Number(params.week ?? 1);
   const flags = Number(params.flags ?? 0);
@@ -77,7 +80,13 @@ export default function WorkoutScreen() {
   const [effort, setEffort] = useState<number | null>(null);
   const [painOpen, setPainOpen] = useState(false);
   const [notes, setNotes] = useState('');
-  const [result, setResult] = useState<{ log: WorkoutLog; suggestions: Suggestion[] } | null>(null);
+  const [result, setResult] = useState<{
+    log: WorkoutLog;
+    suggestions: Suggestion[];
+    records: PersonalRecord[];
+    firsts: FirstTime[];
+    badges: EarnedMilestone[];
+  } | null>(null);
   const [applied, setApplied] = useState<Record<number, boolean>>({});
   const [startedAt] = useState(() => Date.now());
 
@@ -177,17 +186,21 @@ export default function WorkoutScreen() {
       date: new Date().toISOString(),
       week,
       session: session.id,
-      deload: week === 6 || week === 12,
+      deload: !session.id.startsWith('starter') && (week === 6 || week === 12),
       flags,
       entries: latest.filter((e) => e.sets.some((s) => s.value !== null)),
       notes: notes.trim() || undefined,
     };
     const suggestions = suggest(log, state.workouts);
+    const { records, firsts } = personalRecords(log, state.workouts);
+    const badges = newMilestones(state.workouts, [log, ...state.workouts]);
     update((s) => ({ ...s, workouts: [log, ...s.workouts] }));
     setRestEnd(null);
     setHoldStart(null);
     haptic('success');
-    setResult({ log, suggestions });
+    // A second, lighter buzz when there's something extra to celebrate.
+    if (records.length || badges.length) setTimeout(() => haptic('tap'), 450);
+    setResult({ log, suggestions, records, firsts, badges });
   }
 
   // ---------- Summary ----------
@@ -195,15 +208,50 @@ export default function WorkoutScreen() {
     const sets = result.log.entries.reduce((n, e) => n + e.sets.filter((s) => s.value !== null).length, 0);
     const mins = Math.max(1, Math.round((Date.now() - startedAt) / 60000));
     const ups = result.suggestions.filter((s) => s.kind === 'up' || s.kind === 'test');
+    const { records, badges } = result;
+    const newLevels = result.firsts.filter((f) => f.newLevel);
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: t.bg }} edges={['left', 'right', 'bottom']}>
         <Stack.Screen options={{ title: 'Done!', headerBackVisible: false, gestureEnabled: false, headerRight: () => null }} />
         <ScrollView contentContainerStyle={styles.screen}>
-          <Text style={{ fontSize: 64, textAlign: 'center' }}>{ups.length ? '🎉' : '💪'}</Text>
-          <H1>{ups.length ? 'Time for the next level!' : 'Great job!'}</H1>
+          <Text style={{ fontSize: 64, textAlign: 'center' }}>{ups.length || badges.length ? '🎉' : records.length ? '🏆' : '💪'}</Text>
+          <H1>{ups.length ? 'Time for the next level!' : records.length ? 'New personal best!' : 'Great job!'}</H1>
           <P muted>
-            {SESSION_SV[session.id].title} · {sets} set · {mins} min
+            {SESSION_SV[session.id].title} · {sets} {sets === 1 ? 'set' : 'sets'} · {mins} min
           </P>
+          {badges.map((m) => (
+            <Card key={m.id} style={{ borderColor: t.accent, borderWidth: 2, backgroundColor: t.accentSoft }}>
+              <Row style={{ flexWrap: 'nowrap', gap: 12 }}>
+                <Text style={{ fontSize: 40 }}>{m.emoji}</Text>
+                <View style={{ flex: 1, gap: 2 }}>
+                  <Label>Badge unlocked</Label>
+                  <Text style={{ color: t.text, fontSize: 17, fontWeight: '800' }}>{m.title}</Text>
+                  <Text style={{ color: t.muted, fontSize: 14 }}>{m.desc}</Text>
+                </View>
+              </Row>
+            </Card>
+          ))}
+          {(records.length > 0 || newLevels.length > 0) && (
+            <Card style={{ borderColor: t.good, borderWidth: 1 }}>
+              <Label>🏆 New records</Label>
+              {records.map((r, i) => (
+                <Row key={`r${i}`} style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+                  <Text style={{ color: t.text, fontSize: 15, flex: 1 }} numberOfLines={2}>
+                    {u(r.name)}: <Text style={{ fontWeight: '700' }}>{formatValue(r.value, r.unit)}</Text>
+                  </Text>
+                  <Chip text={formatDelta(r.delta, r.unit)} tone="good" />
+                </Row>
+              ))}
+              {newLevels.map((f, i) => (
+                <Row key={`f${i}`} style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+                  <Text style={{ color: t.text, fontSize: 15, flex: 1 }} numberOfLines={2}>
+                    {u(f.name)}: <Text style={{ fontWeight: '700' }}>{formatValue(f.value, f.unit)}</Text>
+                  </Text>
+                  <Chip text="First time!" tone="accent" />
+                </Row>
+              ))}
+            </Card>
+          )}
           {result.suggestions.length === 0 && (
             <Card>
               <P>Same levels next time – try to get 1 more rep on at least one set.</P>
@@ -217,8 +265,8 @@ export default function WorkoutScreen() {
                   <Chip text={s.kind === 'up' ? 'New level' : s.kind === 'down' ? 'Easier variation' : s.kind === 'test' ? 'Try the next one' : 'Take it easy'} tone={good ? 'good' : 'warn'} />
                 </Row>
                 <Text style={{ color: t.text, fontSize: 17, fontWeight: '700' }}>
-                  {LEVEL_SV[s.from] ?? s.from}
-                  {s.to ? ` → ${LEVEL_SV[s.to] ?? s.to}` : ''}
+                  {u(LEVEL_SV[s.from] ?? s.from)}
+                  {s.to ? ` → ${u(LEVEL_SV[s.to] ?? s.to)}` : ''}
                 </Text>
                 <P muted>{s.reason}</P>
                 {s.to && (
@@ -314,7 +362,7 @@ export default function WorkoutScreen() {
             {Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, '0')}
           </Text>
           <P muted style={{ textAlign: 'center' }}>
-            Next: {upcoming.title} · set {nextStep.set + 1} of {upcoming.plannedSets}
+            Next: {u(upcoming.title)} · set {nextStep.set + 1} of {upcoming.plannedSets}
           </P>
           <Row style={{ justifyContent: 'center' }}>
             <Button title="+15 s" variant="secondary" onPress={() => setRestEnd((x) => Math.max(x ?? 0, Date.now()) + 15000)} />
@@ -346,10 +394,10 @@ export default function WorkoutScreen() {
         <Label>
           Exercise {exNo} of {plan.length} · Set {step.set + 1} of {cur.plannedSets}
         </Label>
-        <Text style={{ color: t.text, fontSize: 28, fontWeight: '800', letterSpacing: -0.5 }}>{cur.title}</Text>
+        <Text style={{ color: t.text, fontSize: 28, fontWeight: '800', letterSpacing: -0.5 }}>{u(cur.title)}</Text>
         <Row>
           {cur.swapped && <Chip text="Swapped – missing equipment" tone="accent" />}
-          {partner && <Chip text={`Alternate with: ${partner.title}`} />}
+          {partner && <Chip text={`Alternate with: ${u(partner.title)}`} />}
         </Row>
 
         {media.anim ? <Figure anim={media.anim} size={0.9} /> : null}
@@ -362,19 +410,19 @@ export default function WorkoutScreen() {
               {range(cur)}
             </Text>
             <Explain
-              text={`${cur.name}${cur.level ? ` (${cur.level})` : ''}. RIR ${cur.plannedRir}, tempo ${cur.tempo}, rest ${cur.rest}. ${cur.cue}`}
-              context={`In the middle of the workout ${SESSION_SV[session.id].title}: exercise ${cur.title}, set ${step.set + 1} of ${cur.plannedSets}, target ${range(cur)}`}
+              text={u(`${cur.name}${cur.level ? ` (${cur.level})` : ''}. RIR ${cur.plannedRir}, tempo ${cur.tempo}, rest ${cur.rest}. ${cur.cue}`)}
+              context={`In the middle of the workout ${SESSION_SV[session.id].title}: exercise ${u(cur.title)}, set ${step.set + 1} of ${cur.plannedSets}, target ${range(cur)}`}
             />
           </Row>
           <Text style={{ color: t.muted, fontSize: 15 }}>
             {effortText(cur.plannedRir)}
             {tempoText(cur.tempo) && !hold ? ` · ${tempoText(cur.tempo)}` : ''}
           </Text>
-          <Text style={{ color: t.text, fontSize: 15, fontStyle: 'italic' }}>“{cur.cueSv}”</Text>
+          <Text style={{ color: t.text, fontSize: 15, fontStyle: 'italic' }}>“{u(cur.cueSv)}”</Text>
           {anatomyFor(cur.mediaKey) && (
             <Text style={{ color: t.muted, fontSize: 14, lineHeight: 20 }}>
-              💪 {anatomyFor(cur.mediaKey)!.feel}
-              {'\n'}⛔ {anatomyFor(cur.mediaKey)!.notFeel}
+              💪 {u(anatomyFor(cur.mediaKey)!.feel)}
+              {'\n'}⛔ {u(anatomyFor(cur.mediaKey)!.notFeel)}
             </Text>
           )}
         </Card>

@@ -1,26 +1,11 @@
 import { router } from 'expo-router';
-import { Alert, Platform, Text } from 'react-native';
+import { Text } from 'react-native';
 
-import { Button, Card, P, Screen, useTheme } from '@/components/ui';
+import { Card, P, Screen, useTheme } from '@/components/ui';
 import { GUIDE } from '@/data/guide';
-import { useStore } from '@/lib/store';
 
 export default function Guide() {
   const t = useTheme();
-  const { reset } = useStore();
-
-  const confirmReset = () => {
-    const msg = 'All logs, test results and levels will be deleted.';
-    if (Platform.OS === 'web') {
-      if (globalThis.confirm?.(`Reset the app? ${msg}`)) reset();
-    } else {
-      Alert.alert('Reset the app?', msg, [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Reset', style: 'destructive', onPress: reset },
-      ]);
-    }
-  };
-
   return (
     <Screen>
       <Card onPress={() => router.push('/demos')} style={{ borderColor: t.accent, borderWidth: 2 }}>
@@ -45,7 +30,10 @@ export default function Guide() {
         Based on “The Complete Calisthenics System for an Intermediate Home Athlete (2026 Edition)”. Much of the content is based on indirect evidence and
         coaching consensus. With pain above 5/10, sharp pain or swelling — see a physiotherapist or doctor.
       </P>
-      <Button title="Reset all data" variant="danger" onPress={confirmReset} />
+      <Card onPress={() => router.push('/settings')}>
+        <Text style={{ color: t.text, fontWeight: '700', fontSize: 16 }}>⚙️ Settings</Text>
+        <Text style={{ color: t.muted, fontSize: 14 }}>Training plan, units, currency, profile and app reset.</Text>
+      </Card>
     </Screen>
   );
 }

@@ -3,7 +3,8 @@ import { Platform } from 'react-native';
 
 import { isoDate, programWeek, weekdayIndex } from '@/data/program';
 import { SESSION_SV, TEST_SV } from '@/data/sv';
-import { nextUp } from './next';
+import { nextUp, upcoming } from './next';
+import { isStarter, starterWeek } from './starter';
 import { State } from './store';
 
 const CHANNEL = 'reminders';
@@ -49,6 +50,15 @@ function morningText(state: State, dayOffset: number): string | null {
   return 'Time to train? Open the app to see today\'s workout.';
 }
 
+/** "Tomorrow: Full body B – split squat, pike push-up …" for tonight's reminder. */
+function tomorrowText(state: State): string | null {
+  const up = upcoming(state);
+  if (!up || up.dayOffset !== 1) return null;
+  const n = up.next;
+  if (n.kind === 'test') return `Tomorrow: ${TEST_SV[n.battery]}.`;
+  return `Tomorrow: ${SESSION_SV[n.session].title} – ${SESSION_SV[n.session].short.toLowerCase()}.`;
+}
+
 /** Micro-practice is part of the Upper A/B sessions (Mon/Thu) and optional on Sunday. */
 const microDay = (weekday: number) => weekday !== 0 && weekday !== 3 && weekday !== 6;
 
@@ -67,7 +77,8 @@ export async function reschedule(state: State): Promise<void> {
   const now = new Date();
   for (let i = 0; i < DAYS_AHEAD; i++) {
     const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
-    const week = programWeek(state.startMonday, day);
+    const starter = isStarter(state);
+    const week = starter ? starterWeek(state, day) : programWeek(state.startMonday, day);
     const wd = weekdayIndex(day);
 
     if (morning.enabled) {
@@ -75,13 +86,26 @@ export async function reschedule(state: State): Promise<void> {
       const body = morningText(state, i);
       if (body && at > now) {
         await Notifications.scheduleNotificationAsync({
-          content: { title: `Calistudy · week ${week}`, body },
+          content: { title: starter ? `Calistudy · Starter week ${week}` : `Calistudy · week ${week}`, body },
           trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: at, channelId: CHANNEL },
         });
       }
     }
 
-    if (evening.enabled && microDay(wd)) {
+    // Tonight: a peek at tomorrow's workout (only known for certain for today).
+    const tomorrow = i === 0 && evening.enabled ? tomorrowText(state) : null;
+    if (tomorrow) {
+      const at = new Date(day.getFullYear(), day.getMonth(), day.getDate(), evening.hour, evening.minute);
+      if (at > now) {
+        await Notifications.scheduleNotificationAsync({
+          content: { title: 'Up next', body: tomorrow },
+          trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: at, channelId: CHANNEL },
+        });
+        continue;
+      }
+    }
+
+    if (evening.enabled && !starter && microDay(wd)) {
       const at = new Date(day.getFullYear(), day.getMonth(), day.getDate(), evening.hour, evening.minute);
       const done = (state.micro[isoDate(day)] ?? []).length > 0;
       if (!done && at > now) {

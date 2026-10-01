@@ -4,14 +4,17 @@ import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { explain } from '@/data/glossary';
+import { useUnits } from '@/lib/units';
 import { Button, useTheme } from './ui';
 
 /**
  * A small "?" that explains the jargon and level codes in `text`, with a shortcut
  * to ask the AI coach about it. `context` tells the coach what the user is looking at.
  */
-export function Explain({ text, context, size = 22 }: { text: string; context?: string; size?: number }) {
+export function Explain({ text: raw, context, size = 22 }: { text: string; context?: string; size?: number }) {
   const t = useTheme();
+  const u = useUnits();
+  const text = u(raw);
   const insets = useSafeAreaInsets();
   const [open, setOpen] = useState(false);
   const found = open ? explain(text) : [];

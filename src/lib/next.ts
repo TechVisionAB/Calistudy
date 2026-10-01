@@ -2,7 +2,8 @@
 // fixed weekdays. Missing Monday doesn't lose Upper A; it just becomes the next session.
 import { isoDate, mondayOf, programWeek, TestBattery } from '@/data/program';
 import { SessionId } from '@/data/sessions';
-import { State } from './store';
+import { isStarter, isStarterSession, STARTER_GAP_H, STARTER_PER_WEEK, starterWeek } from './starter';
+import { newId, State } from './store';
 
 export const HARD: SessionId[] = ['upperA', 'lowerA', 'upperB', 'lowerB'];
 const UPPER: SessionId[] = ['upperA', 'upperB'];
@@ -22,13 +23,37 @@ export type WeekProgress = { week: number; done: SessionId[]; goal: number; delo
 const localDay = (iso: string) => isoDate(new Date(iso));
 
 export function weekProgress(state: State, now = new Date()): WeekProgress {
+  if (isStarter(state)) {
+    const from = mondayOf(now);
+    const done = state.workouts
+      .filter((w) => localDay(w.date) >= from && isStarterSession(w.session))
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .map((w) => w.session);
+    return { week: starterWeek(state, now), done, goal: STARTER_PER_WEEK, deload: false };
+  }
   const week = state.startMonday ? programWeek(state.startMonday, now) : 0;
   const from = mondayOf(now);
   const done = state.workouts.filter((w) => localDay(w.date) >= from && HARD.includes(w.session)).map((w) => w.session);
   return { week, done, goal: week === 0 ? 0 : week === 12 ? 2 : 4, deload: week === 6 || week === 12 };
 }
 
+/** Starter mode: alternate Full body A/B, 3 a week, ~2 days apart. */
+function starterNext(state: State, now: Date): Next {
+  const today = isoDate(now);
+  const mine = state.workouts.filter((w) => isStarterSession(w.session));
+  const last = mine.reduce<(typeof mine)[number] | null>((m, w) => (!m || w.date > m.date ? w : m), null);
+  const next: SessionId = last?.session === 'starterA' ? 'starterB' : 'starterA';
+  const thisWeek = mine.filter((w) => localDay(w.date) >= mondayOf(now)).length;
+  if (thisWeek >= STARTER_PER_WEEK) return { kind: 'rest', note: `All ${STARTER_PER_WEEK} workouts done this week 🎉 Rest, walk, enjoy it.`, then: next };
+  if (last && localDay(last.date) === today) return { kind: 'rest', note: 'Nice work today! Muscles get stronger while you rest.', then: next };
+  if (last && (now.getTime() - new Date(last.date).getTime()) / 3600000 < STARTER_GAP_H) {
+    return { kind: 'rest', note: 'Recovery day. A walk or some light stretching is perfect.', then: next };
+  }
+  return { kind: 'session', session: next, deload: false };
+}
+
 export function nextUp(state: State, now = new Date()): Next {
+  if (isStarter(state)) return starterNext(state, now);
   if (!state.startMonday) return { kind: 'notStarted' };
   const week = programWeek(state.startMonday, now);
   const today = isoDate(now);
@@ -80,3 +105,32 @@ export function nextUp(state: State, now = new Date()): Next {
   }
   return { kind: 'rest', note: 'Your muscles from the last workout are recovering. Micro-practice today, next workout tomorrow.', then: pending[0] };
 }
+
+export type Upcoming = { date: Date; dayOffset: number; next: Extract<Next, { kind: 'session' } | { kind: 'test' }> };
+
+/**
+ * The next workout or test after today: pretends today's planned item gets done, then
+ * walks forward day by day (up to 8 days) until something is due.
+ */
+export function upcoming(state: State, now = new Date()): Upcoming | null {
+  const today = nextUp(state, now);
+  let sim = state;
+  if (today.kind === 'session') {
+    sim = {
+      ...state,
+      workouts: [...state.workouts, { id: newId(), date: now.toISOString(), week: 0, session: today.session, deload: today.deload, flags: 0, entries: [] }],
+    };
+  } else if (today.kind === 'test') {
+    sim = { ...state, tests: [...state.tests, { id: newId(), date: now.toISOString(), battery: today.battery, values: {} }] };
+  } else if (today.kind === 'startWeek1' || today.kind === 'notStarted') {
+    return null;
+  }
+  for (let d = 1; d <= 8; d++) {
+    // Midday, so "≥44 h since yesterday evening" style gaps resolve the way a real day would.
+    const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 12);
+    const n = nextUp(sim, day);
+    if (n.kind === 'session' || n.kind === 'test') return { date: day, dayOffset: d, next: n };
+  }
+  return null;
+}
+

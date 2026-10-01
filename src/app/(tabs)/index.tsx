@@ -3,6 +3,9 @@ import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { HowToToggle } from '@/components/HowTo';
+import { GraduationCard, UnlockTeaser } from '@/components/StarterCards';
+import { TomorrowCard } from '@/components/TomorrowCard';
+import { WinsCard } from '@/components/WinsCard';
 import { Bullets, Button, Card, Chip, H2, Label, P, Row, Screen, useTheme } from '@/components/ui';
 import { WeekRing } from '@/components/WeekRing';
 import { MICRO_PRACTICE, READINESS } from '@/data/guide';
@@ -12,6 +15,7 @@ import { SESSION_SV, TEST_SV } from '@/data/sv';
 import { weekStreak } from '@/lib/motivation';
 import { HARD, nextUp, weekProgress } from '@/lib/next';
 import { plateaus } from '@/lib/progression';
+import { graduation, isStarter, STARTER, unlocksAt } from '@/lib/starter';
 import { useStore } from '@/lib/store';
 
 export default function Today() {
@@ -27,7 +31,25 @@ export default function Today() {
   const next = nextUp(state);
   const progress = weekProgress(state);
   const streak = weekStreak(state);
+  const starter = isStarter(state);
+  // In Starter mode `week` is the starter week (1, 2, …); otherwise the program week.
   const week = progress.week;
+  const newThisWeek = starter ? unlocksAt(week) : [];
+  const grad = starter ? graduation(state) : null;
+  // Starter ring: what's done this week, then the alternation continues (A, B, A …).
+  const ringOrder: SessionId[] = starter
+    ? (() => {
+        const order = [...progress.done];
+        let nextId: SessionId = next.kind === 'session' ? next.session : next.kind === 'rest' && next.then && STARTER.includes(next.then as SessionId) ? (next.then as SessionId) : 'starterA';
+        while (order.length < progress.goal) {
+          order.push(nextId);
+          nextId = nextId === 'starterA' ? 'starterB' : 'starterA';
+        }
+        return order;
+      })()
+    : week === 12
+      ? ['upperA', 'lowerA']
+      : HARD;
   const today = isoDate(new Date());
   const wd = weekdayIndex();
   const microDone = state.micro[today] ?? [];
@@ -42,6 +64,7 @@ export default function Today() {
       return { ...s, micro: { ...s.micro, [today]: cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id] } };
     });
   const start = (id: SessionId) => {
+    // Starter workouts are planned by starter week (unlocks); program workouts by program week.
     const hasSets = SESSIONS[id].exercises.length > 0;
     router.push({ pathname: hasSets ? '/workout/[id]' : '/session/[id]', params: { id, week: String(week), flags: String(flagCount) } });
   };
@@ -59,6 +82,9 @@ export default function Today() {
               {sv.short} · {SESSIONS[next.session].duration}
             </P>
             {next.deload && <Chip text="Easy week: half the volume" tone="accent" />}
+            {newThisWeek.some((n) => n.session === next.session) && (
+              <Chip text={`🔓 New this week: ${newThisWeek.filter((n) => n.session === next.session).map((n) => n.name).join(', ')}`} tone="good" />
+            )}
             {next.note && <P>{next.note}</P>}
             {flagCount >= 3 && <P style={{ color: t.warn }}>{READINESS.actions[3]}</P>}
             <Button title="Start workout" onPress={() => start(next.session)} />
@@ -110,13 +136,8 @@ export default function Today() {
         return (
           <Card>
             <Label>Today</Label>
-            <Text style={{ color: t.text, fontSize: 26, fontWeight: '800' }}>Rest & micro-practice</Text>
+            <Text style={{ color: t.text, fontSize: 26, fontWeight: '800' }}>{starter ? 'Rest day' : 'Rest & micro-practice'}</Text>
             <P>{next.note}</P>
-            {next.then && (
-              <P muted>
-                Next: {SESSION_SV[next.then]?.title ?? TEST_SV[next.then]}
-              </P>
-            )}
           </Card>
         );
       default:
@@ -126,20 +147,22 @@ export default function Today() {
 
   return (
     <Screen>
-      <Label>
-        Week {week} · {blockOf(week)}
-      </Label>
+      <Label>{starter ? `Starter · week ${week}` : `Week ${week} · ${blockOf(week)}`}</Label>
 
       {hero()}
 
-      {week > 0 && (
+      <TomorrowCard />
+
+      {grad?.ready && <GraduationCard />}
+
+      {(starter || week > 0) && (
         <Pressable onPress={() => setPickOther((x) => !x)} hitSlop={6}>
           <Text style={{ color: t.muted, fontWeight: '600', textAlign: 'center' }}>{pickOther ? 'Close' : 'Choose another workout'}</Text>
         </Pressable>
       )}
       {pickOther && (
         <Card>
-          {[...HARD, 'skill' as SessionId].map((id) => (
+          {(starter ? STARTER : [...HARD, 'skill' as SessionId]).map((id) => (
             <Pressable key={id} onPress={() => preview(id)} style={{ paddingVertical: 6 }}>
               <Text style={{ color: t.text, fontSize: 16, fontWeight: '600' }}>
                 {progress.done.includes(id) ? '✓ ' : ''}
@@ -150,38 +173,45 @@ export default function Today() {
         </Card>
       )}
 
-      {week > 0 && (
+      {(starter || week > 0) && (
         <Card>
           <H2>This week</H2>
-          <WeekRing order={week === 12 ? ['upperA', 'lowerA'] : HARD} done={progress.done} streak={streak} />
+          <WeekRing order={ringOrder} done={progress.done} streak={streak} />
+          {starter && <UnlockTeaser week={week} />}
         </Card>
       )}
 
-      <Card>
-        <Row style={{ justifyContent: 'space-between' }}>
-          <H2>Micro-practice</H2>
-          <Chip text={`${microDone.length}/${microBlocks.length}`} tone={microDone.length >= microBlocks.length ? 'good' : 'neutral'} />
-        </Row>
-        <P muted style={{ fontSize: 14 }}>
-          {wd === 6 ? 'Sunday: optional, 5 min is enough.' : '10 min, should feel easy. Tick off what you did.'}
-        </P>
-        {microBlocks.map((b) => {
-          const on = microDone.includes(b.id);
-          return (
-            <Pressable key={b.id} onPress={() => toggleMicro(b.id)} style={{ flexDirection: 'row', gap: 10 }}>
-              <View style={{ width: 24, height: 24, marginTop: 1, borderRadius: 12, borderWidth: 2, borderColor: on ? t.good : t.border, backgroundColor: on ? t.good : 'transparent', alignItems: 'center', justifyContent: 'center' }}>
-                {on && <Text style={{ color: '#fff', fontSize: 13, fontWeight: '800' }}>✓</Text>}
-              </View>
-              <View style={{ flex: 1, gap: 2 }}>
-                <Text style={{ color: t.text, fontWeight: '700', fontSize: 15 }}>
-                  {b.title} <Text style={{ color: t.muted, fontWeight: '400' }}>· {b.duration}</Text>
-                </Text>
-                <HowToToggle mediaKey={b.id === 'hs' ? state.levels.HS : b.demo} label="How to do it" />
-              </View>
-            </Pressable>
-          );
-        })}
-      </Card>
+      <WinsCard />
+
+      {grad && !grad.ready && <GraduationCard compact />}
+
+      {!starter && (
+        <Card>
+          <Row style={{ justifyContent: 'space-between' }}>
+            <H2>Micro-practice</H2>
+            <Chip text={`${microDone.length}/${microBlocks.length}`} tone={microDone.length >= microBlocks.length ? 'good' : 'neutral'} />
+          </Row>
+          <P muted style={{ fontSize: 14 }}>
+            {wd === 6 ? 'Sunday: optional, 5 min is enough.' : '10 min, should feel easy. Tick off what you did.'}
+          </P>
+          {microBlocks.map((b) => {
+            const on = microDone.includes(b.id);
+            return (
+              <Pressable key={b.id} onPress={() => toggleMicro(b.id)} style={{ flexDirection: 'row', gap: 10 }}>
+                <View style={{ width: 24, height: 24, marginTop: 1, borderRadius: 12, borderWidth: 2, borderColor: on ? t.good : t.border, backgroundColor: on ? t.good : 'transparent', alignItems: 'center', justifyContent: 'center' }}>
+                  {on && <Text style={{ color: '#fff', fontSize: 13, fontWeight: '800' }}>✓</Text>}
+                </View>
+                <View style={{ flex: 1, gap: 2 }}>
+                  <Text style={{ color: t.text, fontWeight: '700', fontSize: 15 }}>
+                    {b.title} <Text style={{ color: t.muted, fontWeight: '400' }}>· {b.duration}</Text>
+                  </Text>
+                  <HowToToggle mediaKey={b.id === 'hs' ? state.levels.HS : b.demo} label="How to do it" />
+                </View>
+              </Pressable>
+            );
+          })}
+        </Card>
+      )}
 
       {!state.reminders.morning.enabled && !state.reminders.evening.enabled && (
         <Card onPress={() => router.push('/reminders')}>

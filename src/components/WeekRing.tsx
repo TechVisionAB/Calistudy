@@ -16,7 +16,15 @@ export function WeekRing({ order, done, streak }: { order: SessionId[]; done: Se
   const n = order.length;
   const gap = n > 1 ? 6 : 0;
   const seg = C / n - gap;
-  const count = order.filter((s) => done.includes(s)).length;
+  // Match done sessions one-to-one, so a plan with repeats (Full body A, B, A) fills correctly.
+  const left = [...done];
+  const filled = order.map((s) => {
+    const i = left.indexOf(s);
+    if (i === -1) return false;
+    left.splice(i, 1);
+    return true;
+  });
+  const count = filled.filter(Boolean).length;
   const complete = count >= n;
 
   return (
@@ -25,11 +33,11 @@ export function WeekRing({ order, done, streak }: { order: SessionId[]; done: Se
         <Svg width={SIZE} height={SIZE} style={{ transform: [{ rotate: '-90deg' }] }}>
           {order.map((s, i) => (
             <Circle
-              key={s}
+              key={i}
               cx={SIZE / 2}
               cy={SIZE / 2}
               r={R}
-              stroke={done.includes(s) ? (complete ? t.good : t.series) : t.grid}
+              stroke={filled[i] ? (complete ? t.good : t.series) : t.grid}
               strokeWidth={STROKE}
               strokeLinecap="round"
               fill="none"
@@ -46,9 +54,9 @@ export function WeekRing({ order, done, streak }: { order: SessionId[]; done: Se
         </View>
       </View>
       <View style={{ flex: 1, gap: 4 }}>
-        {order.map((s) => (
-          <Text key={s} style={{ color: done.includes(s) ? t.text : t.muted, fontSize: 14, fontWeight: done.includes(s) ? '700' : '400' }}>
-            {done.includes(s) ? '✓' : '○'} {SESSION_SV[s].title}
+        {order.map((s, i) => (
+          <Text key={i} style={{ color: filled[i] ? t.text : t.muted, fontSize: 14, fontWeight: filled[i] ? '700' : '400' }}>
+            {filled[i] ? '✓' : '○'} {SESSION_SV[s].title}
           </Text>
         ))}
         {streak > 0 && (

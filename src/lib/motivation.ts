@@ -1,13 +1,14 @@
 import { mondayOf, programWeek, shiftDate } from '@/data/program';
 import { HARD } from './next';
+import { isStarterSession } from './starter';
 import { State } from './store';
 
-/** A week "counts" with 3+ hard sessions (2+ in deload weeks 6 and 12). */
+/** A week "counts" with 3+ hard or starter sessions (2+ in deload weeks 6 and 12). */
 function weekCounts(state: State, monday: string): boolean {
   const end = shiftDate(monday, 7);
   const n = state.workouts.filter((w) => {
     const d = mondayOf(new Date(w.date));
-    return d >= monday && d < end && HARD.includes(w.session);
+    return d >= monday && d < end && (HARD.includes(w.session) || isStarterSession(w.session));
   }).length;
   const week = state.startMonday ? programWeek(state.startMonday, new Date(monday + 'T12:00:00')) : 1;
   return n >= (week === 6 || week === 12 ? 2 : 3);

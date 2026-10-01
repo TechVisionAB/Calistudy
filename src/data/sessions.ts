@@ -24,9 +24,11 @@ export type Exercise = {
   role: Role;
   /** Demo media key (videos.json / animations) for exercises without a ladder. */
   demo?: string;
+  /** Starter mode: hidden until this starter week (a "new exercise unlocked" moment). */
+  unlockWeek?: number;
 };
 
-export type SessionId = 'upperA' | 'lowerA' | 'recovery' | 'upperB' | 'lowerB' | 'skill' | 'rest';
+export type SessionId = 'upperA' | 'lowerA' | 'recovery' | 'upperB' | 'lowerB' | 'skill' | 'rest' | 'starterA' | 'starterB';
 
 export type Session = {
   id: SessionId;
@@ -42,7 +44,7 @@ export type Session = {
   block2?: string[];
 };
 
-export type WarmupId = 'push' | 'pull' | 'legs' | 'handstand';
+export type WarmupId = 'push' | 'pull' | 'legs' | 'handstand' | 'starter';
 
 // The guide refers to named warm-ups in "Section 15" without listing them;
 // these are built from the Day 1 warm-up (Section 19) plus the prehab note in Section 15.
@@ -83,6 +85,18 @@ export const WARMUPS: Record<WarmupId, { title: string; steps: string[]; demos: 
       'Glute bridges ×10',
       'Split squats ×5/leg, easy',
       'Pogo hops ×10, low and easy',
+    ],
+  },
+  starter: {
+    title: 'Full body (≈5 min)',
+    demos: [{ key: 'wrist', label: 'Wrist warm-up' }, { key: 'SL1', label: 'Squat' }, { key: 'H1', label: 'Glute bridge' }],
+    steps: [
+      '1 min jumping jacks or marching on the spot',
+      'Arm circles ×10 each way',
+      'Wrist circles and gentle palm presses, 30 s',
+      'Bodyweight squats ×10, slow',
+      'Glute bridges ×10',
+      '5 easy push-ups (knees or hands on a bench is fine)',
     ],
   },
   handstand: {
@@ -225,6 +239,39 @@ export const SESSIONS: Record<SessionId, Session> = {
       'Mobility 10 min for failed tests only.',
     ],
     block2: ['IF any Monday upper performance drops 2 weeks in a row, revert to Zone 2 only.'],
+  },
+  // Starter mode (not in the guide): a 3×/week full-body plan for complete beginners,
+  // built from the bottom rungs of the guide's ladders so progression rules and levels
+  // carry straight over into the full program.
+  starterA: {
+    id: 'starterA',
+    title: 'Full body A',
+    short: 'Squat, push-up, row, bridge, core',
+    duration: '≈30 min',
+    warmup: 'starter',
+    exercises: [
+      ex({ slot: 'A', name: 'Squat', ladder: 'SL', sets: 3, min: 8, max: 12, unit: 'reps', rest: '90 s', restSec: 90, rir: '2', tempo: '2-0-1-0', cue: 'Sit down between your heels; chest up', role: 'main' }),
+      ex({ slot: 'B', name: 'Push-up', ladder: 'HP', sets: 3, min: 6, max: 12, unit: 'reps', rest: '90 s', restSec: 90, rir: '2', tempo: '2-0-1-0', cue: 'Body in one straight line; chest to the bench/floor', role: 'main' }),
+      ex({ slot: 'C', name: 'Row', ladder: 'HPu', sets: 3, min: 8, max: 12, unit: 'reps', rest: '90 s', restSec: 90, rir: '2', tempo: '2-0-1-1', cue: 'Pull your chest up; squeeze shoulder blades 1 s', role: 'main' }),
+      ex({ slot: 'D', name: 'Glute bridge', ladder: 'H', sets: 3, min: 10, max: 15, unit: 'reps', rest: '60 s', restSec: 60, rir: '2', tempo: '2-1-1-0', cue: 'Push through your heels; squeeze glutes at the top', role: 'main' }),
+      ex({ slot: 'E', name: 'Hollow body hold', demo: 'CC1', sets: 3, min: 15, max: 30, unit: 's', rest: '45 s', restSec: 45, rir: 'Hold reserve 3 s', tempo: 'Static', cue: 'Lower back pressed into the floor; knees bent is fine', role: 'core' }),
+      ex({ slot: 'F', name: 'Handstand prep', ladder: 'HS', unlockWeek: 3, sets: 3, min: 15, max: 30, unit: 's', rest: '60 s', restSec: 60, rir: 'RPE ≤6', tempo: 'Static', cue: 'Push the floor away; shoulders over hands', role: 'skill' }),
+    ],
+  },
+  starterB: {
+    id: 'starterB',
+    title: 'Full body B',
+    short: 'Split squat, pike push-up, pull, dips, core',
+    duration: '≈30 min',
+    warmup: 'starter',
+    exercises: [
+      ex({ slot: 'A', name: 'Split squat', demo: 'SL2', sets: 3, min: 6, max: 10, unit: 'reps/leg', rest: '60 s between legs', restSec: 60, rir: '2', tempo: '2-0-1-0', cue: 'Long stance; back knee straight down to the floor', role: 'main' }),
+      ex({ slot: 'B', name: 'Pike push-up', ladder: 'VP', sets: 3, min: 5, max: 10, unit: 'reps', rest: '90 s', restSec: 90, rir: '2', tempo: '2-0-1-0', cue: 'Hips high; head goes forward of the hands', role: 'main' }),
+      ex({ slot: 'C', name: 'Pull-up progression', ladder: 'VPu', sets: 3, min: 3, max: 6, unit: 'reps', rest: '90 s', restSec: 90, rir: '2', tempo: '1-0-5-0', cue: 'Shoulders down first; control the way down', role: 'main' }),
+      ex({ slot: 'D', name: 'Dips', ladder: 'DP', sets: 3, min: 5, max: 10, unit: 'reps', rest: '90 s', restSec: 90, rir: '2', tempo: '3-0-1-0', cue: 'Shoulders down, chest forward', role: 'main' }),
+      ex({ slot: 'E', name: 'Side plank', demo: 'copenhagen', sets: 2, min: 15, max: 30, unit: 's/side', rest: '30 s', restSec: 30, rir: 'Hold reserve 3 s', tempo: 'Static', cue: 'Hips high, body straight; knees down is fine', role: 'core' }),
+      ex({ slot: 'F', name: 'Planche lean', demo: 'PL0a', unlockWeek: 3, sets: 3, min: 10, max: 15, unit: 's', rest: '60 s', restSec: 60, rir: 'Hold reserve 3 s', tempo: 'Static', cue: 'Straight arms; lean until the shoulders work', role: 'skill' }),
+    ],
   },
   rest: {
     id: 'rest',

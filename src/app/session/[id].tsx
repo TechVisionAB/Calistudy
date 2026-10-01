@@ -10,11 +10,13 @@ import { SessionId, SESSIONS, WARMUPS } from '@/data/sessions';
 import { effortText, SESSION_SV, WARMUP_SV } from '@/data/sv';
 import { planSession, range } from '@/lib/plan';
 import { newId, useStore } from '@/lib/store';
+import { useUnits } from '@/lib/units';
 
 export default function SessionScreen() {
   const params = useLocalSearchParams<{ id: SessionId; week?: string; flags?: string }>();
   const { state, update } = useStore();
   const t = useTheme();
+  const u = useUnits();
   const [advanced, setAdvanced] = useState(false);
   const session = SESSIONS[params.id];
   if (!session) return <Screen><P>Unknown workout.</P></Screen>;
@@ -41,20 +43,20 @@ export default function SessionScreen() {
       <View>
         <Label>Week {week} · {session.duration}</Label>
         <H1>{sv.title}</H1>
-        <P muted>{sv.short}</P>
+        <P muted>{u(sv.short)}</P>
       </View>
       <Row>
         {deload && <Chip text="Easy week: half the volume, no jumps" tone="accent" />}
         {flags > 0 && <Chip text={`Readiness: ${flags} ⚠︎`} tone={flags >= 3 ? 'warn' : 'accent'} />}
       </Row>
       {hasSets && flags < 3 && <Button title="Start workout" onPress={startWorkout} />}
-      {flags > 0 && <P>{READINESS.actions[Math.min(flags, 3)]}</P>}
-      {session.intro && <P muted>{session.intro}</P>}
+      {flags > 0 && <P>{u(READINESS.actions[Math.min(flags, 3)])}</P>}
+      {session.intro && <P muted>{u(session.intro)}</P>}
 
       {session.warmup && (
         <Card>
           <H2>{WARMUP_SV[session.warmup].title}</H2>
-          <Bullets items={WARMUP_SV[session.warmup].steps} />
+          <Bullets items={WARMUP_SV[session.warmup].steps.map(u)} />
           {WARMUPS[session.warmup].demos.map((d) => (
             <HowToToggle key={d.key} mediaKey={d.key} label={d.label} />
           ))}
@@ -64,7 +66,7 @@ export default function SessionScreen() {
       {plan.map((e) => (
         <Card key={e.slot} style={e.plannedSets === 0 ? { opacity: 0.5 } : undefined}>
           <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
-            <Text style={{ color: t.text, fontWeight: '700', fontSize: 17, flex: 1 }}>{e.title}</Text>
+            <Text style={{ color: t.text, fontWeight: '700', fontSize: 17, flex: 1 }}>{u(e.title)}</Text>
             <Explain text={`${e.name}${e.level ? ` (${e.level})` : ''}. RIR ${e.plannedRir}, tempo ${e.tempo}, rest ${e.rest}. ${e.cue}`} context={`Workout overview ${sv.title}: ${e.title}`} />
           </Row>
           {e.swapped && <Chip text="Swapped – missing equipment" tone="accent" />}
@@ -72,13 +74,13 @@ export default function SessionScreen() {
             <P muted>Skipped this week.</P>
           ) : (
             <Text style={{ color: t.text, fontSize: 15 }}>
-              {e.plannedSets} × {range(e)} <Text style={{ color: t.muted }}>· {effortText(e.plannedRir)}</Text>
+              {e.plannedSets} × {u(range(e))} <Text style={{ color: t.muted }}>· {effortText(e.plannedRir)}</Text>
             </Text>
           )}
-          <Text style={{ color: t.muted, fontSize: 14, fontStyle: 'italic' }}>“{e.cueSv}”</Text>
+          <Text style={{ color: t.muted, fontSize: 14, fontStyle: 'italic' }}>“{u(e.cueSv)}”</Text>
           {advanced && (
             <Text style={{ color: t.muted, fontSize: 13 }}>
-              {e.slot} · {e.name}
+              {e.slot} · {u(e.name)}
               {e.level ? ` · ${e.level}` : ''} · rest {e.rest} · RIR {e.plannedRir} · tempo {e.tempo}
             </Text>
           )}
@@ -92,7 +94,7 @@ export default function SessionScreen() {
 
       {session.steps && (
         <Card>
-          <Bullets items={session.steps} />
+          <Bullets items={session.steps.map(u)} />
         </Card>
       )}
 
@@ -100,7 +102,7 @@ export default function SessionScreen() {
         <Card style={week >= 7 && week <= 11 ? { borderColor: t.accent, borderWidth: 2 } : undefined}>
           <H2>Block 2 rules (weeks 7–11)</H2>
           {week >= 7 && week <= 11 ? <P muted>Applies this week — apply before you start.</P> : <P muted>Applies from week 7.</P>}
-          <Bullets items={session.block2} />
+          <Bullets items={session.block2.map(u)} />
         </Card>
       )}
 

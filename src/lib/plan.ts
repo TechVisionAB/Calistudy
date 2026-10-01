@@ -28,9 +28,13 @@ export function planSession(
   levels: Record<string, string>,
   equipment: Equip[] | null = null,
 ): PlannedExercise[] {
-  return SESSIONS[id].exercises.map((e) => {
-    let sets = setsForWeek(e, week);
-    let rir = rirForWeek(e, week);
+  // Starter sessions: `week` is the starter week. No block periodisation; exercises
+  // with unlockWeek appear once that week is reached.
+  const starter = id.startsWith('starter');
+  const list = SESSIONS[id].exercises.filter((e) => !starter || !e.unlockWeek || week >= e.unlockWeek);
+  return list.map((e) => {
+    let sets = starter ? e.sets : setsForWeek(e, week);
+    let rir = starter ? e.rir : rirForWeek(e, week);
     // Readiness: 2 flags → −1 set per exercise, RIR +1 (Section 14).
     if (flags === 2 && sets > 1) {
       sets -= 1;

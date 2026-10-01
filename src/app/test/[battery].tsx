@@ -14,6 +14,7 @@ import { TestBattery } from '@/data/program';
 import { LADDER_SV, LEVEL_SV, TEST_SV } from '@/data/sv';
 import { placements, TEST_A, TEST_B, Values } from '@/data/tests';
 import { newId, useStore } from '@/lib/store';
+import { useUnits } from '@/lib/units';
 
 type Guided = Exclude<TestBattery, 'C'>;
 
@@ -74,6 +75,7 @@ export default function TestScreen() {
   const { battery } = useLocalSearchParams<{ battery: TestBattery }>();
   const { state, update } = useStore();
   const t = useTheme();
+  const u = useUnits();
   const [started, setStarted] = useState(false);
   const [values, setValues] = useState<Values>({});
   // Each answer is a group: [testKey] or [testKey, alternativeKey] when the easier variant was used.
@@ -165,7 +167,7 @@ export default function TestScreen() {
             <H2>Your levels</H2>
             {places.map((p) => (
               <Text key={p.ladder} style={{ color: t.text, fontSize: 15 }}>
-                <Text style={{ fontWeight: '700' }}>{LADDER_SV[p.ladder]}:</Text> {LEVEL_SV[p.level] ?? p.level}
+                <Text style={{ fontWeight: '700' }}>{LADDER_SV[p.ladder]}:</Text> {u(LEVEL_SV[p.level] ?? p.level)}
               </Text>
             ))}
           </Card>
@@ -207,8 +209,8 @@ export default function TestScreen() {
         {places.map((p) => (
           <Card key={p.ladder}>
             <Text style={{ color: t.muted, fontSize: 13 }}>{LADDER_SV[p.ladder]}</Text>
-            <Text style={{ color: t.text, fontSize: 18, fontWeight: '700' }}>{LEVEL_SV[p.level] ?? p.level}</Text>
-            {state.levels[p.ladder] !== p.level && <Text style={{ color: t.muted, fontSize: 13 }}>Previously: {LEVEL_SV[state.levels[p.ladder]] ?? state.levels[p.ladder]}</Text>}
+            <Text style={{ color: t.text, fontSize: 18, fontWeight: '700' }}>{u(LEVEL_SV[p.level] ?? p.level)}</Text>
+            {state.levels[p.ladder] !== p.level && <Text style={{ color: t.muted, fontSize: 13 }}>Previously: {u(LEVEL_SV[state.levels[p.ladder]] ?? state.levels[p.ladder])}</Text>}
           </Card>
         ))}
         {battery === 'C' && (
@@ -235,11 +237,11 @@ export default function TestScreen() {
         <Label>
           {stepNo} of {MOBILITY.length}
         </Label>
-        <H1>{mobility.title}</H1>
-        <Text style={{ color: t.text, fontSize: 17, lineHeight: 25 }}>{mobility.how}</Text>
+        <H1>{u(mobility.title)}</H1>
+        <Text style={{ color: t.text, fontSize: 17, lineHeight: 25 }}>{u(mobility.how)}</Text>
         <Card>
           <Text style={{ color: t.muted, fontSize: 13 }}>Passes if</Text>
-          <Text style={{ color: t.text, fontSize: 16, fontWeight: '600' }}>{mobility.pass}</Text>
+          <Text style={{ color: t.text, fontSize: 16, fontWeight: '600' }}>{u(mobility.pass)}</Text>
         </Card>
         <Button title="✅ Can do" onPress={() => setAnswered((a) => [...a, [mobility.id]])} style={{ paddingVertical: 16 }} />
         <Button
@@ -276,9 +278,9 @@ export default function TestScreen() {
           </Text>
         </View>
       )}
-      <H1>{shown.title}</H1>
+      <H1>{u(shown.title)}</H1>
       {media.anim && <Figure anim={media.anim} size={0.8} />}
-      <Text style={{ color: t.text, fontSize: 17, lineHeight: 25 }}>{shown.how}</Text>
+      <Text style={{ color: t.text, fontSize: 17, lineHeight: 25 }}>{u(shown.how)}</Text>
       {shown.media && <HowToToggle mediaKey={shown.media} label={media.anim ? 'Watch video' : 'How to do it'} />}
 
       {shown.kind === 'hold' ? (
@@ -300,14 +302,14 @@ export default function TestScreen() {
                 alignItems: 'center',
               })}
             >
-              <Text style={{ color: t.text, fontSize: 20, fontWeight: '800' }}>{c.label}</Text>
+              <Text style={{ color: t.text, fontSize: 20, fontWeight: '800' }}>{u(c.label)}</Text>
             </Pressable>
           ))}
         </View>
       )}
       {shown.kind === 'choice' && cantLabel && (
         <Pressable onPress={cant} hitSlop={8}>
-          <Text style={{ color: t.muted, textAlign: 'center', fontWeight: '600' }}>{cantLabel}</Text>
+          <Text style={{ color: t.muted, textAlign: 'center', fontWeight: '600' }}>{u(cantLabel)}</Text>
         </Pressable>
       )}
       <Button title="‹ Back" variant="ghost" onPress={back} />

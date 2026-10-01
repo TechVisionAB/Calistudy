@@ -6,7 +6,15 @@ Built with [Expo](https://expo.dev) (SDK 57), React Native and Expo Router. All 
 
 ## Features
 
-**Get started in 30 seconds:** three questions (experience, equipment, start right away or test first). The app estimates starting levels and swaps out exercises you lack the equipment for – e.g. table rows instead of ring rows.
+**Get started in 30 seconds:** three questions (experience, equipment, how to start). Beginners get the **Starter plan** by default. The app estimates starting levels and swaps out exercises you lack the equipment for – e.g. table rows instead of ring rows.
+
+**Starter plan (for complete beginners):** 3 full-body workouts a week, ≈30 min, 5 basics (squat, push-up, row, bridge, core) that alternate between Full body A and B with a rest day in between. Training starts on day one, no test week. Handstand prep and planche lean unlock in week 3. Starter uses the bottom rungs of the guide's ladders, so levels and progression carry straight over. After 6 weeks + 15 workouts + basic levels (floor push-ups, split squats, rows) the app suggests moving to the full program (with or without tests). Switch any time in Settings.
+
+**Up next:** Today shows the next workout or test after today ("Tomorrow: Full body B · ≈30 min – Split squat · Pike push-up · …"), and the evening reminder says what's on tomorrow.
+
+**Early wins:** personal records after every workout ("Push-up: 9 reps +2"), 13 badges (first workout, full week, first floor push-up, first pull-up, 4-week streak …), and a "You vs. day one" comparison on the Progress screen and Today.
+
+**Settings (⚙️):** training plan (Starter/Full), units (metric/imperial – cm and kg in guide text are converted), currency for price tips (USD/EUR/GBP/SEK), profile, reminders and reset.
 
 **Today = the next workout**, not a locked weekday: if you miss Monday, Upper A becomes the next workout. The app keeps upper-body and leg workouts apart (≥44 h rest), shows a week ring (4 workouts) and a streak (weeks in a row with at least 3 workouts).
 

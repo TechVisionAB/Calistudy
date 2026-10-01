@@ -7,6 +7,8 @@ import { Button, styles, Theme, useTheme } from '@/components/ui';
 import { mondayOf, shiftDate } from '@/data/program';
 import { Equip, EQUIPMENT } from '@/data/sv';
 import { estimateLevels, EXPERIENCES } from '@/lib/onboarding';
+import { startStarter } from '@/lib/starter';
+import { usePrice } from '@/lib/units';
 import { Experience, useStore } from '@/lib/store';
 
 function Option({ t, on, title, desc, onPress }: { t: Theme; on: boolean; title: string; desc?: string; onPress: () => void }) {
@@ -29,14 +31,21 @@ export default function Welcome() {
   const [exp, setExp] = useState<Experience | null>(state.profile?.experience ?? null);
   const [equip, setEquip] = useState<Equip[]>(state.profile?.equipment ?? []);
 
-  const finish = (withTest: boolean) => {
-    update((s) => ({
-      ...s,
-      profile: { experience: exp ?? 'some', equipment: equip },
-      // Existing users keep their tested/progressed levels; new users get an estimate.
-      levels: alreadyStarted ? s.levels : { ...s.levels, ...estimateLevels(exp ?? 'some', equip) },
-      startMonday: alreadyStarted ? s.startMonday : shiftDate(mondayOf(), withTest ? 0 : -7),
-    }));
+  const price = usePrice();
+
+  type Start = 'starter' | 'train' | 'test';
+  const finish = (how: Start) => {
+    update((s) => {
+      const next: typeof s = {
+        ...s,
+        profile: { experience: exp ?? 'some', equipment: equip },
+        // Existing users keep their tested/progressed levels; new users get an estimate.
+        levels: alreadyStarted ? s.levels : { ...s.levels, ...estimateLevels(exp ?? 'some', equip) },
+      };
+      if (alreadyStarted) return next;
+      if (how === 'starter') return startStarter({ ...next, startMonday: mondayOf() });
+      return { ...next, track: 'full', startMonday: shiftDate(mondayOf(), how === 'test' ? 0 : -7) };
+    });
     router.replace('/');
   };
 
@@ -61,7 +70,7 @@ export default function Welcome() {
             <Text style={{ color: t.muted, fontSize: 17, textAlign: 'center', lineHeight: 24 }}>
               {alreadyStarted
                 ? 'Two quick questions so the app can fit workouts to your equipment. Your levels and logs are kept.'
-                : 'Get stronger with bodyweight training at home. 4 workouts a week – the app tells you what to do and when it is time to move on.'}
+                : 'Get stronger with bodyweight training at home. No gym, no guesswork – the app tells you exactly what to do today and when you’re ready for the next step.'}
             </Text>
             <Button title="Get started" onPress={() => setStep(1)} />
           </>
@@ -93,9 +102,9 @@ export default function Welcome() {
               />
             ))}
             {!equip.includes('bar') && !equip.includes('rings') && (
-              <Text style={{ color: t.accent, fontSize: 14 }}>Tip: a doorway pull-up bar (around $30) is the most important buy – it unlocks all the pull exercises.</Text>
+              <Text style={{ color: t.accent, fontSize: 14 }}>Tip: a doorway pull-up bar (around {price(30)}) is the most important buy – it unlocks all the pull exercises.</Text>
             )}
-            <Button title={alreadyStarted ? 'Done' : 'Next'} onPress={() => (alreadyStarted ? finish(false) : setStep(3))} />
+            <Button title={alreadyStarted ? 'Done' : 'Next'} onPress={() => (alreadyStarted ? finish('train') : setStep(3))} />
           </>
         )}
 
@@ -103,8 +112,18 @@ export default function Welcome() {
           <>
             {dots}
             <Text style={{ color: t.text, fontSize: 26, fontWeight: '800' }}>How do you want to start?</Text>
-            <Option t={t} on title="Start training right away" desc="The app estimates your starting levels from your answers. They adjust automatically after a few workouts." onPress={() => finish(false)} />
-            <Option t={t} on={false} title="Test me first" desc="Three short tests (about 1 h total) give exact levels. Best if you want to get the most out of it." onPress={() => finish(true)} />
+            {exp === 'new' ? (
+              <>
+                <Option t={t} on title="Starter plan (recommended)" desc="3 short full-body workouts a week, about 30 min. Easy basics first – new exercises unlock as you get stronger." onPress={() => finish('starter')} />
+                <Option t={t} on={false} title="Full program" desc="4 workouts a week, 55–85 min, with skills like handstand and planche. Made for people who already train." onPress={() => finish('train')} />
+              </>
+            ) : (
+              <>
+                <Option t={t} on title="Start training right away" desc="The full program: 4 workouts a week. Starting levels are estimated from your answers and adjust after a few workouts." onPress={() => finish('train')} />
+                <Option t={t} on={false} title="Test me first" desc="Three short tests (about 1 h total) give exact levels. Best if you want to get the most out of it." onPress={() => finish('test')} />
+                <Option t={t} on={false} title="Easier start: Starter plan" desc="3 short full-body workouts a week, about 30 min. Good after a long break." onPress={() => finish('starter')} />
+              </>
+            )}
           </>
         )}
       </ScrollView>

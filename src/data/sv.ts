@@ -53,6 +53,18 @@ export const EX_SV: Record<string, { name: string; cue: string }> = {
   'lowerB:F2': { name: 'Tibialis raise', cue: 'Toes toward your shins' },
   'lowerB:G1': { name: 'Hip abduction', cue: 'Hips slightly extended, toes forward' },
   'lowerB:G2': { name: 'Pallof press', cue: 'Ribs down, resist the rotation' },
+  'starterA:A': { name: 'Squat', cue: 'Sit down between your heels, chest up' },
+  'starterA:B': { name: 'Push-up', cue: 'Body in one straight line' },
+  'starterA:C': { name: 'Row', cue: 'Pull your chest up, squeeze the shoulder blades' },
+  'starterA:D': { name: 'Glute bridge', cue: 'Push through the heels, squeeze at the top' },
+  'starterA:E': { name: 'Hollow body hold', cue: 'Lower back into the floor, knees bent is fine' },
+  'starterA:F': { name: 'Handstand prep', cue: 'Push the floor away, shoulders over the hands' },
+  'starterB:A': { name: 'Split squat', cue: 'Long stance, back knee straight down' },
+  'starterB:B': { name: 'Pike push-up', cue: 'Hips high, head forward of the hands' },
+  'starterB:C': { name: 'Pull-up progression', cue: 'Shoulders down first, slow on the way down' },
+  'starterB:D': { name: 'Dips', cue: 'Shoulders down, chest forward' },
+  'starterB:E': { name: 'Side plank', cue: 'Hips high – knees down is fine' },
+  'starterB:F': { name: 'Planche lean', cue: 'Straight arms, lean until the shoulders work' },
 };
 
 /** Plain-English short name per ladder level. */
@@ -86,17 +98,20 @@ export const EX_NEEDS: Record<string, { any: Equip[]; alt: { name: string; cue: 
   'upperA:C': { any: ['bar', 'rings'], alt: { name: 'Hollow body hold', cue: 'The foundation for front lever: lower back into the floor', demo: 'CC1' } },
   'upperA:D2': { any: ['bar', 'rings'], alt: { name: 'Slow table row (3 s down)', cue: 'Wide grip, pull your chest to the edge, lower over 3 s', demo: 'HPu1' } },
   'upperA:E1': { any: ['dip', 'rings'], alt: { name: 'Dips between two chairs', cue: 'Sturdy chairs only! Otherwise: diamond push-ups', demo: 'DP2' } },
-  'upperA:E2': { any: ['bar', 'rings'], alt: { name: 'Bordsrodd', cue: 'Lie under a sturdy table, pull your chest to the edge', demo: 'HPu1' } },
+  'upperA:E2': { any: ['bar', 'rings'], alt: { name: 'Table row', cue: 'Lie under a sturdy table, pull your chest to the edge', demo: 'HPu1' } },
   'upperA:F1': { any: ['dumbbells', 'bands'], alt: { name: 'Lateral raise with water bottles', cue: 'Lead with the elbows, slowly down', demo: 'lateral' } },
   'upperA:F2': { any: ['dumbbells', 'rings', 'bands'], alt: { name: 'Backpack curl', cue: 'Still elbows, full extension' } },
   'lowerA:A': { any: ['bench'], alt: { name: 'Squat jump', cue: 'Jump high, land quietly', demo: 'pogo' } },
   'upperB:B': { any: ['bar', 'rings'], alt: { name: 'Hollow body hold', cue: 'The foundation for front lever: lower back into the floor', demo: 'CC1' } },
   'upperB:D': { any: ['bar', 'rings'], alt: { name: 'Explosive table row', cue: 'Pull fast, lower slowly', demo: 'HPu1' } },
-  'upperB:E2': { any: ['bar', 'rings'], alt: { name: 'Bordsrodd', cue: 'Lie under a sturdy table, pull your chest to the edge', demo: 'HPu1' } },
+  'upperB:E2': { any: ['bar', 'rings'], alt: { name: 'Table row', cue: 'Lie under a sturdy table, pull your chest to the edge', demo: 'HPu1' } },
   'upperB:F1': { any: ['bar', 'rings'], alt: { name: 'Table row, underhand grip', cue: 'Palms facing you, chest to the edge', demo: 'HPu1' } },
   'upperB:G1': { any: ['dumbbells', 'bands'], alt: { name: 'Diamond push-ups', cue: 'Hands together under the chest', demo: 'HP3' } },
   'upperB:G2': { any: ['bands', 'dumbbells'], alt: { name: 'Prone Y-T raises', cue: 'Thumbs up, squeeze the shoulder blades' } },
   'upperB:H': { any: ['bar', 'rings'], alt: { name: 'Lying leg raise', cue: 'Lower back into the floor, slowly down', demo: 'CC1' } },
+  'starterA:C': { any: ['bar', 'rings'], alt: { name: 'Table row', cue: 'Lie under a sturdy table, pull your chest to the edge', demo: 'HPu1' } },
+  'starterB:C': { any: ['bar', 'rings'], alt: { name: 'Slow table row (3 s down)', cue: 'Underhand grip, chest to the edge, lower over 3 s', demo: 'HPu1' } },
+  'starterB:D': { any: ['dip', 'rings'], alt: { name: 'Chair dips', cue: 'Sturdy chair against a wall; knees bent to make it easier', demo: 'DP2' } },
   'lowerB:G2': { any: ['bands'], alt: { name: 'Dead bug', cue: 'Lower back into the floor, opposite arm and leg' } },
 };
 
@@ -150,6 +165,8 @@ export const EFFORTS: { label: string; rir: number }[] = [
 
 /** Plain-English session names and one-line summaries. */
 export const SESSION_SV: Record<string, { title: string; short: string }> = {
+  starterA: { title: 'Full body A', short: 'Squat, push-up, row, bridge and core' },
+  starterB: { title: 'Full body B', short: 'Split squat, pike push-up, pull, dips and core' },
   upperA: { title: 'Upper body A', short: 'Handstand, planche, pull-ups and dips' },
   lowerA: { title: 'Legs A', short: 'Jumps, single-leg squats, hamstrings and calves' },
   upperB: { title: 'Upper body B', short: 'Front lever, explosive pulls, push-ups and rows' },
@@ -178,6 +195,10 @@ export const WARMUP_SV: Record<string, { title: string; steps: string[] }> = {
   legs: {
     title: 'Warm-up (8 min)',
     steps: ['2–3 min light cardio', 'Knee-to-wall ankle mobility ×10/side', '10 deep squats', '10 glute bridges', '5 easy split squats/leg', '10 easy pogo hops'],
+  },
+  starter: {
+    title: 'Warm-up (5 min)',
+    steps: ['1 min jumping jacks or marching on the spot', 'Arm circles ×10 each way', 'Wrist circles, 30 s', '10 slow bodyweight squats', '10 glute bridges', '5 easy push-ups (knees or bench is fine)'],
   },
   handstand: {
     title: 'Warm-up (8 min)',
